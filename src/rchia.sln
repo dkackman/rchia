@@ -10,7 +10,6 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		shared\shared.projitems*{64d8a879-e8f2-4aeb-9a83-41eebc97718c}*SharedItemsImports = 13
-		shared\shared.projitems*{7db3d463-6288-4a63-a2ff-3e7f80ceec81}*SharedItemsImports = 5
 		shared\shared.projitems*{8ae515f5-f6dc-40f0-94be-42f06fb16255}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7DB3D463-6288-4A63-A2FF-3E7F80CEEC81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7DB3D463-6288-4A63-A2FF-3E7F80CEEC81}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7DB3D463-6288-4A63-A2FF-3E7F80CEEC81}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7DB3D463-6288-4A63-A2FF-3E7F80CEEC81}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8AE515F5-F6DC-40F0-94BE-42F06FB16255}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8AE515F5-F6DC-40F0-94BE-42F06FB16255}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8AE515F5-F6DC-40F0-94BE-42F06FB16255}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -4,11 +4,10 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using chia.dotnet;
-using chia.dotnet.console;
 
 namespace rchia.Show
 {
-    static class StateTask
+    internal static class StateTask
     {
         public static async Task Run(FullNodeProxy fullNode)
         {

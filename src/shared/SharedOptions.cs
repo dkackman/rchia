@@ -32,8 +32,10 @@ namespace chia.dotnet.console
             {
                 Console.WriteLine(msg);
             }
-
-            Debug.WriteLine(msg);
+            else
+            {
+                Debug.WriteLine(msg);
+            }
         }
 
         public void Message(Exception e)
@@ -41,7 +43,7 @@ namespace chia.dotnet.console
             if (e is not null)
             {
                 Message(e.Message, true);
-                if (Verbose)
+                if (Verbose) // if verbose - unwind the tree of exceptions
                 {
                     Message(e.InnerException);
                 }

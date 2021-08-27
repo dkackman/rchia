@@ -11,7 +11,7 @@ using CommandLine;
 namespace rchia
 {
     [Verb("show", HelpText = "Shows various properties of a full node")]
-    class ShowVerb : SharedOptions
+    internal sealed class ShowVerb : SharedOptions
     {
         [Option('s', "state", HelpText = "Show the current state of the blockchain")]
         public bool State { get; set; }
@@ -25,7 +25,7 @@ namespace rchia
         [Option('a', "add-connection", HelpText = "Connect to another Full Node by ip:port")]
         public string AddConnection { get; set; }
 
-        [Option('r', "remove-connection",  HelpText = "Remove a Node by the first 8 characters of NodeID")]
+        [Option('r', "remove-connection", HelpText = "Remove a Node by the first 8 characters of NodeID")]
         public string RemoveConnection { get; set; }
 
         public override async Task<int> Run()
@@ -41,11 +41,11 @@ namespace rchia
                 }
                 else if (Exit)
                 {
-                    await ExitTask.Run(fullNode);
+                    await ExitTask.Run(fullNode, Verbose);
                 }
                 else if (Connections)
                 {
-                    await ConnectionsTask.Run(fullNode);
+                    await ConnectionsTask.Run(fullNode, Verbose);
                 }
 
                 return 0;

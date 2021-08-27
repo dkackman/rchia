@@ -10,7 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)ClientFactory.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IVerb.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Runner.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SharedOptions.cs" />

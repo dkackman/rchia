@@ -8,20 +8,20 @@ using chia.dotnet.console;
 
 namespace rchia
 {
-    class Program
+    internal static class Program
     {
         internal static readonly ClientFactory Factory = new("rchia");
 
-        static int Main(string[] args)
+        public static int Main(string[] args)
         {
             var types = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(t => t.GetCustomAttribute<VerbAttribute>() != null).ToArray();
 
-            Parser.Default.ParseArguments(args, types)
+            _ = Parser.Default.ParseArguments(args, types)
                   .WithParsed(Runner.Run)
                   .WithNotParsed(Runner.HandleErrors);
 
-            Debug.WriteLine("Exit code {0}", Runner.ReturnCode);
+            Debug.WriteLine($"Exit code {Runner.ReturnCode}");
             return Runner.ReturnCode;
         }
     }
