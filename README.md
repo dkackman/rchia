@@ -1,13 +1,13 @@
 # rchia
 
-Remote CLI for chia nodes
+Remote management CLI for [chia nodes](https://github.com/Chia-Network/chia-blockchain).
 
 [![.NET](https://github.com/dkackman/rchia/actions/workflows/dotnet.yml/badge.svg)](https://github.com/dkackman/rchia/actions/workflows/dotnet.yml)
 [![CodeQL](https://github.com/dkackman/rchia/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/dkackman/rchia/actions/workflows/codeql-analysis.yml)
 
 ## Introduction
 
-A cross platform (Linux, Windows, MacOS) command line utility that mirrors the [`chia` CLI](https://github.com/Chia-Network/chia-blockchain), but uses RPC rather than running locally on the node. This allows management of any number of nodes from a central location as long as their RPC interface is exposed on the network.
+A cross platform (Linux, Windows, MacOS) command line utility that mirrors the `chia` CLI, but uses RPC rather than running locally on the node. This allows management of any number of nodes from a central location as long as their RPC interface is exposed on the network.
 
 ## Build and Run
 
