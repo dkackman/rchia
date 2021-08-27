@@ -51,6 +51,15 @@ namespace rchia
                 {
                     await AddConnectionTask.Run(fullNode, AddConnection, Verbose);
                 }
+                else if (!string.IsNullOrEmpty(RemoveConnection))
+                {
+                    await RemoveConnectionTask.Run(fullNode, RemoveConnection, Verbose);
+                }
+                else
+                {
+                    Console.WriteLine("Unrecognized command");
+                    return -1;
+                }
 
                 return 0;
             }

@@ -12,8 +12,10 @@
             "program": "${workspaceFolder}/src/rchia/bin/Debug/net5.0/rchia.dll",
             "args": [
                 "show",
+                //"-c",
                 //"-s",
-                "-a", "51.15.76.147:58444",
+                //"-a", "51.15.76.147:58444",
+                "-r", "0xfc7d2090ac49c63c6f3a4411addab6dbb472e4953b65ec31227c7481a59ba26d",
                 "--endpoint-uri", "https://172.29.106.245:8555",
                 "--cert-path", "\\\\wsl$\\Ubuntu-20.04\\home\\don\\.chia\\mainnet\\config\\ssl\\full_node\\private_full_node.crt",
                 "--key-path", "\\\\wsl$\\Ubuntu-20.04\\home\\don\\.chia\\mainnet\\config\\ssl\\full_node\\private_full_node.key",
