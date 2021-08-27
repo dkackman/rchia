@@ -25,7 +25,7 @@ cd src/rchia/bin/Debug/net5.0/
 user@computer:~$ ./chia show -s --endpoint-uri https://node1:8555 --cert-path ~/certs/node1/private_full_node.crt --key-path ~/certs/node1/private_full_node.key
 Current Blockchain Status: Full Node Synced
 Peak: Hash:0xfa277f6ea103b5c2b6ad77ae6e909ab985e1b9312f286908e967ef644beec432
-      Time: unknown             Height: 509806
+      Time: Fri Aug 27 2021 16:57:06 CDT             Height: 509806
 
 Estimated network space: 42.200 TiB
 Current difficulty: 21760
