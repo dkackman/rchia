@@ -23,8 +23,8 @@ namespace rchia.Show
             }
             else if (state.Peak is not null && state.Sync.SyncMode)
             {
-                Console.WriteLine($"Current Blockchain Status: Syncing {state.Sync.SyncProgressPercent}.");
-                Console.WriteLine($"Peak: Hash:{peakHash}");
+                Console.WriteLine($"Current Blockchain Status: Syncing {state.Sync.SyncProgressHeight}/{state.Sync.SyncTipHeight}.");
+                Console.WriteLine($"Peak: Hash: {peakHash.Replace("0x", "")}");
             }
             else if (state.Peak is not null)
             {
@@ -36,12 +36,10 @@ namespace rchia.Show
                 Console.WriteLine("You may be able to expedite with 'chia show -a host:port' using a known node.");
             }
 
-            Console.WriteLine("");
-
             if (state.Peak is not null)
             {
                 var time = state.Peak.DateTimestamp.HasValue ? state.Peak.DateTimestamp.Value.ToLocalTime().ToString("U") : "unknown";
-                Console.WriteLine($"\tTime: {time}\t\tHeight:\t{state.Peak.Height}");
+                Console.WriteLine($"      Time: {time}\t\tHeight:\t{state.Peak.Height}");
             }
 
             Console.WriteLine("");
@@ -68,7 +66,7 @@ namespace rchia.Show
 
                 foreach (var b in blocks)
                 {
-                    Console.WriteLine($"   {b.Height} | {b.HeaderHash}");
+                    Console.WriteLine($"   {b.Height} | {b.HeaderHash.Replace("0x", "")}");
                 }
             }
 

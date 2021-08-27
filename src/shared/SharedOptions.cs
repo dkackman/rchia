@@ -36,6 +36,18 @@ namespace chia.dotnet.console
             Debug.WriteLine(msg);
         }
 
+        public void Message(Exception e)
+        {
+            if (e is not null)
+            {
+                Message(e.Message, true);
+                if (Verbose)
+                {
+                    Message(e.InnerException);
+                }
+            }
+        }
+
         public abstract Task<int> Run();
     }
 }

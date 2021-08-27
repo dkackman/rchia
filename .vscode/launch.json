@@ -10,7 +10,14 @@
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/src/rchia/bin/Debug/net5.0/rchia.dll",
-            "args": ["show", "--help"],
+            "args": [
+                "show",
+                "-s",
+                "--endpoint-uri", "https://172.29.107.249:8555",
+                "--cert-path", "\\\\wsl$\\Ubuntu-20.04\\home\\don\\.chia\\mainnet\\config\\ssl\\full_node\\private_full_node.crt",
+                "--key-path", "\\\\wsl$\\Ubuntu-20.04\\home\\don\\.chia\\mainnet\\config\\ssl\\full_node\\private_full_node.key",
+                "-v"
+            ],
             "cwd": "${workspaceFolder}/src/rchia",
             "stopAtEntry": false,
             "console": "internalConsole"
