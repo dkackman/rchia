@@ -47,6 +47,10 @@ namespace rchia
                 {
                     await ConnectionsTask.Run(fullNode, Verbose);
                 }
+                else if (!string.IsNullOrEmpty(AddConnection))
+                {
+                    await AddConnectionTask.Run(fullNode, AddConnection, Verbose);
+                }
 
                 return 0;
             }
