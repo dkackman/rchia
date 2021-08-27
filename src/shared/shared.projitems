@@ -9,6 +9,7 @@
     <Import_RootNamespace>shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)BaseVerb.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ClientFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IVerb.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Runner.cs" />

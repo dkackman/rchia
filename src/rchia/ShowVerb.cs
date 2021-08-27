@@ -22,10 +22,10 @@ namespace rchia
         [Option('c', "connections", HelpText = "List nodes connected to this Full Node")]
         public bool Connections { get; set; }
 
-        [Option('a', "add-connection", HelpText = "Connect to another Full Node by ip:port")]
+        [Option('a', "add-connection", HelpText = "[URI] Connect to another Full Node by ip:port")]
         public string AddConnection { get; set; }
 
-        [Option('r', "remove-connection", HelpText = "Remove a Node by the first 8 characters of NodeID")]
+        [Option('r', "remove-connection", HelpText = "[NODE ID] Remove a Node by the full or first 8 characters of NodeID")]
         public string RemoveConnection { get; set; }
 
         public override async Task<int> Run()

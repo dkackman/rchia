@@ -1,16 +1,9 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-
-using CommandLine;
+﻿using CommandLine;
 
 namespace chia.dotnet.console
 {
-    public abstract class SharedOptions : IVerb
+    public abstract class SharedOptions : BaseVerb
     {
-        [Option('v', "verbose", HelpText = "Set output to verbose messages.")]
-        public bool Verbose { get; set; }
-
         [Option("endpoint-uri", SetName = "Endpoint", HelpText = "The uri of the rpc endpoint, including the proper port and wss/https scheme prefix")]
         public string Uri { get; set; }
 
@@ -25,31 +18,5 @@ namespace chia.dotnet.console
 
         [Option("use-default-config", SetName = "Config", HelpText = "Flag indicating to use the default chia config for endpoints")]
         public bool UseDefaultConfig { get; set; }
-
-        public void Message(string msg, bool important = false)
-        {
-            if (Verbose || important)
-            {
-                Console.WriteLine(msg);
-            }
-            else
-            {
-                Debug.WriteLine(msg);
-            }
-        }
-
-        public void Message(Exception e)
-        {
-            if (e is not null)
-            {
-                Message(e.Message, true);
-                if (Verbose) // if verbose - unwind the tree of exceptions
-                {
-                    Message(e.InnerException);
-                }
-            }
-        }
-
-        public abstract Task<int> Run();
     }
 }
