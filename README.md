@@ -7,7 +7,7 @@ Remote CLI for chia nodes
 
 ## Introduction
 
-A cross platform (Linux, Windows, MacOS) command line utility that mirrors the `chia` CLI, but uses RPC rather than running locally on the node. This allows management of any number of nodes from a central location as long as their RPC interface is exposed on the network.
+A cross platform (Linux, Windows, MacOS) command line utility that mirrors the [`chia` CLI](https://github.com/Chia-Network/chia-blockchain), but uses RPC rather than running locally on the node. This allows management of any number of nodes from a central location as long as their RPC interface is exposed on the network.
 
 ## Build and Run
 
