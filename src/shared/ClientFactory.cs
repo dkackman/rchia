@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,12 +30,9 @@ namespace chia.dotnet.console
                 return rpcClient;
             }
 
-            if (endpoint.Uri.Scheme == "https")
-            {
-                return new HttpRpcClient(endpoint);
-            }
-
-            throw new InvalidOperationException($"Unrecognized endpoint Uri scheme {endpoint.Uri.Scheme}");
+            return endpoint.Uri.Scheme == "https"
+                ? new HttpRpcClient(endpoint)
+                : throw new InvalidOperationException($"Unrecognized endpoint Uri scheme {endpoint.Uri.Scheme}");
         }
 
         private static EndpointInfo GetEndpointInfo(SharedOptions options, string serviceName)
