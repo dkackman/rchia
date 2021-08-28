@@ -4,25 +4,25 @@ namespace chia.dotnet.console
 {
     public abstract class SharedOptions : BaseVerb
     {
-        [Option("endpoint-uri", SetName = "Endpoint", HelpText = "The uri of the rpc endpoint, including the proper port and wss/https scheme prefix")]
+        [Option("endpoint-uri", Group = "endpoint", SetName = "Endpoint", HelpText = "[URI] The uri of the rpc endpoint, including the proper port and wss/https scheme prefix")]
         public string? Uri { get; set; }
 
-        [Option("cert-path", SetName = "Endpoint", HelpText = "The full path to the .crt file to use for authentication")]
+        [Option("cert-path", Group = "endpoint", SetName = "Endpoint", HelpText = "[PATH] The full path to the .crt file to use for authentication")]
         public string? CertPath { get; set; }
 
-        [Option("key-path", SetName = "Endpoint", HelpText = "The full path to the .key file to use for authentication")]
+        [Option("key-path", Group = "endpoint", SetName = "Endpoint", HelpText = "[PATH] The full path to the .key file to use for authentication")]
         public string? KeyPath { get; set; }
 
-        [Option("config-path", SetName = "Config", HelpText = "The full path to a chia config yaml file for endpoints")]
+        [Option("config-path", Group = "endpoint", SetName = "Config", HelpText = "[PATH] The full path to a chia config yaml file for endpoints")]
         public string? ConfigPath { get; set; }
 
-        [Option("use-default-config", SetName = "Config", HelpText = "Flag indicating to use the default chia config for endpoints")]
+        [Option("use-default-config", Group = "endpoint", SetName = "Config", HelpText = "Flag indicating to use the default chia config for endpoints")]
         public bool UseDefaultConfig { get; set; }
 
-        [Option("use-default-endpoint", SetName = "Saved", HelpText = "Flag indicating to use the default saved endpoint")]
+        [Option("use-default-endpoint", Group = "endpoint", SetName = "Saved", HelpText = "Flag indicating to use the default saved endpoint")]
         public bool UseDefaultPoint { get; set; }
 
-        [Option("saved-endpoint", SetName = "Saved", HelpText = "[ID] Use a saved endpoint")]
+        [Option("saved-endpoint", Group = "endpoint", SetName = "Saved", HelpText = "[ID] Use a saved endpoint")]
         public string? SavedEndpoint { get; set; }
     }
 }

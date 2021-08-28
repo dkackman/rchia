@@ -10,7 +10,7 @@ using CommandLine;
 
 namespace rchia
 {
-    [Verb("show", HelpText = "Shows various properties of a full node")]
+    [Verb("show", isDefault:true, HelpText = "Shows various properties of a full node")]
     internal sealed class ShowVerb : SharedOptions
     {
         [Option('s', "state", HelpText = "Show the current state of the blockchain")]

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using chia.dotnet.console;
@@ -12,7 +13,7 @@ namespace rchia
     [Verb("endpoints", HelpText = "Manage saved endpoints")]
     internal sealed class EndpointVerb : BaseVerb
     {
-        [Option('l', "list", HelpText = "Show the list of saved endpoints")]
+        [Option('l', "list", HelpText = "Lists the ids of saved endpoints")]
         public bool List { get; set; }
 
         [Option('a', "add", HelpText = "[ID] [URI] [CRT PATH] [KEY PATH] Adds a saved endpoint")]
@@ -24,6 +25,18 @@ namespace rchia
         [Option('s', "show", HelpText = "[ID] Shows the details of a saved endpoint")]
         public string? Show { get; set; }
 
+        [Value(0, MetaName = "uri", HelpText = "The Uri of the endpoint being added")]
+        public string? Uri { get; set; }
+
+        [Value(1, MetaName = "cert-path", HelpText = "The full path to the .crt file to use for authentication")]
+        public string? CertPath { get; set; }
+
+        [Value(2, MetaName = "key-path", HelpText = "The full path to the .key file to use for authentication")]
+        public string? KeyPath { get; set; }
+
+        [Option('d', "set-default", HelpText = "[ID] Sets the endpoint to be the default for --use-default-endpoint")]
+        public string? SetDefault { get; set; }
+
         [Option('t', "test", HelpText = "[ID] Test the connection to a saved endpoint")]
         public string? Test { get; set; }
 
@@ -33,26 +46,34 @@ namespace rchia
             {
                 var config = Config.GetConfig();
                 var endpointsFilePath = config.endpointfile ?? Config.DefaultEndpointsFilePath;
-                var endpoints = EndpointLibrary.Open(endpointsFilePath);
+                IDictionary<string, Endpoint> endpoints = EndpointLibrary.Open(endpointsFilePath);
 
                 if (List)
                 {
                     Console.WriteLine($"{endpoints.Count} saved endpoint(s)");
-                    foreach (var endpoint in endpoints)
+                    foreach (var endpoint in endpoints.Values)
                     {
-                        Console.WriteLine(endpoint.Id);
+                        var isDefault = endpoint.IsDefault ? "(default)" : string.Empty;
+                        Console.WriteLine($" - {endpoint.Id} {isDefault}");
                     }
                 }
                 else if (!string.IsNullOrEmpty(Add))
                 {
-                    var endpoint = new Endpoint();
-                    if (endpoints.ContainsKey(endpoint.Id))
+                    if (endpoints.ContainsKey(Add))
                     {
                         throw new InvalidOperationException($"An endpoint with an id of {Add} already exists.");
                     }
 
+                    var endpoint = new Endpoint()
+                    {
+                        Id = Add
+                    };
+
                     endpoints.Add(endpoint.Id, endpoint);
                     EndpointLibrary.Save(endpoints, endpointsFilePath);
+
+                    Console.WriteLine($"Added {Add}");
+                    Console.WriteLine(endpoint);
                 }
                 else if (!string.IsNullOrEmpty(Remove))
                 {
@@ -69,18 +90,33 @@ namespace rchia
                 {
                     if (!endpoints.ContainsKey(Show))
                     {
-                        throw new InvalidOperationException($"No saved endpoint with an id of {Remove}.");
+                        throw new InvalidOperationException($"No saved endpoint with an id of {Show}.");
                     }
                     var endpoint = endpoints[Show];
                     Console.WriteLine(endpoint);
+                }
+                else if (!string.IsNullOrEmpty(SetDefault))
+                {
+                    if (!endpoints.ContainsKey(SetDefault))
+                    {
+                        throw new InvalidOperationException($"No saved endpoint with an id of {SetDefault}.");
+                    }
+
+                    foreach (var endpoint in endpoints.Values)
+                    {
+                        endpoint.IsDefault = endpoint.Id == SetDefault;
+                    }
+
+                    EndpointLibrary.Save(endpoints, endpointsFilePath);
+                    Console.WriteLine($"Set {SetDefault} as the default");
                 }
                 else if (!string.IsNullOrEmpty(Test))
                 {
                     if (!endpoints.ContainsKey(Test))
                     {
-                        throw new InvalidCastException($"No saved endpoint with an id of {Remove}.");
+                        throw new InvalidCastException($"No saved endpoint with an id of {Test}.");
                     }
-                    
+
                     var endpoint = endpoints[Test];
                     await Program.Factory.TestConnection(endpoint.EndpointInfo);
                 }
