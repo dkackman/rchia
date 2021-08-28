@@ -32,14 +32,15 @@ namespace rchia
             try
             {
                 var config = Config.GetConfig();
-                var endpointsfile = config.endpointfile ?? Config.DefaultEndpointsFilePath;
-                var endpoints = EndpointLibrary.Open(endpointsfile);
+                var endpointsFilePath = config.endpointfile ?? Config.DefaultEndpointsFilePath;
+                var endpoints = EndpointLibrary.Open(endpointsFilePath);
 
                 if (List)
                 {
+                    Console.WriteLine($"{endpoints.Count} saved endpoint(s)");
                     foreach (var endpoint in endpoints)
                     {
-
+                        Console.WriteLine(endpoint.Id);
                     }
                 }
                 else if (!string.IsNullOrEmpty(Add))
@@ -49,8 +50,9 @@ namespace rchia
                     {
                         throw new InvalidOperationException($"An endpoint with an id of {Add} already exists.");
                     }
+
                     endpoints.Add(endpoint.Id, endpoint);
-                    EndpointLibrary.Save(endpoints);
+                    EndpointLibrary.Save(endpoints, endpointsFilePath);
                 }
                 else if (!string.IsNullOrEmpty(Remove))
                 {
@@ -58,8 +60,10 @@ namespace rchia
                     {
                         throw new InvalidOperationException($"No saved endpoint with an id of {Remove}.");
                     }
+
                     endpoints.Remove(Remove);
-                    EndpointLibrary.Save(endpoints);
+                    EndpointLibrary.Save(endpoints, endpointsFilePath);
+                    Console.WriteLine($"Removed {Remove}");
                 }
                 else if (!string.IsNullOrEmpty(Show))
                 {
@@ -67,6 +71,8 @@ namespace rchia
                     {
                         throw new InvalidOperationException($"No saved endpoint with an id of {Remove}.");
                     }
+                    var endpoint = endpoints[Show];
+                    Console.WriteLine(endpoint);
                 }
                 else if (!string.IsNullOrEmpty(Test))
                 {
@@ -74,8 +80,11 @@ namespace rchia
                     {
                         throw new InvalidCastException($"No saved endpoint with an id of {Remove}.");
                     }
+                    
+                    var endpoint = endpoints[Test];
+                    await Program.Factory.TestConnection(endpoint.EndpointInfo);
                 }
-                await Task.CompletedTask;
+
                 return 0;
             }
             catch (Exception e)

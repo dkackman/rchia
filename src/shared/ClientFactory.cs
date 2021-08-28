@@ -13,6 +13,14 @@ namespace chia.dotnet.console
 
         public string OriginService { get; init; }
 
+        public async Task TestConnection(EndpointInfo endpoint)
+        {
+            using var cts = new CancellationTokenSource(5000);
+
+            using var rpcClient = new WebSocketRpcClient(endpoint);
+            await rpcClient.Connect(cts.Token);
+        }
+
         public async Task<IRpcClient> CreateRpcClient(SharedOptions options, string serviceName)
         {
             var endpoint = GetEndpointInfo(options, serviceName);
