@@ -18,5 +18,11 @@ namespace chia.dotnet.console
 
         [Option("use-default-config", SetName = "Config", HelpText = "Flag indicating to use the default chia config for endpoints")]
         public bool UseDefaultConfig { get; set; }
+
+        [Option("use-default-endpoint", SetName = "Saved", HelpText = "Flag indicating to use the default saved endpoint")]
+        public bool UseDefaultPoint { get; set; }
+
+        [Option("saved-endpoint", SetName = "Saved", HelpText = "[ID] Use a saved endpoint")]
+        public string? SavedEndpoint { get; set; }
     }
 }
