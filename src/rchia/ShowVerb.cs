@@ -28,6 +28,9 @@ namespace rchia
         [Option('r', "remove-connection", HelpText = "[NODE ID] Remove a Node by the full or first 8 characters of NodeID")]
         public string RemoveConnection { get; set; }
 
+        [Option('b', "block-by-header-hash", HelpText = "[HASH]  Look up a block by block header hash")]
+        public string BlockByHeaderHash { get; set; }
+
         public override async Task<int> Run()
         {
             try
@@ -54,6 +57,10 @@ namespace rchia
                 else if (!string.IsNullOrEmpty(RemoveConnection))
                 {
                     await RemoveConnectionTask.Run(fullNode, RemoveConnection, Verbose);
+                }
+                else if (!string.IsNullOrEmpty(BlockByHeaderHash))
+                {
+                    await BlockByHeaderHashTask.Run(fullNode, BlockByHeaderHash, Verbose);
                 }
                 else
                 {
