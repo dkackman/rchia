@@ -83,7 +83,7 @@ namespace rchia
 
             var bytes = new byte[hex.Length / 2].AsSpan();
             var s = hex.StartsWith("0x") ? hex.AsSpan()[2..] : hex.AsSpan();
-            if (!HexMate.Convert.TryFromHexChars(s, bytes, out int written))
+            if (!HexMate.Convert.TryFromHexChars(s, bytes, out var written))
             {
                 result = Empty;
                 return false;
@@ -102,7 +102,7 @@ namespace rchia
                                bytes);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is HexBytes other && Hex.ToUpperInvariant() == other.Hex.ToUpperInvariant();
         }

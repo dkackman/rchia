@@ -49,9 +49,9 @@ namespace chia.dotnet.console
 
             return new EndpointInfo()
             {
-                Uri = new Uri(options.Uri),
-                CertPath = options.CertPath,
-                KeyPath = options.KeyPath
+                Uri = new Uri(options.Uri ?? string.Empty),
+                CertPath = options.CertPath ?? string.Empty,
+                KeyPath = options.KeyPath ?? string.Empty
             };
         }
     }

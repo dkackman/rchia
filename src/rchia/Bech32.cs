@@ -124,7 +124,7 @@ namespace rchia
         /// </summary>
         /// <param name="bech"></param>
         /// <returns></returns>
-        private static (string, List<int>) Decode(string bech)
+        private static (string?, List<int>?) Decode(string bech)
         {
             if (bech.ToLower() != bech && bech.ToUpper() != bech)
             {

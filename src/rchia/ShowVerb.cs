@@ -23,13 +23,13 @@ namespace rchia
         public bool Connections { get; set; }
 
         [Option('a', "add-connection", HelpText = "[URI] Connect to another Full Node by ip:port")]
-        public string AddConnection { get; set; }
+        public string? AddConnection { get; set; }
 
         [Option('r', "remove-connection", HelpText = "[NODE ID] Remove a Node by the full or first 8 characters of NodeID")]
-        public string RemoveConnection { get; set; }
+        public string? RemoveConnection { get; set; }
 
         [Option('b', "block-by-header-hash", HelpText = "[HASH] Look up a block by block header hash")]
-        public string BlockByHeaderHash { get; set; }
+        public string? BlockByHeaderHash { get; set; }
 
         public override async Task<int> Run()
         {

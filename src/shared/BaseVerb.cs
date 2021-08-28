@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -23,7 +23,7 @@ namespace chia.dotnet.console
             }
         }
 
-        public void Message(Exception e)
+        public void Message(Exception? e)
         {
             if (e is not null)
             {

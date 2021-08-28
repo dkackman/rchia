@@ -54,7 +54,7 @@ namespace rchia
                         .AppendLine("{")
                         .Append("  \"endpointfile\": ")
                         .AppendLine($"\"{defaultEndPointFile}\"")
-                        .Append("}");
+                        .Append('}');
 
                     using var writer = new StreamWriter(SettingFilePath, false);
                     writer.WriteLine(buffer);
