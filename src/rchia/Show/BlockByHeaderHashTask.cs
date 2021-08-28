@@ -41,8 +41,14 @@ namespace rchia.Show
 
             var txFilterHash = full_block.FoliageTransactionBlock is not null ? full_block.FoliageTransactionBlock.FilterHash : "Not a transaction block";
             Console.WriteLine($"Tx Filter Hash         {txFilterHash}");
-            Console.WriteLine($"Farmer Hash            tbd");
-            Console.WriteLine($"Pool Address           tbd");
+
+            var info = await fullNode.GetNetworkInfo(cts.Token);
+            Bech32M.AddressPrefix = info.NetworkPrefix;
+
+            var farmerAddress = Bech32M.PuzzleHashToAddress(HexBytes.FromHex(block.FarmerPuzzleHash));
+            var poolAddress = Bech32M.PuzzleHashToAddress(HexBytes.FromHex(block.PoolPuzzleHash));
+            Console.WriteLine($"Farmer Address         {farmerAddress}");
+            Console.WriteLine($"Pool Address           {poolAddress}");
 
             var fees = block.Fees.HasValue ? block.Fees.Value.ToString() : "Not a transaction block";
             Console.WriteLine($"Fees Amount            {fees}");
