@@ -17,15 +17,19 @@ namespace chia.dotnet.console
         {
             using var cts = new CancellationTokenSource(5000);
 
-            using var rpcClient = new WebSocketRpcClient(endpoint);
-            await rpcClient.Connect(cts.Token);
+            using var rpcClient = await CreateRpcClient(endpoint);
         }
 
         public async Task<IRpcClient> CreateRpcClient(SharedOptions options, string serviceName)
         {
             var endpoint = GetEndpointInfo(options, serviceName);
 
-            if (endpoint.Uri.Scheme == "wss")
+            return await CreateRpcClient(endpoint);
+        }
+
+        public async Task<IRpcClient> CreateRpcClient(EndpointInfo endpoint)
+        {
+           if (endpoint.Uri.Scheme == "wss")
             {
                 using var cts = new CancellationTokenSource(5000);
 

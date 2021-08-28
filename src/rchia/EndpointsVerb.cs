@@ -16,14 +16,8 @@ namespace rchia
         [Option('l', "list", HelpText = "Lists the ids of saved endpoints")]
         public bool List { get; set; }
 
-        [Option('a', "add", HelpText = "[ID] [URI] [CRT PATH] [KEY PATH] Adds a saved endpoint")]
+        [Option('a', "add", HelpText = "[ID] [URI] [CRT PATH] [KEY PATH] Saves a new endpoint")]
         public string? Add { get; set; }
-
-        [Option('r', "remove", HelpText = "[ID] Removes a saved endpoint")]
-        public string? Remove { get; set; }
-
-        [Option('s', "show", HelpText = "[ID] Shows the details of a saved endpoint")]
-        public string? Show { get; set; }
 
         [Value(0, MetaName = "uri", HelpText = "The Uri of the endpoint being added")]
         public string? Uri { get; set; }
@@ -33,6 +27,12 @@ namespace rchia
 
         [Value(2, MetaName = "key-path", HelpText = "The full path to the .key file to use for authentication")]
         public string? KeyPath { get; set; }
+
+        [Option('r', "remove", HelpText = "[ID] Removes a saved endpoint")]
+        public string? Remove { get; set; }
+
+        [Option('s', "show", HelpText = "[ID] Shows the details of a saved endpoint")]
+        public string? Show { get; set; }
 
         [Option('d', "set-default", HelpText = "[ID] Sets the endpoint to be the default for --use-default-endpoint")]
         public string? SetDefault { get; set; }
@@ -50,12 +50,7 @@ namespace rchia
 
                 if (List)
                 {
-                    Console.WriteLine($"{endpoints.Count} saved endpoint(s)");
-                    foreach (var endpoint in endpoints.Values)
-                    {
-                        var isDefault = endpoint.IsDefault ? "(default)" : string.Empty;
-                        Console.WriteLine($" - {endpoint.Id} {isDefault}");
-                    }
+                    EndpointCommands.List(endpoints);
                 }
                 else if (!string.IsNullOrEmpty(Add))
                 {
@@ -64,15 +59,26 @@ namespace rchia
                         throw new InvalidOperationException($"An endpoint with an id of {Add} already exists.");
                     }
 
-                    var endpoint = new Endpoint()
+                    if (string.IsNullOrEmpty(Uri))
                     {
-                        Id = Add
-                    };
+                        throw new InvalidOperationException($"The Uri must be provided in position 0");
+                    }
 
-                    endpoints.Add(endpoint.Id, endpoint);
+                    if (string.IsNullOrEmpty(CertPath))
+                    {
+                        throw new InvalidOperationException($"The CertPath must be provided in position 1");
+                    }
+
+                    if (string.IsNullOrEmpty(KeyPath))
+                    {
+                        throw new InvalidOperationException($"The KeyPath must be provided in position 2");
+                    }
+
+                    var endpoint = EndpointCommands.Add(endpoints, Add, Uri, CertPath, KeyPath);
+
                     EndpointLibrary.Save(endpoints, endpointsFilePath);
 
-                    Console.WriteLine($"Added {Add}");
+                    Console.WriteLine($"Added {endpoint.Id}");
                     Console.WriteLine(endpoint);
                 }
                 else if (!string.IsNullOrEmpty(Remove))
@@ -84,6 +90,7 @@ namespace rchia
 
                     endpoints.Remove(Remove);
                     EndpointLibrary.Save(endpoints, endpointsFilePath);
+                    
                     Console.WriteLine($"Removed {Remove}");
                 }
                 else if (!string.IsNullOrEmpty(Show))
@@ -92,6 +99,7 @@ namespace rchia
                     {
                         throw new InvalidOperationException($"No saved endpoint with an id of {Show}.");
                     }
+
                     var endpoint = endpoints[Show];
                     Console.WriteLine(endpoint);
                 }
@@ -108,7 +116,7 @@ namespace rchia
                     }
 
                     EndpointLibrary.Save(endpoints, endpointsFilePath);
-                    Console.WriteLine($"Set {SetDefault} as the default");
+                    Console.WriteLine($"Endpoint {SetDefault} is now the default");
                 }
                 else if (!string.IsNullOrEmpty(Test))
                 {
@@ -119,6 +127,8 @@ namespace rchia
 
                     var endpoint = endpoints[Test];
                     await Program.Factory.TestConnection(endpoint.EndpointInfo);
+
+                    Console.WriteLine($"Successfully connected to {Test}");
                 }
 
                 return 0;
