@@ -10,9 +10,21 @@ namespace rchia.Show
     {
         public static async Task Run(FullNodeProxy fullNode, string headerHash, bool verbose)
         {
+            if (verbose)
+            {
+                Console.WriteLine("Retrieving block...");
+            }
+
             using var cts = new CancellationTokenSource(5000);
             var full_block = await fullNode.GetBlock(headerHash, cts.Token);
             var block = await fullNode.GetBlockRecord(headerHash, cts.Token);
+            var info = await fullNode.GetNetworkInfo(cts.Token);
+            var previous = await fullNode.GetBlockRecord(block.PrevHash, cts.Token);
+            
+            if (verbose)
+            {
+                Console.WriteLine("Done.");
+            }
 
             Console.WriteLine($"Block Height           {block.Height}");
             Console.WriteLine($"Header Hash            {block.HeaderHash}");
@@ -22,7 +34,6 @@ namespace rchia.Show
             Console.WriteLine($"Weight                 {block.Weight}");
             Console.WriteLine($"Previous Block         {block.PrevHash}");
 
-            var previous = await fullNode.GetBlockRecord(block.PrevHash, cts.Token);
             var difficulty = previous is not null ? block.Weight - previous.Weight : block.Weight;
             Console.WriteLine($"Difficulty             {difficulty}");
             Console.WriteLine($"Sub-slot iters         {block.SubSlotIters}");
@@ -42,7 +53,6 @@ namespace rchia.Show
             var txFilterHash = full_block.FoliageTransactionBlock is not null ? full_block.FoliageTransactionBlock.FilterHash : "Not a transaction block";
             Console.WriteLine($"Tx Filter Hash         {txFilterHash}");
 
-            var info = await fullNode.GetNetworkInfo(cts.Token);
             Bech32M.AddressPrefix = info.NetworkPrefix;
 
             var farmerAddress = Bech32M.PuzzleHashToAddress(HexBytes.FromHex(block.FarmerPuzzleHash));
