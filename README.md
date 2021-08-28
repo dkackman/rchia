@@ -21,8 +21,31 @@ cd src/rchia/bin/Debug/net5.0/
 
 ## Example
 
+The details of the endpoint can be specified in the following ways:
+
+### On the command line
+
 ```bash
-user@computer:~$ ./chia show -s --endpoint-uri https://node1:8555 --cert-path ~/certs/node1/private_full_node.crt --key-path ~/certs/node1/private_full_node.key
+./rchia show -s --endpoint-uri https://node1:8555 --cert-path ~/certs/node1/private_full_node.crt --key-path ~/certs/node1/private_full_node.key
+```
+
+### By using the `chia` config
+
+```bash
+./rchia show -s --use-default-chia-config
+```
+
+### Using saved endpoint connections
+
+```bash
+./rchia endpoints --add node1 https://node1:8555 ~/certs/node1/private_full_node.crt ~/certs/node1/private_full_node.key
+./rchia show -s --saved-endpoint node1
+```
+
+### Example output
+
+```bash
+user@computer:~$ ./rchia show -s --saved-endpoint node1
 Current Blockchain Status: Full Node Synced
 Peak: Hash:0xfa277f6ea103b5c2b6ad77ae6e909ab985e1b9312f286908e967ef644beec432
       Time: Fri Aug 27 2021 16:57:06 CDT             Height: 509806
@@ -51,31 +74,37 @@ user@computer:~$ ./rchia show --help
 rchia 1.0.0
 Copyright (C) 2021 rchia
 
-  -s, --state                Show the current state of the blockchain
+  -a, --add-connection          [URI] Connect to another Full Node by ip:port
 
-  -e, --exit-node            Shut down the running Full Node
+  -b, --block-by-header-hash    [HASH] Look up a block by block header hash
 
-  -c, --connections          List nodes connected to this Full Node
+  -c, --connections             List nodes connected to this Full Node
 
-  -a, --add-connection       Connect to another Full Node by ip:port
+  -e, --exit-node               Shut down the running Full Node
 
-  -r, --remove-connection    Remove a Node by the first 8 characters of NodeID
+  -r, --remove-connection       [NODE ID] Remove a Node by the full or first 8 characters of NodeID
 
-  -v, --verbose              Set output to verbose messages.
+  -s, --state                   Show the current state of the blockchain
 
-  --endpoint-uri             The uri of the rpc endpoint, including the proper port and wss/https scheme prefix
+  --endpoint-uri                (Group: endpoint) [URI] The uri of the rpc endpoint, including the proper port and wss/https scheme prefix
 
-  --cert-path                The full path to the .crt file to use for authentication
+  --cert-path                   (Group: endpoint) [PATH] The full path to the .crt file to use for authentication
 
-  --key-path                 The full path to the .key file to use for authentication
+  --key-path                    (Group: endpoint) [PATH] The full path to the .key file to use for authentication
 
-  --config-path              The full path to a chia config yaml file for endpoints
+  --chia-config-path            (Group: endpoint) [PATH] The full path to a chia config yaml file for endpoints
 
-  --use-default-config       Flag indicating to use the default chia config for endpoints
+  --use-default-chia-config     (Group: endpoint) Flag indicating to use the default chia config for endpoints
 
-  --help                     Display this help screen.
+  --use-default-endpoint        (Group: endpoint) Flag indicating to use the default saved endpoint
 
-  --version                  Display version information.
+  --saved-endpoint              (Group: endpoint) [ID] Use a saved endpoint
+
+  -v, --verbose                 Set output to verbose messages.
+
+  --help                        Display this help screen.
+
+  --version                     Display version information.
 ```
 ___
 
