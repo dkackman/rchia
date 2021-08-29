@@ -17,7 +17,7 @@ namespace chia.dotnet.console
 
         public static string ConfigDirectory => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".rchia");
 
-        public static string ConfigFilePath => Path.Combine(ConfigDirectory, "Settings.json");
+        public static string ConfigFilePath => Path.Combine(ConfigDirectory, "settings.json");
 
         public static string DefaultEndpointsFilePath => Path.Combine(ConfigDirectory, "endpoints.json");
 
