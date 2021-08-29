@@ -32,6 +32,8 @@ namespace chia.dotnet.console
         {
             var endpoint = GetEndpointInfo(options, serviceName);
 
+            options.Message($"Using endpoint {endpoint.Uri}");
+
             return await CreateRpcClient(endpoint);
         }
 
