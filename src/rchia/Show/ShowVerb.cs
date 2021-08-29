@@ -4,11 +4,9 @@ using System.Threading.Tasks;
 using chia.dotnet;
 using chia.dotnet.console;
 
-using rchia.Show;
-
 using CommandLine;
 
-namespace rchia
+namespace rchia.Show
 {
     [Verb("show", isDefault: true, HelpText = "Shows various properties of a full node")]
     internal sealed class ShowVerb : SharedOptions
@@ -38,29 +36,31 @@ namespace rchia
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.FullNode);
                 var fullNode = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);
 
+                var commands = new ShowTasks(fullNode, Verbose);
+
                 if (State)
                 {
-                    await StateTask.Run(fullNode);
+                    await commands.State();
                 }
                 else if (Exit)
                 {
-                    await ExitTask.Run(fullNode, Verbose);
+                    await commands.Exit();
                 }
                 else if (Connections)
                 {
-                    await ConnectionsTask.Run(fullNode, Verbose);
+                    await commands.Connections();
                 }
                 else if (!string.IsNullOrEmpty(AddConnection))
                 {
-                    await AddConnectionTask.Run(fullNode, AddConnection, Verbose);
+                    await commands.AddConnection(AddConnection);
                 }
                 else if (!string.IsNullOrEmpty(RemoveConnection))
                 {
-                    await RemoveConnectionTask.Run(fullNode, RemoveConnection, Verbose);
+                    await commands.RemoveConnection(RemoveConnection);
                 }
                 else if (!string.IsNullOrEmpty(BlockByHeaderHash))
                 {
-                    await BlockByHeaderHashTask.Run(fullNode, BlockByHeaderHash, Verbose);
+                    await commands.BlockByHeaderHash(BlockByHeaderHash);
                 }
                 else
                 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace chia.dotnet.console
+namespace chia.dotnet.console.EndPoints
 {
     public static class EndpointCommands
     {

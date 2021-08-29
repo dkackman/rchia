@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+using chia.dotnet.console.EndPoints;
+
 namespace chia.dotnet.console
 {
     internal class ClientFactory

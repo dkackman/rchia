@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 using CommandLine;
 
-namespace chia.dotnet.console
+namespace chia.dotnet.console.EndPoints
 {
     [Verb("endpoints", HelpText = "Manage saved endpoints")]
     internal sealed class EndpointVerb : BaseVerb

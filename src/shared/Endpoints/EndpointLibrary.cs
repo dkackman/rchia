@@ -5,7 +5,7 @@ using System.IO;
 
 using Newtonsoft.Json;
 
-namespace chia.dotnet.console
+namespace chia.dotnet.console.EndPoints
 {
     public static class EndpointLibrary
     {

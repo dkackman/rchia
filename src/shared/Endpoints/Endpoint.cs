@@ -1,4 +1,4 @@
-﻿namespace chia.dotnet.console
+﻿namespace chia.dotnet.console.EndPoints
 {
     public record Endpoint
     {
