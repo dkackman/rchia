@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+
+using rchia;
+using rchia.Endpoints;
 
 namespace chia.dotnet.console
 {
@@ -29,7 +33,7 @@ namespace chia.dotnet.console
 
         public async Task<IRpcClient> CreateRpcClient(EndpointInfo endpoint)
         {
-           if (endpoint.Uri.Scheme == "wss")
+            if (endpoint.Uri.Scheme == "wss")
             {
                 using var cts = new CancellationTokenSource(5000);
 
@@ -49,6 +53,29 @@ namespace chia.dotnet.console
 
         private static EndpointInfo GetEndpointInfo(SharedOptions options, string serviceName)
         {
+            if (options.UseDefaultEndpoint)
+            {
+                var config = Settings.GetConfig();
+                var endpointsFilePath = config.endpointfile ?? rchia.Settings.DefaultEndpointsFilePath;
+                var endpoint = EndpointLibrary.GetDefault(endpointsFilePath);
+                
+                return endpoint.EndpointInfo;
+            }
+
+            if (!string.IsNullOrEmpty(options.SavedEndpoint))
+            {
+                var config = rchia.Settings.GetConfig();
+                var endpointsFilePath = config.endpointfile ?? rchia.Settings.DefaultEndpointsFilePath;
+                IDictionary<string, Endpoint> endpoints = EndpointLibrary.Open(endpointsFilePath);
+
+                if (!endpoints.ContainsKey(options.SavedEndpoint))
+                {
+                    throw new InvalidOperationException($"There is no saved endpoint {options.SavedEndpoint}");
+                }
+
+                return endpoints[options.SavedEndpoint].EndpointInfo;
+            }
+
             if (options.UseDefaultConfig)
             {
                 return Config.Open().GetEndpoint(serviceName);

@@ -8,16 +8,16 @@ using Newtonsoft.Json.Converters;
 
 namespace rchia
 {
-    internal static class Config
+    internal static class Settings
     {
-        static Config()
+        static Settings()
         {
             Initialize();
         }
 
         public static string ConfigDirectory => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".rchia");
 
-        public static string ConfigFilePath => Path.Combine(ConfigDirectory, "config.json");
+        public static string ConfigFilePath => Path.Combine(ConfigDirectory, "Settings.json");
 
         public static string DefaultEndpointsFilePath => Path.Combine(ConfigDirectory, "endpoints.json");
         

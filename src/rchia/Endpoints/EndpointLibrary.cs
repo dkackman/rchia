@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 
@@ -8,6 +9,15 @@ namespace rchia.Endpoints
 {
     public static class EndpointLibrary
     {
+
+        public static Endpoint GetDefault(string endpointsFilePath)
+        {
+            var endpoints = Open(endpointsFilePath);
+            var endpoint = endpoints.FirstOrDefault(kvp => kvp.Value.IsDefault);
+
+            return endpoint.Value ?? throw new InvalidOperationException("No default endpoint is set. Try ./rchia endpoints --set-default NAME");
+        }
+
         public static IDictionary<string, Endpoint> Open(string filepath)
         {
             if (File.Exists(filepath))
@@ -28,7 +38,7 @@ namespace rchia.Endpoints
             {
                 endpoints.Values.First().IsDefault = true;
             }
-            
+
             var json = JsonConvert.SerializeObject(endpoints, Formatting.Indented);
             using var writer = new StreamWriter(filepath);
             writer.WriteLine(json);

@@ -13,23 +13,23 @@ namespace rchia
     [Verb("show", isDefault:true, HelpText = "Shows various properties of a full node")]
     internal sealed class ShowVerb : SharedOptions
     {
-        [Option('s', "state", HelpText = "Show the current state of the blockchain")]
-        public bool State { get; set; }
+        [Option('a', "add-connection", HelpText = "[URI] Connect to another Full Node by ip:port")]
+        public string? AddConnection { get; set; }
+
+        [Option('b', "block-by-header-hash", HelpText = "[HASH] Look up a block by block header hash")]
+        public string? BlockByHeaderHash { get; set; }
+        
+        [Option('c', "connections", HelpText = "List nodes connected to this Full Node")]
+        public bool Connections { get; set; }
 
         [Option('e', "exit-node", HelpText = "Shut down the running Full Node")]
         public bool Exit { get; set; }
 
-        [Option('c', "connections", HelpText = "List nodes connected to this Full Node")]
-        public bool Connections { get; set; }
-
-        [Option('a', "add-connection", HelpText = "[URI] Connect to another Full Node by ip:port")]
-        public string? AddConnection { get; set; }
-
         [Option('r', "remove-connection", HelpText = "[NODE ID] Remove a Node by the full or first 8 characters of NodeID")]
         public string? RemoveConnection { get; set; }
 
-        [Option('b', "block-by-header-hash", HelpText = "[HASH] Look up a block by block header hash")]
-        public string? BlockByHeaderHash { get; set; }
+        [Option('s', "state", HelpText = "Show the current state of the blockchain")]
+        public bool State { get; set; }
 
         public override async Task<int> Run()
         {

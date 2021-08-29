@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 using chia.dotnet;
 
+using rchia.Bech32;
 namespace rchia.Show
 {
     internal static class BlockByHeaderHashTask

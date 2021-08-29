@@ -44,8 +44,8 @@ namespace rchia
         {
             try
             {
-                var config = Config.GetConfig();
-                var endpointsFilePath = config.endpointfile ?? Config.DefaultEndpointsFilePath;
+                var config = Settings.GetConfig();
+                var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
                 IDictionary<string, Endpoint> endpoints = EndpointLibrary.Open(endpointsFilePath);
 
                 if (List)

@@ -6,7 +6,7 @@ using System.Text;
 //
 // adapted from https://github.com/Playwo/ChiaRPC.Net/blob/master/ChiaRPC.Net/Utils/Bech32M.cs
 //
-namespace rchia
+namespace rchia.Bech32
 {
     public static class Bech32M
     {
