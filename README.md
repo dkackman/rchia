@@ -96,9 +96,9 @@ Copyright (C) 2021 rchia
 
   --chia-config-path            (Group: endpoint) [PATH] The full path to a chia config yaml file for endpoints
 
-  --use-default-chia-config     (Group: endpoint) Flag indicating to use the default chia config for endpoints
+  --default-chia-config     (Group: endpoint) Flag indicating to use the default chia config for endpoints
 
-  --use-default-endpoint        (Group: endpoint) Flag indicating to use the default saved endpoint
+  --default-endpoint        (Group: endpoint) Flag indicating to use the default saved endpoint
 
   --saved-endpoint              (Group: endpoint) [ID] Use a saved endpoint
 
