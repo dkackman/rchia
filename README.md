@@ -42,6 +42,21 @@ The details of the endpoint can be specified in the following ways:
 ./rchia show -s --saved-endpoint node1
 ```
 
+### Currently Suported Verbs
+
+```bash
+./rchia --help
+rchia 1.0.0
+Copyright (C) 2021 rchia
+  endpoints    Manage saved endpoints
+  status       Shows the status of the node.
+               Requires a daemon endpoint
+  show         (Default Verb) Shows various properties of a full node.
+               Requires a daemon or full_node endpoint.
+  help         Display more information on a specific command.
+  version      Display version information.     
+```
+
 ### Example output
 
 ```bash
@@ -88,19 +103,19 @@ Copyright (C) 2021 rchia
 
   -s, --state                   Show the current state of the blockchain
 
-  --endpoint-uri                (Group: endpoint) [URI] The uri of the rpc endpoint, including the proper port and wss/https scheme prefix
+  --endpoint-uri                [URI] The uri of the rpc endpoint, including the proper port and wss/https scheme prefix
 
-  --cert-path                   (Group: endpoint) [PATH] The full path to the .crt file to use for authentication
+  --cert-path                   [PATH] The full path to the .crt file to use for authentication
 
-  --key-path                    (Group: endpoint) [PATH] The full path to the .key file to use for authentication
+  --key-path                    [PATH] The full path to the .key file to use for authentication
 
-  --chia-config-path            (Group: endpoint) [PATH] The full path to a chia config yaml file for endpoints
+  --chia-config-path            [PATH] The full path to a chia config yaml file for endpoints
 
-  --use-default-chia-config     (Group: endpoint) Flag indicating to use the default chia config for endpoints
+  --default-chia-config         Flag indicating to use the default chia config for endpoints
 
-  --use-default-endpoint        (Group: endpoint) Flag indicating to use the default saved endpoint
+  --default-endpoint            Flag indicating to use the default saved endpoint
 
-  --saved-endpoint              (Group: endpoint) [ID] Use a saved endpoint
+  --saved-endpoint              [ID] Use a saved endpoint
 
   -v, --verbose                 Set output to verbose messages.
 
