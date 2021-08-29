@@ -19,7 +19,7 @@ namespace chia.dotnet.console
             OriginService = originService;
         }
 
-        public string OriginService { get; init; }
+        public string OriginService { get; init; } // this is needed for any daemon wss endpoints
 
         public async Task TestConnection(EndpointInfo endpoint)
         {

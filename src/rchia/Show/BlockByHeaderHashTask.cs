@@ -19,9 +19,9 @@ namespace rchia.Show
             using var cts = new CancellationTokenSource(5000);
             var full_block = await fullNode.GetBlock(headerHash, cts.Token);
             var block = await fullNode.GetBlockRecord(headerHash, cts.Token);
-            var info = await fullNode.GetNetworkInfo(cts.Token);
+            var (NetworkName, NetworkPrefix) = await fullNode.GetNetworkInfo(cts.Token);
             var previous = await fullNode.GetBlockRecord(block.PrevHash, cts.Token);
-            
+
             if (verbose)
             {
                 Console.WriteLine("Done.");
@@ -54,7 +54,7 @@ namespace rchia.Show
             var txFilterHash = full_block.FoliageTransactionBlock is not null ? full_block.FoliageTransactionBlock.FilterHash : "Not a transaction block";
             Console.WriteLine($"Tx Filter Hash         {txFilterHash}");
 
-            Bech32M.AddressPrefix = info.NetworkPrefix;
+            Bech32M.AddressPrefix = NetworkPrefix;
 
             var farmerAddress = Bech32M.PuzzleHashToAddress(HexBytes.FromHex(block.FarmerPuzzleHash));
             var poolAddress = Bech32M.PuzzleHashToAddress(HexBytes.FromHex(block.PoolPuzzleHash));

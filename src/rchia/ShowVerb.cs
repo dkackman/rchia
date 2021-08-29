@@ -64,8 +64,7 @@ namespace rchia
                 }
                 else
                 {
-                    Console.WriteLine("Unrecognized command");
-                    return -1;
+                    throw new InvalidOperationException("Unrecognized command");
                 }
 
                 return 0;
