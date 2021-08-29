@@ -42,6 +42,21 @@ The details of the endpoint can be specified in the following ways:
 ./rchia show -s --saved-endpoint node1
 ```
 
+### Currently Suported Verbs
+
+```bash
+./rchia --help
+rchia 1.0.0
+Copyright (C) 2021 rchia
+  endpoints    Manage saved endpoints
+  status       Shows the status of the node.
+               Requires a daemon endpoint
+  show         (Default Verb) Shows various properties of a full node.
+               Requires a daemon or full_node endpoint.
+  help         Display more information on a specific command.
+  version      Display version information.     
+```
+
 ### Example output
 
 ```bash
