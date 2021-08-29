@@ -4,12 +4,38 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>dkackman</Authors>
+    <Version>0.2.0</Version>
+    <Description>A cross platform (Linux, Windows, MacOS) command line utility that mirrors the chia CLI, but uses RPC rather than running locally on the node. This allows management of any number of nodes from a central location as long as their RPC interface is exposed on the network.</Description>
+    <Copyright>2021 Don Kackman</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/dkackman/rchia</PackageProjectUrl>
+    <PackageIcon>chia-leaf-logo-384x384.png</PackageIcon>
+    <PackageIconUrl />
+    <RepositoryUrl>https://github.com/dkackman/rchia</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>chia chia-dotnet</PackageTags>
+    <NeutralLanguage>en</NeutralLanguage>
+    <PackageReleaseNotes>0.2.0 work in progress release</PackageReleaseNotes>
+    <ApplicationIcon>chia.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="chia-dotnet" Version="0.4.4" />
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
     <PackageReference Include="HexMate" Version="0.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\chia-leaf-logo-384x384.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <Import Project="..\shared\shared.projitems" Label="Shared" />
