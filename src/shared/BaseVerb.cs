@@ -10,7 +10,7 @@ namespace chia.dotnet.console
     {
         [Option('v', "verbose", HelpText = "Set output to verbose messages.")]
         public bool Verbose { get; set; }
-        
+
         public void Message(string msg, bool important = false)
         {
             if (Verbose || important)

@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using chia.dotnet.console;
-
-using rchia.Endpoints;
-
 using CommandLine;
 
-namespace rchia
+namespace chia.dotnet.console
 {
     [Verb("endpoints", HelpText = "Manage saved endpoints")]
     internal sealed class EndpointVerb : BaseVerb
@@ -78,26 +74,26 @@ namespace rchia
 
                     EndpointLibrary.Save(endpoints, endpointsFilePath);
 
-                    Console.WriteLine($"Added {endpoint.Id}");
+                    Console.WriteLine($"Endpoint {endpoint.Id} added");
                     Console.WriteLine(endpoint);
                 }
                 else if (!string.IsNullOrEmpty(Remove))
                 {
                     if (!endpoints.ContainsKey(Remove))
                     {
-                        throw new InvalidOperationException($"No saved endpoint with an id of {Remove}.");
+                        throw new InvalidOperationException($"There is no saved endpoint with an id of {Remove}.");
                     }
 
-                    endpoints.Remove(Remove);
+                    _ = endpoints.Remove(Remove);
                     EndpointLibrary.Save(endpoints, endpointsFilePath);
-                    
-                    Console.WriteLine($"Removed {Remove}");
+
+                    Console.WriteLine($"Endpoint {Remove} removed");
                 }
                 else if (!string.IsNullOrEmpty(Show))
                 {
                     if (!endpoints.ContainsKey(Show))
                     {
-                        throw new InvalidOperationException($"No saved endpoint with an id of {Show}.");
+                        throw new InvalidOperationException($"There is no saved endpoint with an id of {Show}.");
                     }
 
                     var endpoint = endpoints[Show];
@@ -107,7 +103,7 @@ namespace rchia
                 {
                     if (!endpoints.ContainsKey(SetDefault))
                     {
-                        throw new InvalidOperationException($"No saved endpoint with an id of {SetDefault}.");
+                        throw new InvalidOperationException($"There is no saved endpoint with an id of {SetDefault}.");
                     }
 
                     foreach (var endpoint in endpoints.Values)
@@ -122,11 +118,11 @@ namespace rchia
                 {
                     if (!endpoints.ContainsKey(Test))
                     {
-                        throw new InvalidCastException($"No saved endpoint with an id of {Test}.");
+                        throw new InvalidCastException($"There is no saved endpoint with an id of {Test}.");
                     }
 
                     var endpoint = endpoints[Test];
-                    await Program.Factory.TestConnection(endpoint.EndpointInfo);
+                    await ClientFactory.Factory.TestConnection(endpoint.EndpointInfo);
 
                     Console.WriteLine($"Successfully connected to {Test}");
                 }

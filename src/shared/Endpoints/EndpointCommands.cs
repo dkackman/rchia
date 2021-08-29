@@ -1,9 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-using chia.dotnet;
-
-namespace rchia.Endpoints
+namespace chia.dotnet.console
 {
     public static class EndpointCommands
     {

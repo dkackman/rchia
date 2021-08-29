@@ -1,6 +1,4 @@
-﻿using chia.dotnet;
-
-namespace rchia.Endpoints
+﻿namespace chia.dotnet.console
 {
     public record Endpoint
     {

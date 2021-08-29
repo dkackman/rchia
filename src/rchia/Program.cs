@@ -10,7 +10,10 @@ namespace rchia
 {
     internal static class Program
     {
-        internal static readonly ClientFactory Factory = new("rchia");
+        static Program()
+        {
+            ClientFactory.Initialize("rchia");
+        }
 
         public static int Main(string[] args)
         {

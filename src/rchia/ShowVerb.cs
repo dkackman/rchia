@@ -10,7 +10,7 @@ using CommandLine;
 
 namespace rchia
 {
-    [Verb("show", isDefault:true, HelpText = "Shows various properties of a full node")]
+    [Verb("show", isDefault: true, HelpText = "Shows various properties of a full node")]
     internal sealed class ShowVerb : SharedOptions
     {
         [Option('a', "add-connection", HelpText = "[URI] Connect to another Full Node by ip:port")]
@@ -18,7 +18,7 @@ namespace rchia
 
         [Option('b', "block-by-header-hash", HelpText = "[HASH] Look up a block by block header hash")]
         public string? BlockByHeaderHash { get; set; }
-        
+
         [Option('c', "connections", HelpText = "List nodes connected to this Full Node")]
         public bool Connections { get; set; }
 
@@ -35,8 +35,8 @@ namespace rchia
         {
             try
             {
-                using var rpcClient = await Program.Factory.CreateRpcClient(this, ServiceNames.FullNode);
-                var fullNode = new FullNodeProxy(rpcClient, Program.Factory.OriginService);
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.FullNode);
+                var fullNode = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);
 
                 if (State)
                 {

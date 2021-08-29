@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-using rchia;
-using rchia.Endpoints;
-
 namespace chia.dotnet.console
 {
     internal class ClientFactory
     {
-        public ClientFactory(string originService)
+        public static void Initialize(string originService)
+        {
+            Factory = new(originService);
+        }
+
+        internal static ClientFactory Factory { get; private set; } = new("not_Set");
+
+        private ClientFactory(string originService)
         {
             OriginService = originService;
         }
@@ -56,42 +60,33 @@ namespace chia.dotnet.console
             if (options.UseDefaultEndpoint)
             {
                 var config = Settings.GetConfig();
-                var endpointsFilePath = config.endpointfile ?? rchia.Settings.DefaultEndpointsFilePath;
+                var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
                 var endpoint = EndpointLibrary.GetDefault(endpointsFilePath);
-                
+
                 return endpoint.EndpointInfo;
             }
 
             if (!string.IsNullOrEmpty(options.SavedEndpoint))
             {
-                var config = rchia.Settings.GetConfig();
-                var endpointsFilePath = config.endpointfile ?? rchia.Settings.DefaultEndpointsFilePath;
+                var config = Settings.GetConfig();
+                var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
                 IDictionary<string, Endpoint> endpoints = EndpointLibrary.Open(endpointsFilePath);
 
-                if (!endpoints.ContainsKey(options.SavedEndpoint))
+                return !endpoints.ContainsKey(options.SavedEndpoint)
+                    ? throw new InvalidOperationException($"There is no saved endpoint {options.SavedEndpoint}")
+                    : endpoints[options.SavedEndpoint].EndpointInfo;
+            }
+
+            return options.UseDefaultConfig
+                ? Config.Open().GetEndpoint(serviceName)
+                : !string.IsNullOrEmpty(options.ConfigPath)
+                ? Config.Open(options.ConfigPath).GetEndpoint(serviceName)
+                : new EndpointInfo()
                 {
-                    throw new InvalidOperationException($"There is no saved endpoint {options.SavedEndpoint}");
-                }
-
-                return endpoints[options.SavedEndpoint].EndpointInfo;
-            }
-
-            if (options.UseDefaultConfig)
-            {
-                return Config.Open().GetEndpoint(serviceName);
-            }
-
-            if (!string.IsNullOrEmpty(options.ConfigPath))
-            {
-                return Config.Open(options.ConfigPath).GetEndpoint(serviceName);
-            }
-
-            return new EndpointInfo()
-            {
-                Uri = new Uri(options.Uri ?? string.Empty),
-                CertPath = options.CertPath ?? string.Empty,
-                KeyPath = options.KeyPath ?? string.Empty
-            };
+                    Uri = new Uri(options.Uri ?? string.Empty),
+                    CertPath = options.CertPath ?? string.Empty,
+                    KeyPath = options.KeyPath ?? string.Empty
+                };
         }
     }
 }

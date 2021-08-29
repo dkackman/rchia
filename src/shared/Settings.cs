@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Dynamic;
@@ -6,7 +6,7 @@ using System.Dynamic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace rchia
+namespace chia.dotnet.console
 {
     internal static class Settings
     {
@@ -20,7 +20,7 @@ namespace rchia
         public static string ConfigFilePath => Path.Combine(ConfigDirectory, "Settings.json");
 
         public static string DefaultEndpointsFilePath => Path.Combine(ConfigDirectory, "endpoints.json");
-        
+
         public static dynamic GetConfig()
         {
             try

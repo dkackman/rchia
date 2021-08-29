@@ -2,7 +2,7 @@
 
 namespace chia.dotnet.console
 {
-    interface IVerb
+    internal interface IVerb
     {
         Task<int> Run();
     }
