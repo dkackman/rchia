@@ -8,8 +8,8 @@ using CommandLine;
 
 namespace rchia.Show
 {
-    [Verb("show", isDefault: true, HelpText = "Shows various properties of a full node")]
-    internal sealed class ShowVerb : SharedOptions
+    [Verb("show", isDefault: true, HelpText = "Shows various properties of a full node.\nRequires a daemon or full_node endpoint.")]
+    internal sealed class Show : SharedOptions
     {
         [Option('a', "add-connection", HelpText = "[URI] Connect to another Full Node by ip:port")]
         public string? AddConnection { get; set; }

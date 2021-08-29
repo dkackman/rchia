@@ -16,10 +16,10 @@ namespace chia.dotnet.console
         [Option("chia-config-path", SetName = "Config", HelpText = "[PATH] The full path to a chia config yaml file for endpoints")]
         public string? ConfigPath { get; set; }
 
-        [Option("use-default-chia-config", SetName = "Config", HelpText = "Flag indicating to use the default chia config for endpoints")]
+        [Option("default-chia-config", SetName = "Config", HelpText = "Flag indicating to use the default chia config for endpoints")]
         public bool UseDefaultConfig { get; set; }
 
-        [Option("use-default-endpoint", SetName = "Saved", HelpText = "Flag indicating to use the default saved endpoint")]
+        [Option("default-endpoint", SetName = "Saved", HelpText = "Flag indicating to use the default saved endpoint")]
         public bool UseDefaultEndpoint { get; set; }
 
         [Option("saved-endpoint", SetName = "Saved", HelpText = "[ID] Use a saved endpoint")]

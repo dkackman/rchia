@@ -39,22 +39,38 @@ namespace chia.dotnet.console
             return await CreateRpcClient(endpoint);
         }
 
-        public async Task<IRpcClient> CreateRpcClient(EndpointInfo endpoint)
+        public async Task<WebSocketRpcClient> CreateWebSocketClient(SharedOptions options, string serviceName)
         {
-            if (endpoint.Uri.Scheme == "wss")
+            var endpoint = GetEndpointInfo(options, serviceName);
+
+            if (endpoint.Uri.Scheme != "wss")
             {
-                using var cts = new CancellationTokenSource(5000);
-
-                var rpcClient = new WebSocketRpcClient(endpoint);
-                await rpcClient.Connect(cts.Token);
-
-                var daemon = new DaemonProxy(rpcClient, OriginService);
-                await daemon.RegisterService(cts.Token);
-
-                return rpcClient;
+                throw new InvalidOperationException($"Expecting a daemon endpoint using the websocket protocol but found {endpoint.Uri}");
             }
 
-            return endpoint.Uri.Scheme == "https"
+            options.Message($"Using endpoint {endpoint.Uri}");
+
+            return await CreateWebSocketClient(endpoint);
+        }
+
+        private async Task<WebSocketRpcClient> CreateWebSocketClient(EndpointInfo endpoint)
+        {
+            using var cts = new CancellationTokenSource(5000);
+
+            var rpcClient = new WebSocketRpcClient(endpoint);
+            await rpcClient.Connect(cts.Token);
+
+            var daemon = new DaemonProxy(rpcClient, OriginService);
+            await daemon.RegisterService(cts.Token);
+
+            return rpcClient;
+        }
+
+        public async Task<IRpcClient> CreateRpcClient(EndpointInfo endpoint)
+        {
+            return endpoint.Uri.Scheme == "wss"
+                ? await CreateWebSocketClient(endpoint)
+                : endpoint.Uri.Scheme == "https"
                 ? new HttpRpcClient(endpoint)
                 : throw new InvalidOperationException($"Unrecognized endpoint Uri scheme {endpoint.Uri.Scheme}");
         }

@@ -22,11 +22,18 @@ namespace chia.dotnet.console.EndPoints
         {
             if (File.Exists(filepath))
             {
-                using var reader = new StreamReader(filepath);
-                var json = reader.ReadToEnd();
-                var library = JsonConvert.DeserializeObject<IDictionary<string, Endpoint>>(json);
+                try
+                {
+                    using var reader = new StreamReader(filepath);
+                    var json = reader.ReadToEnd();
+                    var library = JsonConvert.DeserializeObject<IDictionary<string, Endpoint>>(json);
 
-                return library ?? new Dictionary<string, Endpoint>();
+                    return library ?? new Dictionary<string, Endpoint>();
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"The file {filepath} might be corrupt.", e);
+                }
             }
 
             return new Dictionary<string, Endpoint>();

@@ -34,7 +34,7 @@ namespace rchia.Show
 
             if (Verbose)
             {
-                Console.WriteLine($"Successfully added to {hostUri}.");
+                Console.WriteLine($"Successfully added {hostUri}.");
             }
         }
 
@@ -42,7 +42,7 @@ namespace rchia.Show
         {
             if (Verbose)
             {
-                Console.WriteLine("Retrieving block...");
+                Console.WriteLine("Retrieving block {headerHash}...");
             }
 
             using var cts = new CancellationTokenSource(5000);
