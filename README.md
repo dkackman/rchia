@@ -46,7 +46,7 @@ The details of the endpoint can be specified in the following ways:
 
 ```bash
 user@computer:~$ ./rchia show -s --saved-endpoint node1 -v
-Using endpoint https://172.30.65.64:8555/ 
+Using endpoint https://node1:8555/ 
 
 Current Blockchain Status: Full Node Synced
 Peak: Hash:0xfa277f6ea103b5c2b6ad77ae6e909ab985e1b9312f286908e967ef644beec432
