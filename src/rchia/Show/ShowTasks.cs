@@ -25,7 +25,7 @@ namespace rchia.Show
         {
             if (Verbose)
             {
-                Console.WriteLine($"Connecting to {hostUri}...");
+                Console.WriteLine($"Adding {hostUri}...");
             }
 
             using var cts = new CancellationTokenSource(5000);
@@ -34,7 +34,7 @@ namespace rchia.Show
 
             if (Verbose)
             {
-                Console.WriteLine($"Successfully connected to {hostUri}.");
+                Console.WriteLine($"Successfully added to {hostUri}.");
             }
         }
 

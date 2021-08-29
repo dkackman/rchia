@@ -35,7 +35,6 @@ namespace rchia.Show
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.FullNode);
                 var fullNode = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);
-
                 var commands = new ShowTasks(fullNode, Verbose);
 
                 if (State)
