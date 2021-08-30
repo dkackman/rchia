@@ -2,7 +2,7 @@
   "profiles": {
     "rchia": {
       "commandName": "Project",
-      "commandLineArgs": "status -s --default-endpoint"
+      "commandLineArgs": "farm  -s --saved-endpoint farmer"
     }
   }
 }
