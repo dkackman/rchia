@@ -8,11 +8,11 @@ using CommandLine;
 
 namespace rchia.Status
 {
-    [Verb("status", HelpText = "Shows the status of the node.\nRequires a daemon endpoint")]
+    [Verb("status", HelpText = "Shows the status of the node.\nRequires a daemon endpoint.")]
     internal sealed class StatusVerb : SharedOptions
     {
 
-        [Option('s', "services", HelpText = "Show the current state of the blockchain")]
+        [Option('s', "services", HelpText = "Show which services are running on th node")]
         public bool Services { get; set; }
 
         public override async Task<int> Run()

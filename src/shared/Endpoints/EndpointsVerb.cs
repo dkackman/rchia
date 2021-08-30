@@ -6,7 +6,7 @@ using CommandLine;
 
 namespace chia.dotnet.console.EndPoints
 {
-    [Verb("endpoints", HelpText = "Manage saved endpoints")]
+    [Verb("endpoints", HelpText = "Manage saved endpoints.")]
     internal sealed class EndpointVerb : BaseVerb
     {
         [Option('l', "list", HelpText = "Lists the ids of saved endpoints")]
