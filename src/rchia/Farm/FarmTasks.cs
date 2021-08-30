@@ -1,26 +1,39 @@
 ﻿using System;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 
 using chia.dotnet;
+using chia.dotnet.console;
 
 namespace rchia.Farm
 {
-    internal class FarmTasks
+    internal class FarmTasks : ConsoleTask
     {
-        public FarmTasks(FarmerProxy farmer, bool verbose)
+        public FarmTasks(FarmerProxy farmer, IConsoleMessage consoleMessage)
+            : base(consoleMessage)
         {
             Farmer = farmer;
-            Verbose = verbose;
         }
 
         public FarmerProxy Farmer { get; init; }
 
-        public bool Verbose { get; init; }
+        public async Task Challenges(int limit)
+        {
+            using var cts = new CancellationTokenSource(1000);
+            var signagePoints = await Farmer.GetSignagePoints(cts.Token);
 
-        public async Task Services()
+            var list = signagePoints.Reverse().ToList(); // convert to list to avoid multiple iteration
+            var count = limit == 0 ? list.Count : limit;
+            foreach (var sp in list.Take(count))
+            {
+                Console.WriteLine($"Hash: {sp.SignagePoint.ChallengeHash} Index: {sp.SignagePoint.SignagePointIndex}");
+            }
+
+            ConsoleMessage.Message($"Showing {count} of {list.Count} challenges.");
+        }
+
+        public async Task Summary()
         {
 
         }

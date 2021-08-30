@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Endpoints\Endpoint.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Endpoints\EndpointCommands.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Endpoints\EndpointLibrary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IConsoleMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IVerb.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Runner.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings.cs" />

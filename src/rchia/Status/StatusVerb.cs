@@ -20,7 +20,7 @@ namespace rchia.Status
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Daemon);
                 var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new StatusTasks(daemon, Verbose);
+                var tasks = new StatusTasks(daemon, this);
 
                 if (Services)
                 {

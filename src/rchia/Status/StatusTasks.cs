@@ -5,24 +5,23 @@ using System.Threading.Tasks;
 using System.Linq;
 
 using chia.dotnet;
+using chia.dotnet.console;
 
 namespace rchia.Status
 {
-    internal class StatusTasks
+    internal class StatusTasks : ConsoleTask
     {
-        public StatusTasks(DaemonProxy daemon, bool verbose)
+        public StatusTasks(DaemonProxy daemon, IConsoleMessage consoleMessage)
+            : base(consoleMessage)
         {
             Daemon = daemon;
-            Verbose = verbose;
         }
 
         public DaemonProxy Daemon { get; init; }
 
-        public bool Verbose { get; init; }
-
         public async Task Services()
         {
-            // get all the service names from chia.dotnet
+            // get all the service names from chia.dotnet.ServiceNames
             var fields = typeof(ServiceNames).GetFields(BindingFlags.Public | BindingFlags.Static);
             var serviceNames = new ServiceNames();
 

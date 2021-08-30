@@ -4,14 +4,16 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using chia.dotnet;
+using chia.dotnet.console;
 
 using rchia.Bech32;
 
 namespace rchia.Show
 {
-    internal class ShowTasks
+    internal class ShowTasks : ConsoleTask
     {
-        public ShowTasks(FullNodeProxy fullNode, bool verbose)
+        public ShowTasks(FullNodeProxy fullNode, bool verbose, IConsoleMessage consoleMessage)
+            : base(consoleMessage)
         {
             FullNode = fullNode;
             Verbose = verbose;
@@ -23,27 +25,18 @@ namespace rchia.Show
 
         public async Task AddConnection(string hostUri)
         {
-            if (Verbose)
-            {
-                Console.WriteLine($"Adding {hostUri}...");
-            }
+            ConsoleMessage.Message($"Adding {hostUri}...");
 
             using var cts = new CancellationTokenSource(5000);
             var uri = new Uri("https://" + hostUri); // need to add a scheme so uri can be parsed
             await FullNode.OpenConnection(uri.Host, uri.Port, cts.Token);
 
-            if (Verbose)
-            {
-                Console.WriteLine($"Successfully added {hostUri}.");
-            }
+            ConsoleMessage.Message($"Successfully added {hostUri}.");
         }
 
         public async Task BlockByHeaderHash(string headerHash)
         {
-            if (Verbose)
-            {
-                Console.WriteLine("Retrieving block {headerHash}...");
-            }
+            ConsoleMessage.Message("Retrieving block {headerHash}...");
 
             using var cts = new CancellationTokenSource(5000);
             var full_block = await FullNode.GetBlock(headerHash, cts.Token);
@@ -51,10 +44,8 @@ namespace rchia.Show
             var (NetworkName, NetworkPrefix) = await FullNode.GetNetworkInfo(cts.Token);
             var previous = await FullNode.GetBlockRecord(block.PrevHash, cts.Token);
 
-            if (Verbose)
-            {
-                Console.WriteLine("Done.");
-            }
+            ConsoleMessage.Message("Done.");
+
 
             Console.WriteLine($"Block Height           {block.Height}");
             Console.WriteLine($"Header Hash            {block.HeaderHash}");
@@ -125,16 +116,14 @@ namespace rchia.Show
                     Console.Write("                               ");
                     Console.Write($"-SB Height: {height,8}    -Hash: {hash}");
                 }
+
                 Console.WriteLine("");
             }
         }
 
         public async Task Exit()
         {
-            if (Verbose)
-            {
-                Console.WriteLine("Stopping the full node...");
-            }
+            ConsoleMessage.Message("Stopping the full node...");
 
             using var cts = new CancellationTokenSource(5000);
             await FullNode.StopNode(cts.Token);
@@ -142,18 +131,12 @@ namespace rchia.Show
 
         public async Task RemoveConnection(string nodeId)
         {
-            if (Verbose)
-            {
-                Console.WriteLine($"Removing {nodeId}...");
-            }
+            ConsoleMessage.Message($"Removing {nodeId}...");
 
             using var cts = new CancellationTokenSource(5000);
             await FullNode.CloseConnection(nodeId, cts.Token);
 
-            if (Verbose)
-            {
-                Console.WriteLine($"Removed {nodeId}.");
-            }
+            ConsoleMessage.Message($"Removed {nodeId}.");
         }
 
         public async Task State()
