@@ -11,8 +11,7 @@ namespace rchia.Status
     [Verb("status", HelpText = "Shows the status of the node.\nRequires a daemon endpoint.")]
     internal sealed class StatusVerb : SharedOptions
     {
-
-        [Option('s', "services", HelpText = "Show which services are running on th node")]
+        [Option('s', "services", HelpText = "Show which services are running on the node")]
         public bool Services { get; set; }
 
         public override async Task<int> Run()
