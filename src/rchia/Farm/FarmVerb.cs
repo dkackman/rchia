@@ -8,7 +8,7 @@ using CommandLine;
 
 namespace rchia.Farm
 {
-    [Verb("farm", HelpText = "Manage your farm.\nRequires a farmer or a daemon endpoint.")]
+    [Verb("farm", HelpText = "Manage your farm.\nRequires a daemon endpoint.")]
     internal sealed class FarmVerb : SharedOptions
     {
         [Option('c', "challenges", HelpText = "Show the latest challenges")]
@@ -24,9 +24,9 @@ namespace rchia.Farm
         {
             try
             {
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.Farmer);
-                var farmer = new FarmerProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new FarmTasks(farmer, this);
+                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Daemon);
+                var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
+                var tasks = new FarmTasks(daemon, this);
 
                 if (Challenges)
                 {
