@@ -12,13 +12,10 @@ namespace rchia.Show
 {
     internal class ShowTasks : ConsoleTask<FullNodeProxy>
     {
-        public ShowTasks(FullNodeProxy fullNode, bool verbose, IConsoleMessage consoleMessage)
+        public ShowTasks(FullNodeProxy fullNode, IConsoleMessage consoleMessage)
             : base(fullNode, consoleMessage)
         {
-            Verbose = verbose;
         }
-
-        public bool Verbose { get; init; }
 
         public async Task AddConnection(string hostUri)
         {
@@ -88,14 +85,14 @@ namespace rchia.Show
             var connections = await Service.GetConnections(cts.Token);
 
             Console.WriteLine("Connections:");
-            var padding = Verbose ? "                                                             " : "        ";
+            var padding = ConsoleMessage.Verbose ? "                                                             " : "        ";
             Console.WriteLine($"Type      IP                   Ports       NodeID{padding}Last Connect       MiB Up|Dwn");
 
             foreach (var c in connections)
             {
                 Console.Write($"{c.Type,-9} {c.PeerHost,-15}      {c.PeerPort,5}/{c.PeerServerPort,-5} ");
 
-                var id = Verbose ? c.NodeId : c.NodeId.Substring(2, 10) + "...";
+                var id = ConsoleMessage.Verbose ? c.NodeId : c.NodeId.Substring(2, 10) + "...";
                 Console.Write($"{id} ");
                 Console.Write($"{c.LastMessageDateTime.ToLocalTime():MMM dd HH:mm:ss}   ");
 
@@ -108,7 +105,7 @@ namespace rchia.Show
                     Console.WriteLine("");
                     var height = c.PeakHeight.HasValue ? c.PeakHeight : 0;
                     var hash = string.IsNullOrEmpty(c.PeakHash) ? "no info" :
-                        Verbose ? c.PeakHash : c.PeakHash.Substring(2, 10) + "...";
+                        ConsoleMessage.Verbose ? c.PeakHash : c.PeakHash.Substring(2, 10) + "...";
 
                     Console.Write("                               ");
                     Console.Write($"-SB Height: {height,8}    -Hash: {hash}");
