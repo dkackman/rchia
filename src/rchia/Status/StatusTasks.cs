@@ -9,15 +9,12 @@ using chia.dotnet.console;
 
 namespace rchia.Status
 {
-    internal class StatusTasks : ConsoleTask
+    internal class StatusTasks : ConsoleTask<DaemonProxy>
     {
         public StatusTasks(DaemonProxy daemon, IConsoleMessage consoleMessage)
-            : base(consoleMessage)
+            : base(daemon, consoleMessage)
         {
-            Daemon = daemon;
         }
-
-        public DaemonProxy Daemon { get; init; }
 
         public async Task Services()
         {
@@ -30,7 +27,7 @@ namespace rchia.Status
                 var service = name.GetValue(serviceNames)?.ToString() ?? string.Empty;
                 using var cts = new CancellationTokenSource(500);
 
-                var isRunning = await Daemon.IsServiceRunning(service, cts.Token);
+                var isRunning = await Service.IsServiceRunning(service, cts.Token);
                 var status = isRunning ? "running" : "not running";
                 Console.WriteLine($"{service,-25}: {status}");
             }

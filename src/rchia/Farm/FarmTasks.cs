@@ -10,21 +10,18 @@ using chia.dotnet.console;
 
 namespace rchia.Farm
 {
-    internal class FarmTasks : ConsoleTask
+    internal class FarmTasks : ConsoleTask<DaemonProxy>
     {
         public FarmTasks(DaemonProxy daemon, IConsoleMessage consoleMessage)
-            : base(consoleMessage)
+            : base(daemon, consoleMessage)
         {
-            Daemon = daemon;
         }
-
-        public DaemonProxy Daemon { get; init; }
 
         public async Task Challenges(int limit)
         {
             using var cts = new CancellationTokenSource(1000);
 
-            var farmer = new FarmerProxy(Daemon.RpcClient, Daemon.OriginService);
+            var farmer = new FarmerProxy(Service.RpcClient, Service.OriginService);
             var signagePoints = await farmer.GetSignagePoints(cts.Token);
 
             var list = signagePoints.Reverse().ToList(); // convert to list to avoid multiple iteration
@@ -39,17 +36,17 @@ namespace rchia.Farm
 
         public async Task Summary()
         {
-            var farmer = new FarmerProxy(Daemon.RpcClient, Daemon.OriginService);
-            var fullNode = new FullNodeProxy(Daemon.RpcClient, Daemon.OriginService);
-            var wallet = new WalletProxy(Daemon.RpcClient, Daemon.OriginService);
+            var farmer = new FarmerProxy(Service.RpcClient, Service.OriginService);
+            var fullNode = new FullNodeProxy(Service.RpcClient, Service.OriginService);
+            var wallet = new WalletProxy(Service.RpcClient, Service.OriginService);
 
             using var cts = new CancellationTokenSource(2000);
 
             var all_harvesters = await farmer.GetHarvesters(cts.Token);
             var blockchain_state = await fullNode.GetBlockchainState(cts.Token);
-            var farmer_running = await Daemon.IsServiceRunning(ServiceNames.Farmer, cts.Token);
-            var full_node_running = await Daemon.IsServiceRunning(ServiceNames.FullNode, cts.Token);
-            var wallet_running = await Daemon.IsServiceRunning(ServiceNames.Wallet, cts.Token);
+            var farmer_running = await Service.IsServiceRunning(ServiceNames.Farmer, cts.Token);
+            var full_node_running = await Service.IsServiceRunning(ServiceNames.FullNode, cts.Token);
+            var wallet_running = await Service.IsServiceRunning(ServiceNames.Wallet, cts.Token);
 
             var status = blockchain_state is null
                 ? "Not available"

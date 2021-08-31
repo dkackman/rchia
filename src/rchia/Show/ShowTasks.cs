@@ -10,16 +10,13 @@ using rchia.Bech32;
 
 namespace rchia.Show
 {
-    internal class ShowTasks : ConsoleTask
+    internal class ShowTasks : ConsoleTask<FullNodeProxy>
     {
         public ShowTasks(FullNodeProxy fullNode, bool verbose, IConsoleMessage consoleMessage)
-            : base(consoleMessage)
+            : base(fullNode, consoleMessage)
         {
-            FullNode = fullNode;
             Verbose = verbose;
         }
-
-        public FullNodeProxy FullNode { get; init; }
 
         public bool Verbose { get; init; }
 
@@ -29,7 +26,7 @@ namespace rchia.Show
 
             using var cts = new CancellationTokenSource(5000);
             var uri = new Uri("https://" + hostUri); // need to add a scheme so uri can be parsed
-            await FullNode.OpenConnection(uri.Host, uri.Port, cts.Token);
+            await Service.OpenConnection(uri.Host, uri.Port, cts.Token);
 
             ConsoleMessage.Message($"Successfully added {hostUri}.");
         }
@@ -39,10 +36,10 @@ namespace rchia.Show
             ConsoleMessage.Message("Retrieving block {headerHash}...");
 
             using var cts = new CancellationTokenSource(5000);
-            var full_block = await FullNode.GetBlock(headerHash, cts.Token);
-            var block = await FullNode.GetBlockRecord(headerHash, cts.Token);
-            var (NetworkName, NetworkPrefix) = await FullNode.GetNetworkInfo(cts.Token);
-            var previous = await FullNode.GetBlockRecord(block.PrevHash, cts.Token);
+            var full_block = await Service.GetBlock(headerHash, cts.Token);
+            var block = await Service.GetBlockRecord(headerHash, cts.Token);
+            var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
+            var previous = await Service.GetBlockRecord(block.PrevHash, cts.Token);
 
             ConsoleMessage.Message("Done.");
 
@@ -88,7 +85,7 @@ namespace rchia.Show
         public async Task Connections()
         {
             using var cts = new CancellationTokenSource(5000);
-            var connections = await FullNode.GetConnections(cts.Token);
+            var connections = await Service.GetConnections(cts.Token);
 
             Console.WriteLine("Connections:");
             var padding = Verbose ? "                                                             " : "        ";
@@ -126,7 +123,7 @@ namespace rchia.Show
             ConsoleMessage.Message("Stopping the full node...");
 
             using var cts = new CancellationTokenSource(5000);
-            await FullNode.StopNode(cts.Token);
+            await Service.StopNode(cts.Token);
         }
 
         public async Task RemoveConnection(string nodeId)
@@ -134,7 +131,7 @@ namespace rchia.Show
             ConsoleMessage.Message($"Removing {nodeId}...");
 
             using var cts = new CancellationTokenSource(5000);
-            await FullNode.CloseConnection(nodeId, cts.Token);
+            await Service.CloseConnection(nodeId, cts.Token);
 
             ConsoleMessage.Message($"Removed {nodeId}.");
         }
@@ -142,7 +139,7 @@ namespace rchia.Show
         public async Task State()
         {
             using var cts = new CancellationTokenSource(5000);
-            var state = await FullNode.GetBlockchainState(cts.Token);
+            var state = await Service.GetBlockchainState(cts.Token);
             var peakHash = state.Peak is not null ? state.Peak.HeaderHash : "";
 
             if (state.Sync.Synced)
@@ -185,12 +182,12 @@ namespace rchia.Show
             {
                 var blocks = new List<BlockRecord>();
 
-                var block = await FullNode.GetBlockRecord(state.Peak.HeaderHash, cts.Token);
+                var block = await Service.GetBlockRecord(state.Peak.HeaderHash, cts.Token);
                 while (block is not null && blocks.Count < 10 && block.Height > 0)
                 {
                     using var cts1 = new CancellationTokenSource(1000);
                     blocks.Add(block);
-                    block = await FullNode.GetBlockRecord(block.PrevHash, cts.Token);
+                    block = await Service.GetBlockRecord(block.PrevHash, cts.Token);
                 }
 
                 foreach (var b in blocks)

@@ -9,10 +9,10 @@ using chia.dotnet.console;
 
 namespace rchia.Start
 {
-    internal sealed class StartTasks : ConsoleTask
+    internal sealed class StartTasks : ConsoleTask<DaemonProxy>
     {
-        public StartTasks(FullNodeProxy fullNode, IConsoleMessage consoleMessage)
-            : base(consoleMessage)
+        public StartTasks(DaemonProxy daemon, IConsoleMessage consoleMessage)
+            : base(daemon, consoleMessage)
         {
 
         }
