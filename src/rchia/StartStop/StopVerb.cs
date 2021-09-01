@@ -14,6 +14,11 @@ namespace rchia.StartStop
         [Value(0, MetaName = "service-group", HelpText = "[all|node|harvester|farmer|farmer-no-wallet|farmer-only|timelord|\ntimelord-only|timelord-launcher-only|wallet|wallet-only|introducer|simulator]")]
         public string? ServiceGroup { get; set; }
 
+        [Option('d', "daemon", Default = false, HelpText = "Stop the daemon service as well\nThe daemon cannot be restarted remotely")]
+        public bool Daemon { get; set; }
+
+        [Option('f', "force", Default = false, HelpText = "Do not prompt before stopping the daemon")]
+        public bool Force { get; set; }
 
         public override async Task<int> Run()
         {
@@ -31,6 +36,20 @@ namespace rchia.StartStop
                     }
 
                     await commands.Stop(ServiceGroup);
+                    if (Daemon)
+                    {
+                        if (!Force)
+                        {
+                            Console.WriteLine("The daemon cannot be restared remotely. You will need shell access to the node in orer to restart it.");
+                            Console.WriteLine("Are you sure you want to stop the daemon? (y/n");
+                            var response = Console.ReadLine() ?? string.Empty;
+                            if (!response.ToLower().StartsWith('y'))
+                            {
+                                return 0;
+                            }
+                        }
+                        await commands.StopDeamon();
+                    }
                 }
                 else
                 {

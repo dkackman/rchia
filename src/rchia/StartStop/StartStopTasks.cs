@@ -59,5 +59,11 @@ namespace rchia.StartStop
                 }
             }
         }
+
+        public async Task StopDeamon()
+        {
+            using var cts = new CancellationTokenSource(2000);
+            await Service.Exit(cts.Token);
+        }
     }
 }
