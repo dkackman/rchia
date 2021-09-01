@@ -53,6 +53,10 @@ Copyright (C) 2021 rchia
                Requires a daemon endpoint
   show         (Default Verb) Shows various properties of a full node.
                Requires a daemon or full_node endpoint.
+  start        Start service groups.
+               Requires a daemon endpoint.
+  stop         Stop service groups.
+               Requires a daemon endpoint.
   help         Display more information on a specific command.
   version      Display version information.     
 ```
