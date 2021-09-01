@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using chia.dotnet;
 using chia.dotnet.console;
 
-namespace rchia.Start
+namespace rchia.StartStop
 {
     internal sealed class StartTasks : ConsoleTask<DaemonProxy>
     {
