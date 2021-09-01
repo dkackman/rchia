@@ -8,14 +8,12 @@ using CommandLine;
 
 namespace rchia.StartStop
 {
-    [Verb("start", HelpText = "Start service groups.\nRequires a daemon endpoint.")]
-    internal sealed class StartVerb : SharedOptions
+    [Verb("stop", HelpText = "Stop service groups.\nRequires a daemon endpoint.")]
+    internal sealed class StopVerb : SharedOptions
     {
         [Value(0, MetaName = "service-group", HelpText = "[all|node|harvester|farmer|farmer-no-wallet|farmer-only|timelord|\ntimelord-only|timelord-launcher-only|wallet|wallet-only|introducer|simulator]")]
         public string? ServiceGroup { get; set; }
 
-        [Option('r', "restart", HelpText = "Restart the specified service(s)")]
-        public bool Restart { get; set; }
 
         public override async Task<int> Run()
         {
@@ -32,7 +30,7 @@ namespace rchia.StartStop
                         throw new InvalidOperationException($"Unrecognized service group {ServiceGroup}. It must be one of\n  {string.Join('|', ServiceGroups.Groups.Keys)}.");
                     }
 
-                    await commands.Start(ServiceGroup, Restart);
+                    await commands.Stop(ServiceGroup);
                 }
                 else
                 {
