@@ -31,13 +31,14 @@ namespace rchia
         private static CommandLineBuilder BuildCommandLine()
         {
             var root = new RootCommand();
-            var types = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(t => t.GetCustomAttribute<CommandAttribute>() is not null);
+            var types = from t in Assembly.GetExecutingAssembly().GetTypes()
+                        let a = t.GetCustomAttribute<CommandAttribute>()
+                        where a is not null
+                        select (t, a);
 
-            foreach (var t in types)
+            foreach (var (t, c) in types)
             {
-                var verb = t.GetCustomAttribute<CommandAttribute>();
-                var command = new Command(verb!.Name, verb.Description);
+                var command = new Command(c.Name, c.Description);
 
                 foreach (var (p, o) in t.GetAttributedProperties<OptionAttribute>())
                 {
