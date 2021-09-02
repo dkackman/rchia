@@ -11,22 +11,25 @@ namespace rchia.Show
     [Command("show", Description = "Shows various properties of a full node.\nRequires a daemon or full_node endpoint.")]
     internal sealed class ShowCommand : SharedOptions
     {
-        [Option('a', "add-connection", ArgumentHelpName = "URI", Description = "Connect to another Full Node by ip:port")]
+        [Option("a", "add-connection", ArgumentHelpName = "URI", Description = "Connect to another Full Node by ip:port")]
         public string? AddConnection { get; set; }
 
-        [Option('b', "block-by-header-hash", ArgumentHelpName = "HASH", Description = "Look up a block by block header hash")]
+        [Option("b", "block-by-header-hash", ArgumentHelpName = "HASH", Description = "Look up a block by block header hash")]
         public string? BlockByHeaderHash { get; set; }
 
-        [Option('c', "connections", Description = "List nodes connected to this Full Node")]
+        [Option("bh", "block-header-hash-by-height", ArgumentHelpName = "HEIGHT", Description = "Look up a block header hash by block height")]
+        public uint? BlockHeaderHashByHeight { get; set; }
+
+        [Option("c", "connections", Description = "List nodes connected to this Full Node")]
         public bool Connections { get; set; }
 
-        [Option('e', "exit-node", Description = "Shut down the running Full Node")]
+        [Option("e", "exit-node", Description = "Shut down the running Full Node")]
         public bool Exit { get; set; }
 
-        [Option('r', "remove-connection", ArgumentHelpName = "NODE ID", Description = "Remove a Node by the full or first 8 characters of NodeID")]
+        [Option("r", "remove-connection", ArgumentHelpName = "NODE ID", Description = "Remove a Node by the full or first 8 characters of NodeID")]
         public string? RemoveConnection { get; set; }
 
-        [Option('s', "state", Description = "Show the current state of the blockchain")]
+        [Option("s", "state", Description = "Show the current state of the blockchain")]
         public bool State { get; set; }
 
         public override async Task<int> Run()
@@ -60,6 +63,10 @@ namespace rchia.Show
                 else if (!string.IsNullOrEmpty(BlockByHeaderHash))
                 {
                     await commands.BlockByHeaderHash(BlockByHeaderHash);
+                }
+                else if (BlockHeaderHashByHeight.HasValue)
+                {
+                    await commands.BlockHeaderHashByHeight(BlockHeaderHashByHeight.Value);
                 }
                 else
                 {

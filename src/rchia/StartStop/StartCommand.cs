@@ -14,7 +14,7 @@ namespace rchia.StartStop
         [Argument(0, Name = "service-group", Description = "[all|node|harvester|farmer|farmer-no-wallet|farmer-only|timelord|\ntimelord-only|timelord-launcher-only|wallet|wallet-only|introducer|simulator]")]
         public string? ServiceGroup { get; set; }
 
-        [Option('r', "restart", Description = "Restart the specified service(s)")]
+        [Option("r", "restart", Description = "Restart the specified service(s)")]
         public bool Restart { get; set; }
 
         public override async Task<int> Run()

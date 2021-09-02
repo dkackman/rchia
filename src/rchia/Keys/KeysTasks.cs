@@ -26,14 +26,18 @@ namespace rchia.Keys
             Console.WriteLine($"Added private key with public key fingerprint {fingerprint}");
         }
 
-        public async Task Delete()
+        public async Task Delete(uint fingerprint)
         {
+            using var cts = new CancellationTokenSource(1000);
+            await Service.DeleteKey(fingerprint, cts.Token);
 
+            Console.WriteLine($"Deleted the key with fingerprint {fingerprint}");
         }
 
         public async Task DeleteAll()
         {
-
+            using var cts = new CancellationTokenSource(1000);
+            await Service.DeleteAllKeys(cts.Token);
         }
 
         public async Task Generate()

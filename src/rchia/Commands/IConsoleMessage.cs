@@ -9,5 +9,7 @@ namespace rchia.Commands
         void Message(string msg, bool important = false);
 
         void Message(Exception? e);
+
+        bool Confirm(string warning, string confirmation, bool force);
     }
 }

@@ -6,7 +6,7 @@ namespace rchia.Commands
 {
     public abstract class BaseCommand : IConsoleMessage
     {
-        [Option('v', "verbose", Description = "Set output to verbose messages")]
+        [Option("v", "verbose", Description = "Set output to verbose messages")]
         public bool Verbose { get; set; }
 
         public void Message(string msg, bool important = false)
@@ -31,6 +31,24 @@ namespace rchia.Commands
                     Message(e.InnerException);
                 }
             }
+        }
+
+        public bool Confirm(string warning, string confirmation, bool force)
+        {
+            if (!force)
+            {
+                Console.WriteLine(warning);
+                Console.Write(confirmation + " (y/n): ");
+                var response = Console.ReadLine() ?? string.Empty;
+                if (!response.ToLower().StartsWith('y'))
+                {
+                    Message("Cancelled");
+                    return false;
+                }
+            }
+
+            Message("Confirmed");
+            return true;
         }
 
         public abstract Task<int> Run();

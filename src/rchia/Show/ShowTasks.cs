@@ -28,9 +28,17 @@ namespace rchia.Show
             ConsoleMessage.Message($"Successfully added {hostUri}.");
         }
 
+        public async Task BlockHeaderHashByHeight(uint height)
+        {
+            ConsoleMessage.Message($"Retrieving header hash at {height}...");
+            using var cts = new CancellationTokenSource(5000);
+            var block = await Service.GetBlockRecordByHeight(height, cts.Token);
+            Console.WriteLine(block.HeaderHash);
+        }
+
         public async Task BlockByHeaderHash(string headerHash)
         {
-            ConsoleMessage.Message("Retrieving block {headerHash}...");
+            ConsoleMessage.Message($"Retrieving block {headerHash}...");
 
             using var cts = new CancellationTokenSource(5000);
             var full_block = await Service.GetBlock(headerHash, cts.Token);

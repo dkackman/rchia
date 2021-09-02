@@ -5,19 +5,9 @@ namespace rchia.Commands
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class OptionAttribute : Attribute
     {
-        public OptionAttribute(string longName)
+        public OptionAttribute(string? shortName, string? longName = null)
         {
-            LongName = longName;
-        }
-
-        public OptionAttribute(char shortName)
-        {
-            ShortName = shortName.ToString();
-        }
-
-        public OptionAttribute(char shortName, string longName)
-        {
-            ShortName = shortName.ToString();
+            ShortName = shortName;
             LongName = longName;
         }
 

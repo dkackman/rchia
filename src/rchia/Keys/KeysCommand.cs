@@ -11,21 +11,26 @@ namespace rchia.Keys
     [Command("keys", Description = "Manage your keys\nRequires a wallet or daemon endpoint.")]
     internal sealed class KeysCommand : SharedOptions
     {
-        //delete               Delete a key by its pk fingerprint in hex for\ndelete_all           Delete all private keys in keychain\n" +
-        //                                                      "generate             Generates and adds a key to keychain\ngenerate_and_print   Generates but does NOT add to keychain\n" +
-        //                                                      "show                 Displays all the keys in keychain\nsign                 Sign a message with a private key\nverify               Verify a signature with a pk")]
         [Command("add", Description = "Add a private key by mnemonic")]
-        public AddKeysCommand Add { get; set; } = new();
+        public AddKeyCommand Add { get; set; } = new();
 
-        [Option('g', "generate-and-print", Description = "Generates but does NOT add to keychain")]
+        [Command("delete", Description = "Delete a key by its pk fingerprint in hex form")]
+        public DeleteKeyCommand Delete { get; set; } = new();
+
+        [Option("g", "generate-and-print", Description = "Generates but does NOT add to keychain")]
         public bool GenerateAndPrint { get; set; }
 
-        [Option('s', "show", Description = "Displays all the keys in keychain")]
+        [Option("s", "show", Description = "Displays all the keys in keychain")]
         public bool Show { get; set; }
 
-        [Option('m', "show-mnemonic-seed", Default = false, Description = "Show the mnemonic seed of the keys")]
+        [Option("m", "show-mnemonic-seed", Default = false, Description = "Show the mnemonic seed of the keys")]
         public bool ShowMnemonicSeed { get; set; }
 
+        [Option("a", "delete-all", Default = false, Description = "Delete all private keys in keychain")]
+        public bool DeleteAll { get; set; }
+
+        [Option("f", "force", Description = "Do not prompt before deleting keys")]
+        public bool Force { get; set; }
 
         public override async Task<int> Run()
         {
@@ -43,6 +48,15 @@ namespace rchia.Keys
                 else if (Show)
                 {
                     await commands.Show(ShowMnemonicSeed);
+                }
+                else if (DeleteAll)
+                {
+                    if (Confirm("Deleting all of your keys CANNOT be undone.", "Are you sure you want to delete all of your keys?", Force))
+                    {
+                        Message("Deleting all keys...");
+                        await commands.DeleteAll();
+                        Message("All keys deleted.");
+                    }
                 }
                 else
                 {

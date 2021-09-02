@@ -14,7 +14,7 @@ namespace rchia.Farm
         [Command("challenges", Description = "Show the latest challenges")]
         public CallengesCommand Challenges { get; set; } = new();
 
-        [Option('s', "summary", Description = "Summary of farming information")]
+        [Option("s", "summary", Description = "Summary of farming information")]
         public bool Summary { get; set; }
 
         public override async Task<int> Run()

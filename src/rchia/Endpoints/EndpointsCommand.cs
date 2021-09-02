@@ -9,22 +9,22 @@ namespace rchia.Endpoints
     [Command("endpoints", Description = "Manage saved endpoints.")]
     internal sealed class EndpointCommand : BaseCommand
     {
-        [Option('l', "list", Description = "Lists the ids of saved endpoints")]
+        [Option("l", "list", Description = "Lists the ids of saved endpoints")]
         public bool List { get; set; }
 
         [Command("add", Description = "Saves a new endpoint")]
         public AddCommand Add { get; set; } = new();
 
-        [Option('r', "remove", ArgumentHelpName = "ID", Description = "Removes a saved endpoint")]
+        [Option("r", "remove", ArgumentHelpName = "ID", Description = "Removes a saved endpoint")]
         public string? Remove { get; set; }
 
-        [Option('s', "show", ArgumentHelpName = "ID", Description = "Shows the details of a saved endpoint")]
+        [Option("s", "show", ArgumentHelpName = "ID", Description = "Shows the details of a saved endpoint")]
         public string? Show { get; set; }
 
-        [Option('d', "set-default", ArgumentHelpName = "ID", Description = "Sets the endpoint to be the default for --default-endpoint")]
+        [Option("d", "set-default", ArgumentHelpName = "ID", Description = "Sets the endpoint to be the default for --default-endpoint")]
         public string? SetDefault { get; set; }
 
-        [Option('t', "test", ArgumentHelpName = "ID", Description = "Test the connection to a saved endpoint")]
+        [Option("t", "test", ArgumentHelpName = "ID", Description = "Test the connection to a saved endpoint")]
         public string? Test { get; set; }
 
         public override async Task<int> Run()
