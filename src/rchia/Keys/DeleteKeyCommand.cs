@@ -10,11 +10,10 @@ namespace rchia.Keys
 {
     internal sealed class DeleteKeyCommand : SharedOptions
     {
-
         [Argument(0, Name = "fingerprint", Description = "Enter the fingerprint of the key you want to use")]
         public uint Fingerprint { get; set; }
 
-        [Option("f", "force", Description = "Do not prompt before deleting keys")]
+        [Option("f", "force", Description = "Do not prompt before deleting the key")]
         public bool Force { get; set; }
 
         public override async Task<int> Run()

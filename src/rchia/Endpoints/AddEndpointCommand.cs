@@ -7,7 +7,7 @@ using rchia.Commands;
 
 namespace rchia.Endpoints
 {
-    internal sealed class AddCommand : BaseCommand
+    internal sealed class AddEndpointCommand : BaseCommand
     {
         [Argument(0, Name = "id", Description = "The id of the endpoint being added")]
         public string Id { get; set; } = string.Empty;
@@ -51,7 +51,7 @@ namespace rchia.Endpoints
                         throw new InvalidOperationException($"The KeyPath must be provided in position 2");
                     }
 
-                    var endpoint = EndpointCommands.Add(endpoints, Id, Uri, CertPath.FullName, KeyPath.FullName);
+                    var endpoint = EndpointTasks.Add(endpoints, Id, Uri, CertPath.FullName, KeyPath.FullName);
 
                     EndpointLibrary.Save(endpoints, endpointsFilePath);
 

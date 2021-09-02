@@ -13,7 +13,7 @@ namespace rchia.Endpoints
         public bool List { get; set; }
 
         [Command("add", Description = "Saves a new endpoint")]
-        public AddCommand Add { get; set; } = new();
+        public AddEndpointCommand Add { get; set; } = new();
 
         [Option("r", "remove", ArgumentHelpName = "ID", Description = "Removes a saved endpoint")]
         public string? Remove { get; set; }
@@ -37,7 +37,7 @@ namespace rchia.Endpoints
 
                 if (List)
                 {
-                    EndpointCommands.List(endpoints);
+                    EndpointTasks.List(endpoints);
                 }
                 else if (!string.IsNullOrEmpty(Remove))
                 {

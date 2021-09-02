@@ -42,7 +42,13 @@ namespace rchia.Keys
 
         public async Task Generate()
         {
+            using var cts = new CancellationTokenSource(1000);
+            Console.WriteLine("Generating private key.");
 
+            var mnemonic = await Service.GenerateMnemonic(cts.Token);
+            var fingerprint = await Service.AddKey(mnemonic, true, cts.Token);
+
+            Console.WriteLine($"Added private key with public key fingerprint {fingerprint}");
         }
 
         public async Task GenerateAndPrint()
@@ -97,16 +103,6 @@ namespace rchia.Keys
             {
                 Console.WriteLine("There are no saved private keys");
             }
-        }
-
-        public async Task Sign()
-        {
-
-        }
-
-        public async Task Verify()
-        {
-
         }
     }
 }

@@ -17,8 +17,11 @@ namespace rchia.Keys
         [Command("delete", Description = "Delete a key by its pk fingerprint in hex form")]
         public DeleteKeyCommand Delete { get; set; } = new();
 
-        [Option("g", "generate-and-print", Description = "Generates but does NOT add to keychain")]
+        [Option("gp", "generate-and-print", Description = "Generates but does NOT add to keychain")]
         public bool GenerateAndPrint { get; set; }
+
+        [Option("g", "generate", Description = "Generates and adds a key to keychain")]
+        public bool Generate { get; set; }
 
         [Option("s", "show", Description = "Displays all the keys in keychain")]
         public bool Show { get; set; }
@@ -44,6 +47,10 @@ namespace rchia.Keys
                 {
                     await commands.GenerateAndPrint();
 
+                }
+                else if (Generate)
+                {
+                    await commands.Generate();
                 }
                 else if (Show)
                 {

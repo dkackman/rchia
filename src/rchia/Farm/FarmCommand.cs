@@ -12,7 +12,7 @@ namespace rchia.Farm
     internal sealed class FarmCommand : SharedOptions
     {
         [Command("challenges", Description = "Show the latest challenges")]
-        public CallengesCommand Challenges { get; set; } = new();
+        public ChallengesCommand Challenges { get; set; } = new();
 
         [Option("s", "summary", Description = "Summary of farming information")]
         public bool Summary { get; set; }

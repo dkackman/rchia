@@ -5,7 +5,7 @@ using chia.dotnet;
 
 namespace rchia.Endpoints
 {
-    public static class EndpointCommands
+    public static class EndpointTasks
     {
         public static void List(IDictionary<string, Endpoint> endpoints)
         {

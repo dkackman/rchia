@@ -8,7 +8,7 @@ using rchia.Endpoints;
 
 namespace rchia.Farm
 {
-    internal sealed class CallengesCommand : SharedOptions
+    internal sealed class ChallengesCommand : SharedOptions
     {
         [Argument(0, Name = "limit", Default = 20, Description = "Limit the number of challenges shown. Use 0 to disable the limit")]
         public int Limit { get; set; } = 20;
