@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,17 +10,8 @@ namespace chia.dotnet.console.EndPoints
         [Option('l', "list", Description = "Lists the ids of saved endpoints")]
         public bool List { get; set; }
 
-        [Option('a', "add", ArgumentHelpName = "ID", Description = "<uri> <cert-path> <key-path> Saves a new endpoint")]
+        [Command("add", Description = "Saves a new endpoint")]
         public string? Add { get; set; }
-
-        [Argument(0, Name = "uri", Description = "The Uri of the endpoint being added")]
-        public string? Uri { get; set; }
-
-        [Argument(1, Name = "cert-path", Description = "The full path to the .crt file to use for authentication")]
-        public FileInfo? CertPath { get; set; }
-
-        [Argument(2, Name = "key-path", Description = "The full path to the .key file to use for authentication")]
-        public FileInfo? KeyPath { get; set; }
 
         [Option('r', "remove", ArgumentHelpName = "ID", Description = "Removes a saved endpoint")]
         public string? Remove { get; set; }
@@ -46,35 +36,6 @@ namespace chia.dotnet.console.EndPoints
                 if (List)
                 {
                     EndpointCommands.List(endpoints);
-                }
-                else if (!string.IsNullOrEmpty(Add))
-                {
-                    if (endpoints.ContainsKey(Add))
-                    {
-                        throw new InvalidOperationException($"An endpoint with an id of {Add} already exists.");
-                    }
-
-                    if (string.IsNullOrEmpty(Uri))
-                    {
-                        throw new InvalidOperationException($"The Uri must be provided in position 0");
-                    }
-
-                    if (CertPath is null)
-                    {
-                        throw new InvalidOperationException($"The CertPath must be provided in position 1");
-                    }
-
-                    if (KeyPath is null)
-                    {
-                        throw new InvalidOperationException($"The KeyPath must be provided in position 2");
-                    }
-
-                    var endpoint = EndpointCommands.Add(endpoints, Add, Uri, CertPath.FullName, KeyPath.FullName);
-
-                    EndpointLibrary.Save(endpoints, endpointsFilePath);
-
-                    Console.WriteLine($"Endpoint {endpoint.Id} added");
-                    Console.WriteLine(endpoint);
                 }
                 else if (!string.IsNullOrEmpty(Remove))
                 {

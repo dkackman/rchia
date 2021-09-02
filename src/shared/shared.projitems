@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)BaseAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BaseVerb.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ClientFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Endpoints\AddCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Endpoints\EndpointsVerb.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Endpoints\Endpoint.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Endpoints\EndpointCommands.cs" />
