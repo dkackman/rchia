@@ -21,7 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)OptionAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SharedOptions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ValueAttribute.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)VerbAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ArgumentAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CommandAttribute.cs" />
   </ItemGroup>
 </Project>

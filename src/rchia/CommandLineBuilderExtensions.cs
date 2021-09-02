@@ -2,33 +2,18 @@
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.Invocation;
-using System.CommandLine.Parsing;
 
 using chia.dotnet.console;
 
 namespace rchia
 {
-    internal static class Program
+    internal static class CommandLineBuilderExtensions
     {
-        static Program()
-        {
-            ClientFactory.Initialize("rchia");
-        }
-
-        private static async Task<int> Main(string[] args)
-        {
-            return await BuildCommandLine()
-                .UseDefaults()
-                .Build()
-                .InvokeAsync(args);
-        }
-
-        private static CommandLineBuilder BuildCommandLine()
+        public static CommandLineBuilder UseAttributes(this CommandLineBuilder builder)
         {
             var root = new RootCommand();
             var types = Assembly.GetExecutingAssembly().GetTypes()
@@ -73,7 +58,7 @@ namespace rchia
                 root.AddCommand(command);
             }
 
-            return new CommandLineBuilder(root);
+            return builder.AddCommand(root);
         }
 
         private static IEnumerable<(PropertyInfo Propety, T Attribute)> GetAttributedProperties<T>(this Type t) where T : Attribute

@@ -3,11 +3,11 @@
 namespace chia.dotnet.console
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public sealed class ValueAttribute : BaseAttribute
+    public sealed class ArgumentAttribute : BaseAttribute
     {
         private string name;
 
-        public ValueAttribute(int index)
+        public ArgumentAttribute(int index)
         {
             Index = index;
             name = string.Empty;

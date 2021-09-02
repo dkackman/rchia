@@ -3,9 +3,9 @@
 namespace chia.dotnet.console
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false, Inherited = true)]
-    public class VerbAttribute : Attribute
+    public class CommandAttribute : Attribute
     {
-        public VerbAttribute(string name, bool isDefault = false)
+        public CommandAttribute(string name, bool isDefault = false)
         {
             Name = name;
             IsDefault = isDefault;

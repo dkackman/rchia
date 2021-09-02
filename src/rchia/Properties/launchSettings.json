@@ -2,7 +2,7 @@
   "profiles": {
     "rchia": {
       "commandName": "Project",
-      "commandLineArgs": "show -s --default-endpoint"
+      "commandLineArgs": "show --help"
     }
   }
 }

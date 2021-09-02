@@ -6,7 +6,7 @@ using chia.dotnet.console;
 
 namespace rchia.Status
 {
-    [Verb("status", Description = "Shows the status of the node.\nRequires a daemon endpoint.")]
+    [Command("status", Description = "Shows the status of the node.\nRequires a daemon endpoint.")]
     internal sealed class StatusVerb : SharedOptions
     {
         [Option('s', "services", Description = "Show which services are running on the node")]

@@ -6,10 +6,10 @@ using chia.dotnet.console;
 
 namespace rchia.StartStop
 {
-    [Verb("stop", Description = "Stop service groups.\nRequires a daemon endpoint.")]
+    [Command("stop", Description = "Stop service groups.\nRequires a daemon endpoint.")]
     internal sealed class StopVerb : SharedOptions
     {
-        [Value(0, Name = "service-group", Description = "[all|node|harvester|farmer|farmer-no-wallet|farmer-only|timelord|\ntimelord-only|timelord-launcher-only|wallet|wallet-only|introducer|simulator]")]
+        [Argument(0, Name = "service-group", Description = "[all|node|harvester|farmer|farmer-no-wallet|farmer-only|timelord|\ntimelord-only|timelord-launcher-only|wallet|wallet-only|introducer|simulator]")]
         public string? ServiceGroup { get; set; }
 
         [Option('d', "daemon", Default = false, Description = "Stop the daemon service as well\nThe daemon cannot be restarted remotely")]

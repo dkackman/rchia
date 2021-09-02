@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace chia.dotnet.console.EndPoints
 {
-    [Verb("endpoints", Description = "Manage saved endpoints.")]
+    [Command("endpoints", Description = "Manage saved endpoints.")]
     internal sealed class EndpointVerb : BaseVerb
     {
         [Option('l', "list", Description = "Lists the ids of saved endpoints")]
@@ -14,13 +14,13 @@ namespace chia.dotnet.console.EndPoints
         [Option('a', "add", ArgumentHelpName = "ID", Description = "<uri> <cert-path> <key-path> Saves a new endpoint")]
         public string? Add { get; set; }
 
-        [Value(0, Name = "uri", Description = "The Uri of the endpoint being added")]
+        [Argument(0, Name = "uri", Description = "The Uri of the endpoint being added")]
         public string? Uri { get; set; }
 
-        [Value(1, Name = "cert-path", Description = "The full path to the .crt file to use for authentication")]
+        [Argument(1, Name = "cert-path", Description = "The full path to the .crt file to use for authentication")]
         public FileInfo? CertPath { get; set; }
 
-        [Value(2, Name = "key-path", Description = "The full path to the .key file to use for authentication")]
+        [Argument(2, Name = "key-path", Description = "The full path to the .key file to use for authentication")]
         public FileInfo? KeyPath { get; set; }
 
         [Option('r', "remove", ArgumentHelpName = "ID", Description = "Removes a saved endpoint")]

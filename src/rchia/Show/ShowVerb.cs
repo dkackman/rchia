@@ -6,7 +6,7 @@ using chia.dotnet.console;
 
 namespace rchia.Show
 {
-    [Verb("show", Description = "Shows various properties of a full node.\nRequires a daemon or full_node endpoint.")]
+    [Command("show", Description = "Shows various properties of a full node.\nRequires a daemon or full_node endpoint.")]
     internal sealed class Show : SharedOptions
     {
         [Option('a', "add-connection", ArgumentHelpName = "URI", Description = "Connect to another Full Node by ip:port")]

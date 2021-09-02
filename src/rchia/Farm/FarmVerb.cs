@@ -7,13 +7,13 @@ using chia.dotnet.console;
 
 namespace rchia.Farm
 {
-    [Verb("farm", Description = "Manage your farm.\nRequires a daemon endpoint.")]
+    [Command("farm", Description = "Manage your farm.\nRequires a daemon endpoint.")]
     internal sealed class FarmVerb : SharedOptions
     {
         [Option('c', "challenges", Description = "Show the latest challenges")]
         public bool Challenges { get; set; }
 
-        [Value(0, Name = "limit", Default = 20, Description = "Limit the number of challenges shown. Use 0 to disable the limit")]
+        [Argument(0, Name = "limit", Default = 20, Description = "Limit the number of challenges shown. Use 0 to disable the limit")]
         public int Limit { get; set; }
 
         [Option('s', "summary", Description = "Summary of farming information")]
