@@ -27,8 +27,7 @@ namespace rchia.Keys
                 var wallet = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var commands = new KeysTasks(wallet, this);
 
-                var fingerprint = await commands.Add(Mnemonic);
-                Console.WriteLine($"Added private key with public key fingerprint {fingerprint}");
+                await commands.Add(Mnemonic);
 
                 return 0;
             }

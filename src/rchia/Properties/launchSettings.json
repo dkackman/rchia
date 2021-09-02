@@ -2,7 +2,7 @@
   "profiles": {
     "rchia": {
       "commandName": "Project",
-      "commandLineArgs": "keys --generate-and-print --default-endpoint"
+      "commandLineArgs": "keys -s -m --default-endpoint"
     }
   }
 }

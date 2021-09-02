@@ -23,6 +23,10 @@ namespace rchia.Keys
         [Option('s', "show", Description = "Displays all the keys in keychain")]
         public bool Show { get; set; }
 
+        [Option('m', "show-mnemonic-seed", Default = false, Description = "Show the mnemonic seed of the keys")]
+        public bool ShowMnemonicSeed { get; set; }
+
+
         public override async Task<int> Run()
         {
             try
@@ -38,7 +42,7 @@ namespace rchia.Keys
                 }
                 else if (Show)
                 {
-                    await commands.Show();
+                    await commands.Show(ShowMnemonicSeed);
                 }
                 else
                 {

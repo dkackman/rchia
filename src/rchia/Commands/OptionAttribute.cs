@@ -28,5 +28,7 @@ namespace rchia.Commands
         public string? Description { get; set; }
 
         public string? ArgumentHelpName { get; set; }
+
+        public object? Default { get; set; }
     }
 }

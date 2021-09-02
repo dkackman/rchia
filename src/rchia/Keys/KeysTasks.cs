@@ -18,10 +18,12 @@ namespace rchia.Keys
         {
         }
 
-        public async Task<uint> Add(IEnumerable<string> mnemonic)
+        public async Task Add(IEnumerable<string> mnemonic)
         {
             using var cts = new CancellationTokenSource(1000);
-            return await Service.AddKey(mnemonic, true, cts.Token);
+            var fingerprint = await Service.AddKey(mnemonic, true, cts.Token);
+
+            Console.WriteLine($"Added private key with public key fingerprint {fingerprint}");
         }
 
         public async Task Delete()
@@ -49,7 +51,7 @@ namespace rchia.Keys
             Console.WriteLine("Note that this key has not been added to the keychain. Run chia keys add");
         }
 
-        public async Task Show()
+        public async Task Show(bool showMnemonicSeed)
         {
             Console.WriteLine("Showing all public keys derived from your private keys:");
 
@@ -59,7 +61,7 @@ namespace rchia.Keys
             if (keys.Any())
             {
                 var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
-                Bech32M.AddressPrefix = NetworkPrefix;
+                var bech32 = new Bech32M(NetworkPrefix);
 
                 foreach (var fingerprint in keys.Take(1))
                 {
@@ -68,12 +70,23 @@ namespace rchia.Keys
                     var (Fingerprint, Sk, Pk, FarmerPk, PoolPk, Seed) = await Service.GetPrivateKey(fingerprint, cts1.Token);
 
                     Console.WriteLine($"Master public key (m): {Pk}");
-                    Console.WriteLine($"Farmer public key(m/12381/8444/0/0) :{FarmerPk}");
-                    Console.WriteLine($"Pool public key (m/12381/8444/1/0): :{PoolPk}");
+                    Console.WriteLine($"Farmer public key(m/12381/8444/0/0): {FarmerPk}");
+                    Console.WriteLine($"Pool public key (m/12381/8444/1/0): {PoolPk}");
 
-                    var address = Bech32M.PuzzleHashToAddress(HexBytes.FromHex(Sk));
+                    // this isn't possible over rpc right now
+                    //var address = bech32.PuzzleHashToAddress(HexBytes.FromHex(Sk));
 
-                    Console.WriteLine($"First wallet address:: {address}");
+                    // Console.WriteLine($"First wallet address: {address}");
+
+                    if (showMnemonicSeed)
+                    {
+                        Console.WriteLine($"Master private key (m): {Sk}");
+
+                        // this isn't possible over rpc right now
+                        //Console.WriteLine($"First wallet secret key (m/12381/8444/2/0): {Sk}");
+
+                        Console.WriteLine($"  Mnemonic seed (24 secret words):\n  {Seed}");
+                    }
                 }
             }
             else

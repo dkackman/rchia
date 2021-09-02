@@ -8,12 +8,41 @@ using System.Text;
 //
 namespace rchia.Bech32
 {
-    public static class Bech32M
+    public class Bech32M
     {
-        public static string AddressPrefix { get; set; } = "xch";
+        public string AddressPrefix { get; init; } = "xch";
         private const string Charset = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
         private const int M = 0x2BC830A3;
         private static readonly int[] Generator = new int[] { 0x3B6A57B2, 0x26508E6D, 0x1EA119FA, 0x3D4233DD, 0x2A1462B3 };
+
+        public Bech32M(string prefix = "xch")
+        {
+            AddressPrefix = prefix;
+        }
+
+        public string PuzzleHashToAddress(HexBytes puzzleHash)
+        {
+            var puzzleHashBytes = GetPuzzleHashBytes(puzzleHash.Hex);
+
+            return puzzleHashBytes.Length != 32
+                ? throw new ArgumentException("Invalid puzzle hash length")
+                : Encode(AddressPrefix, ConvertBits(puzzleHashBytes.Select(x => (int)x).ToList(), 8, 5));
+        }
+
+        public static HexBytes AddressToPuzzleHash(string address)
+        {
+            var (hrpgot, data) = Decode(address);
+
+            if (data == null)
+            {
+                throw new ArgumentException("Invalid Address");
+            }
+
+            var decoded = ConvertBits(data, 5, 8, false);
+            var puzzleHashBytes = decoded.Select(x => (byte)x).ToArray();
+
+            return HexBytes.FromBytes(puzzleHashBytes);
+        }
 
         private static int GetUnicodeIndex(char character)
         {
@@ -213,29 +242,6 @@ namespace rchia.Bech32
                  .Where(x => x % 2 == 0)
                  .Select(x => Convert.ToByte(puzzleHashHex.Substring(x, 2), 16))
                  .ToArray();
-        }
-
-        public static string PuzzleHashToAddress(HexBytes puzzleHash)
-        {
-            var puzzleHashBytes = GetPuzzleHashBytes(puzzleHash.Hex);
-
-            return puzzleHashBytes.Length != 32
-                ? throw new ArgumentException("Invalid puzzle hash length")
-                : Encode(AddressPrefix, ConvertBits(puzzleHashBytes.Select(x => (int)x).ToList(), 8, 5));
-        }
-
-        public static HexBytes AddressToPuzzleHash(string address)
-        {
-            var (hrpgot, data) = Decode(address);
-
-            if (data == null)
-            {
-                throw new ArgumentException("Invalid Address");
-            }
-
-            var decoded = ConvertBits(data, 5, 8, false);
-            var puzzleHashBytes = decoded.Select(x => (byte)x).ToArray();
-            return HexBytes.FromBytes(puzzleHashBytes);
         }
     }
 }

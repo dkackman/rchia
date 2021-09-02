@@ -67,10 +67,10 @@ namespace rchia.Show
             var txFilterHash = full_block.FoliageTransactionBlock is not null ? full_block.FoliageTransactionBlock.FilterHash : "Not a transaction block";
             Console.WriteLine($"Tx Filter Hash         {txFilterHash}");
 
-            Bech32M.AddressPrefix = NetworkPrefix;
+            var bech32 = new Bech32M(NetworkPrefix);
+            var farmerAddress = bech32.PuzzleHashToAddress(HexBytes.FromHex(block.FarmerPuzzleHash));
+            var poolAddress = bech32.PuzzleHashToAddress(HexBytes.FromHex(block.PoolPuzzleHash));
 
-            var farmerAddress = Bech32M.PuzzleHashToAddress(HexBytes.FromHex(block.FarmerPuzzleHash));
-            var poolAddress = Bech32M.PuzzleHashToAddress(HexBytes.FromHex(block.PoolPuzzleHash));
             Console.WriteLine($"Farmer Address         {farmerAddress}");
             Console.WriteLine($"Pool Address           {poolAddress}");
 

@@ -66,7 +66,10 @@ namespace rchia
                 {
                     ArgumentHelpName = o.ArgumentHelpName ?? p.Name
                 };
-
+                if (o.Default is not null)
+                {
+                    option.SetDefaultValue(o.Default);
+                }
                 command.AddOption(option);
             }
 
@@ -76,7 +79,6 @@ namespace rchia
                 var argument = new Argument(v.Name)
                 {
                     ArgumentType = p.PropertyType,
-
                 };
                 if (v.Default is not null)
                 {
