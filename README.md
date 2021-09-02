@@ -32,39 +32,48 @@ The details of the endpoint can be specified in the following ways:
 ### By using the `chia` config
 
 ```bash
-./rchia show -s --use-default-chia-config
+./rchia show -s --default-config
 ```
 
 ### Using saved endpoint connections
 
 ```bash
 ./rchia endpoints --add node1 https://node1:8555 ~/certs/node1/private_full_node.crt ~/certs/node1/private_full_node.key
-./rchia show -s --saved-endpoint node1
+./rchia show -s --endpoint node1
 ```
 
 ### Currently Suported Verbs
 
 ```bash
-./rchia --help
-rchia 1.0.0
-Copyright (C) 2021 rchia
-  endpoints    Manage saved endpoints
-  status       Shows the status of the node.
-               Requires a daemon endpoint
-  show         (Default Verb) Shows various properties of a full node.
-               Requires a daemon or full_node endpoint.
-  start        Start service groups.
-               Requires a daemon endpoint.
-  stop         Stop service groups.
-               Requires a daemon endpoint.
-  help         Display more information on a specific command.
-  version      Display version information.     
+rchia
+
+Usage:
+  rchia [options] [command]
+
+Options:
+  --version       Show version information
+  -?, -h, --help  Show help and usage information
+
+Commands:
+  status                 Shows the status of the node.
+                         Requires a daemon endpoint.
+  start <service-group>  Start service groups.
+                         Requires a daemon endpoint.
+  stop <service-group>   Stop service groups.
+                         Requires a daemon endpoint.
+  show                   Shows various properties of a full node.
+                         Requires a daemon or full_node endpoint.
+  keys                   Manage your keys
+                         Requires a wallet or daemon endpoint.
+  farm                   Manage your farm.
+                         Requires a daemon endpoint.
+  endpoints              Manage saved endpoints.   
 ```
 
 ### Example output
 
 ```bash
-user@computer:~$ ./rchia show -s --saved-endpoint node1 -v
+user@computer:~$ ./rchia show -s --endpoint node1 -v
 Using endpoint https://node1:8555/ 
 
 Current Blockchain Status: Full Node Synced
@@ -92,40 +101,30 @@ Total iterations since the start of the blockchain: 1229673178499
 ## Usage for the Show Command
 ```bash
 user@computer:~$ ./rchia show --help
-rchia 1.0.0
-Copyright (C) 2021 rchia
+show
+  Shows various properties of a full node.
+  Requires a daemon or full_node endpoint.
 
-  -a, --add-connection          [URI] Connect to another Full Node by ip:port
+Usage:
+  rchia [options] show
 
-  -b, --block-by-header-hash    [HASH] Look up a block by block header hash
-
-  -c, --connections             List nodes connected to this Full Node
-
-  -e, --exit-node               Shut down the running Full Node
-
-  -r, --remove-connection       [NODE ID] Remove a Node by the full or first 8 characters of NodeID
-
-  -s, --state                   Show the current state of the blockchain
-
-  --endpoint-uri                [URI] The uri of the rpc endpoint, including the proper port and wss/https scheme prefix
-
-  --cert-path                   [PATH] The full path to the .crt file to use for authentication
-
-  --key-path                    [PATH] The full path to the .key file to use for authentication
-
-  --chia-config-path            [PATH] The full path to a chia config yaml file for endpoints
-
-  --default-chia-config         Flag indicating to use the default chia config for endpoints
-
-  --default-endpoint            Flag indicating to use the default saved endpoint
-
-  --saved-endpoint              [ID] Use a saved endpoint
-
-  -v, --verbose                 Set output to verbose messages.
-
-  --help                        Display this help screen.
-
-  --version                     Display version information.
+Options:
+  -a, --add-connection <URI>                   Connect to another Full Node by ip:port
+  -b, --block-by-header-hash <HASH>            Look up a block by block header hash
+  -bh, --block-header-hash-by-height <HEIGHT>  Look up a block header hash by block height
+  -c, --connections                            List nodes connected to this Full Node
+  -e, --exit-node                              Shut down the running Full Node
+  -r, --remove-connection <NODE ID>            Remove a Node by the full or first 8 characters of NodeID
+  -s, --state                                  Show the current state of the blockchain
+  -uri, --endpoint-uri <PATH>                  The uri of the rpc endpoint, including the proper port and wss/https scheme prefix
+  -cp, --cert-path <PATH>                      The full path to the .crt file to use for authentication
+  -kp, --key-path <PATH>                       The full path to the .key file to use for authentication
+  -ccp, --config-path <PATH>                   The full path to a chia config yaml file for endpoints
+  -dc, --default-config                        Flag indicating to use the default chia config for endpoints
+  -de, --default-endpoint                      Flag indicating to use the default saved endpoint
+  -ep, --endpoint <ID>                         Use a saved endpoint
+  -v, --verbose                                Set output to verbose messages
+  -?, -h, --help                               Show help and usage information
 ```
 ___
 
