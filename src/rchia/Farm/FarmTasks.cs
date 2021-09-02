@@ -6,7 +6,7 @@ using System.Numerics;
 using System.Text;
 
 using chia.dotnet;
-using chia.dotnet.console;
+using rchia.Commands;
 
 namespace rchia.Farm
 {

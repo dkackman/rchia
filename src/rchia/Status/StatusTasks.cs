@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Linq;
 
 using chia.dotnet;
-using chia.dotnet.console;
+using rchia.Commands;
 
 namespace rchia.Status
 {

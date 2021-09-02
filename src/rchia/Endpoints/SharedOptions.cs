@@ -1,8 +1,10 @@
 ﻿using System.IO;
 
-namespace chia.dotnet.console
+using rchia.Commands;
+
+namespace rchia.Endpoints
 {
-    public abstract class SharedOptions : BaseVerb
+    public abstract class SharedOptions : BaseCommand
     {
         [Option("endpoint-uri", ArgumentHelpName = "PATH", Description = "The uri of the rpc endpoint, including the proper port and wss/https scheme prefix")]
         public string? EndpointUri { get; set; }

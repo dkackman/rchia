@@ -2,22 +2,19 @@
 using System.Threading.Tasks;
 
 using chia.dotnet;
-using chia.dotnet.console;
 
-using CommandLine;
+using rchia.Commands;
+using rchia.Endpoints;
 
 namespace rchia.Farm
 {
-    [Verb("farm", HelpText = "Manage your farm.\nRequires a daemon endpoint.")]
-    internal sealed class FarmVerb : SharedOptions
+    [Command("farm", Description = "Manage your farm.\nRequires a daemon endpoint.")]
+    internal sealed class FarmCommand : SharedOptions
     {
-        [Option('c', "challenges", HelpText = "Show the latest challenges")]
-        public bool Challenges { get; set; }
+        [Command("challenges", Description = "Show the latest challenges")]
+        public CallengesCommand Challenges { get; set; } = new();
 
-        [Value(0, MetaName = "limit", Default = 20, HelpText = "Limit the number of challenges shown. Use 0 to disable the limit")]
-        public int Limit { get; set; }
-
-        [Option('s', "summary", HelpText = "Summary of farming information")]
+        [Option('s', "summary", Description = "Summary of farming information")]
         public bool Summary { get; set; }
 
         public override async Task<int> Run()
@@ -28,11 +25,7 @@ namespace rchia.Farm
                 var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var tasks = new FarmTasks(daemon, this);
 
-                if (Challenges)
-                {
-                    await tasks.Challenges(Limit);
-                }
-                else if (Summary)
+                if (Summary)
                 {
                     await tasks.Summary();
                 }

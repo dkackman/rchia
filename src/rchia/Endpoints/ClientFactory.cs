@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-using chia.dotnet.console.EndPoints;
+using chia.dotnet;
 
-namespace chia.dotnet.console
+namespace rchia.Endpoints
 {
     internal class ClientFactory
     {
@@ -90,7 +89,7 @@ namespace chia.dotnet.console
             {
                 var config = Settings.GetConfig();
                 var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
-                IDictionary<string, Endpoint> endpoints = EndpointLibrary.Open(endpointsFilePath);
+                var endpoints = EndpointLibrary.Open(endpointsFilePath);
 
                 return !endpoints.ContainsKey(options.SavedEndpoint)
                     ? throw new InvalidOperationException($"There is no saved endpoint {options.SavedEndpoint}")

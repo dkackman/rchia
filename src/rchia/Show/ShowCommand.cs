@@ -2,31 +2,31 @@
 using System.Threading.Tasks;
 
 using chia.dotnet;
-using chia.dotnet.console;
 
-using CommandLine;
+using rchia.Commands;
+using rchia.Endpoints;
 
 namespace rchia.Show
 {
-    [Verb("show", HelpText = "Shows various properties of a full node.\nRequires a daemon or full_node endpoint.")]
-    internal sealed class Show : SharedOptions
+    [Command("show", Description = "Shows various properties of a full node.\nRequires a daemon or full_node endpoint.")]
+    internal sealed class ShowCommand : SharedOptions
     {
-        [Option('a', "add-connection", HelpText = "[URI] Connect to another Full Node by ip:port")]
+        [Option('a', "add-connection", ArgumentHelpName = "URI", Description = "Connect to another Full Node by ip:port")]
         public string? AddConnection { get; set; }
 
-        [Option('b', "block-by-header-hash", HelpText = "[HASH] Look up a block by block header hash")]
+        [Option('b', "block-by-header-hash", ArgumentHelpName = "HASH", Description = "Look up a block by block header hash")]
         public string? BlockByHeaderHash { get; set; }
 
-        [Option('c', "connections", HelpText = "List nodes connected to this Full Node")]
+        [Option('c', "connections", Description = "List nodes connected to this Full Node")]
         public bool Connections { get; set; }
 
-        [Option('e', "exit-node", HelpText = "Shut down the running Full Node")]
+        [Option('e', "exit-node", Description = "Shut down the running Full Node")]
         public bool Exit { get; set; }
 
-        [Option('r', "remove-connection", HelpText = "[NODE ID] Remove a Node by the full or first 8 characters of NodeID")]
+        [Option('r', "remove-connection", ArgumentHelpName = "NODE ID", Description = "Remove a Node by the full or first 8 characters of NodeID")]
         public string? RemoveConnection { get; set; }
 
-        [Option('s', "state", HelpText = "Show the current state of the blockchain")]
+        [Option('s', "state", Description = "Show the current state of the blockchain")]
         public bool State { get; set; }
 
         public override async Task<int> Run()

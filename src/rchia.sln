@@ -5,18 +5,12 @@ VisualStudioVersion = 16.0.31515.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rchia", "rchia\rchia.csproj", "{8AE515F5-F6DC-40F0-94BE-42F06FB16255}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "shared", "shared\shared.shproj", "{64D8A879-E8F2-4AEB-9A83-41EEBC97718C}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8B8712F4-250C-4205-B655-E44A1FE09F26}"
 	ProjectSection(SolutionItems) = preProject
 		publish-all.ps1 = publish-all.ps1
 	EndProjectSection
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		shared\shared.projitems*{64d8a879-e8f2-4aeb-9a83-41eebc97718c}*SharedItemsImports = 13
-		shared\shared.projitems*{8ae515f5-f6dc-40f0-94be-42f06fb16255}*SharedItemsImports = 5
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

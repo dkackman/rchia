@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using chia.dotnet;
-using chia.dotnet.console;
+using rchia.Commands;
 
 namespace rchia.Keys
 {
@@ -14,6 +14,46 @@ namespace rchia.Keys
         public KeysTasks(WalletProxy wallet, IConsoleMessage consoleMessage)
             : base(wallet, consoleMessage)
         {
+        }
+
+        public async Task Add()
+        {
+
+        }
+
+        public async Task Delete()
+        {
+
+        }
+
+        public async Task DeleteAll()
+        {
+
+        }
+
+        public async Task Generate()
+        {
+
+        }
+
+        public async Task GenerateAndPrint()
+        {
+
+        }
+
+        public async Task Show()
+        {
+
+        }
+
+        public async Task Sign()
+        {
+
+        }
+
+        public async Task Verify()
+        {
+
         }
     }
 }

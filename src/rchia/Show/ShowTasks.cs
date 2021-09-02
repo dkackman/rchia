@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using chia.dotnet;
-using chia.dotnet.console;
+using rchia.Commands;
 
 using rchia.Bech32;
 

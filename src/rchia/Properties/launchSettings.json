@@ -2,7 +2,7 @@
   "profiles": {
     "rchia": {
       "commandName": "Project",
-      "commandLineArgs": "farm  -s --saved-endpoint farmer"
+      "commandLineArgs": "endpoints add id https://machine:9 path1 path2"
     }
   }
 }

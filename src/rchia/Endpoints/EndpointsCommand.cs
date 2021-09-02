@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace chia.dotnet.console.EndPoints
+using rchia.Commands;
+
+namespace rchia.Endpoints
 {
     [Command("endpoints", Description = "Manage saved endpoints.")]
-    internal sealed class EndpointVerb : BaseVerb
+    internal sealed class EndpointCommand : BaseCommand
     {
         [Option('l', "list", Description = "Lists the ids of saved endpoints")]
         public bool List { get; set; }
 
         [Command("add", Description = "Saves a new endpoint")]
-        public string? Add { get; set; }
+        public AddCommand Add { get; set; } = new();
 
         [Option('r', "remove", ArgumentHelpName = "ID", Description = "Removes a saved endpoint")]
         public string? Remove { get; set; }
@@ -19,7 +21,7 @@ namespace chia.dotnet.console.EndPoints
         [Option('s', "show", ArgumentHelpName = "ID", Description = "Shows the details of a saved endpoint")]
         public string? Show { get; set; }
 
-        [Option('d', "set-default", ArgumentHelpName = "ID", Description = "Sets the endpoint to be the default for --use-default-endpoint")]
+        [Option('d', "set-default", ArgumentHelpName = "ID", Description = "Sets the endpoint to be the default for --default-endpoint")]
         public string? SetDefault { get; set; }
 
         [Option('t', "test", ArgumentHelpName = "ID", Description = "Test the connection to a saved endpoint")]

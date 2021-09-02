@@ -2,19 +2,19 @@
 using System.Threading.Tasks;
 
 using chia.dotnet;
-using chia.dotnet.console;
 
-using CommandLine;
+using rchia.Commands;
+using rchia.Endpoints;
 
 namespace rchia.StartStop
 {
-    [Verb("start", HelpText = "Start service groups.\nRequires a daemon endpoint.")]
-    internal sealed class StartVerb : SharedOptions
+    [Command("start", Description = "Start service groups.\nRequires a daemon endpoint.")]
+    internal sealed class StartCommand : SharedOptions
     {
-        [Value(0, MetaName = "service-group", HelpText = "[all|node|harvester|farmer|farmer-no-wallet|farmer-only|timelord|\ntimelord-only|timelord-launcher-only|wallet|wallet-only|introducer|simulator]")]
+        [Argument(0, Name = "service-group", Description = "[all|node|harvester|farmer|farmer-no-wallet|farmer-only|timelord|\ntimelord-only|timelord-launcher-only|wallet|wallet-only|introducer|simulator]")]
         public string? ServiceGroup { get; set; }
 
-        [Option('r', "restart", HelpText = "Restart the specified service(s)")]
+        [Option('r', "restart", Description = "Restart the specified service(s)")]
         public bool Restart { get; set; }
 
         public override async Task<int> Run()

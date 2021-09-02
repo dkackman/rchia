@@ -2,9 +2,9 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace chia.dotnet.console
+namespace rchia.Commands
 {
-    public abstract class BaseVerb : IVerb, IConsoleMessage
+    public abstract class BaseCommand : IConsoleMessage
     {
         [Option('v', "verbose", Description = "Set output to verbose messages")]
         public bool Verbose { get; set; }
