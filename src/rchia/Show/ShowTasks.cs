@@ -40,7 +40,6 @@ namespace rchia.Show
 
             ConsoleMessage.Message("Done.");
 
-
             Console.WriteLine($"Block Height           {block.Height}");
             Console.WriteLine($"Header Hash            {block.HeaderHash}");
 

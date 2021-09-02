@@ -2,7 +2,7 @@
   "profiles": {
     "rchia": {
       "commandName": "Project",
-      "commandLineArgs": "endpoints add id https://machine:9 path1 path2"
+      "commandLineArgs": "keys --generate-and-print --default-endpoint"
     }
   }
 }

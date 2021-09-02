@@ -3,7 +3,7 @@
 namespace rchia.Commands
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public sealed class ArgumentAttribute : BaseAttribute
+    public sealed class ArgumentAttribute : Attribute
     {
         private string name;
 
@@ -19,7 +19,10 @@ namespace rchia.Commands
         {
             get => name;
             set => name = value ?? throw new ArgumentNullException(nameof(value));
-
         }
+
+        public string? Description { get; set; }
+
+        public object? Default { get; set; }
     }
 }
