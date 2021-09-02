@@ -2,15 +2,20 @@
 using System.Threading.Tasks;
 
 using chia.dotnet;
-using chia.dotnet.console;
 
-namespace rchia.Status
+using rchia.Commands;
+using rchia.Endpoints;
+
+namespace rchia.Farm
 {
-    [Command("status", Description = "Shows the status of the node.\nRequires a daemon endpoint.")]
-    internal sealed class StatusVerb : SharedOptions
+    [Command("farm", Description = "Manage your farm.\nRequires a daemon endpoint.")]
+    internal sealed class FarmCommand : SharedOptions
     {
-        [Option('s', "services", Description = "Show which services are running on the node")]
-        public bool Services { get; set; }
+        [Command("challenges", Description = "Show the latest challenges")]
+        public CallengesCommand Challenges { get; set; } = new();
+
+        [Option('s', "summary", Description = "Summary of farming information")]
+        public bool Summary { get; set; }
 
         public override async Task<int> Run()
         {
@@ -18,11 +23,11 @@ namespace rchia.Status
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Daemon);
                 var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new StatusTasks(daemon, this);
+                var tasks = new FarmTasks(daemon, this);
 
-                if (Services)
+                if (Summary)
                 {
-                    await tasks.Services();
+                    await tasks.Summary();
                 }
                 else
                 {

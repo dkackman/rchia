@@ -1,5 +1,5 @@
 ﻿using chia.dotnet;
-using chia.dotnet.console;
+using rchia.Commands;
 
 namespace rchia
 {

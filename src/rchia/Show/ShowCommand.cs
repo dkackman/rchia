@@ -2,12 +2,14 @@
 using System.Threading.Tasks;
 
 using chia.dotnet;
-using chia.dotnet.console;
+
+using rchia.Commands;
+using rchia.Endpoints;
 
 namespace rchia.Show
 {
     [Command("show", Description = "Shows various properties of a full node.\nRequires a daemon or full_node endpoint.")]
-    internal sealed class Show : SharedOptions
+    internal sealed class ShowCommand : SharedOptions
     {
         [Option('a', "add-connection", ArgumentHelpName = "URI", Description = "Connect to another Full Node by ip:port")]
         public string? AddConnection { get; set; }

@@ -9,7 +9,8 @@ using System.CommandLine.Builder;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
 
-using chia.dotnet.console;
+using rchia.Commands;
+using rchia.Endpoints;
 
 namespace rchia
 {
@@ -74,9 +75,13 @@ namespace rchia
             {
                 var argument = new Argument(v.Name)
                 {
-                    ArgumentType = p.PropertyType
-                };
+                    ArgumentType = p.PropertyType,
 
+                };
+                if (v.Default is not null)
+                {
+                    argument.SetDefaultValue(v.Default);
+                }
                 command.AddArgument(argument);
             }
 
@@ -86,7 +91,7 @@ namespace rchia
                 command.AddCommands(property.PropertyType, subcommand);
             }
 
-            //command.Handler = CommandHandler.Create(t.GetMethod("Run", BindingFlags.Public | BindingFlags.Instance)!);
+            command.Handler = CommandHandler.Create(t.GetMethod("Run", BindingFlags.Public | BindingFlags.Instance)!);
             baseCommand.AddCommand(command);
         }
 
