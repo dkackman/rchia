@@ -4,14 +4,12 @@ using System.Threading.Tasks;
 using chia.dotnet;
 using chia.dotnet.console;
 
-using CommandLine;
-
 namespace rchia.Status
 {
-    [Verb("status", HelpText = "Shows the status of the node.\nRequires a daemon endpoint.")]
+    [Verb("status", Description = "Shows the status of the node.\nRequires a daemon endpoint.")]
     internal sealed class StatusVerb : SharedOptions
     {
-        [Option('s', "services", HelpText = "Show which services are running on the node")]
+        [Option('s', "services", Description = "Show which services are running on the node")]
         public bool Services { get; set; }
 
         public override async Task<int> Run()

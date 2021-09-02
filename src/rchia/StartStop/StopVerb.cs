@@ -4,20 +4,18 @@ using System.Threading.Tasks;
 using chia.dotnet;
 using chia.dotnet.console;
 
-using CommandLine;
-
 namespace rchia.StartStop
 {
-    [Verb("stop", HelpText = "Stop service groups.\nRequires a daemon endpoint.")]
+    [Verb("stop", Description = "Stop service groups.\nRequires a daemon endpoint.")]
     internal sealed class StopVerb : SharedOptions
     {
-        [Value(0, MetaName = "service-group", HelpText = "[all|node|harvester|farmer|farmer-no-wallet|farmer-only|timelord|\ntimelord-only|timelord-launcher-only|wallet|wallet-only|introducer|simulator]")]
+        [Value(0, Name = "service-group", Description = "[all|node|harvester|farmer|farmer-no-wallet|farmer-only|timelord|\ntimelord-only|timelord-launcher-only|wallet|wallet-only|introducer|simulator]")]
         public string? ServiceGroup { get; set; }
 
-        [Option('d', "daemon", Default = false, HelpText = "Stop the daemon service as well\nThe daemon cannot be restarted remotely")]
+        [Option('d', "daemon", Default = false, Description = "Stop the daemon service as well\nThe daemon cannot be restarted remotely")]
         public bool Daemon { get; set; }
 
-        [Option('f', "force", Default = false, HelpText = "Do not prompt before stopping the daemon")]
+        [Option('f', "force", Default = false, Description = "Do not prompt before stopping the daemon")]
         public bool Force { get; set; }
 
         public override async Task<int> Run()

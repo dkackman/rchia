@@ -1,39 +1,38 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using CommandLine;
-
 namespace chia.dotnet.console.EndPoints
 {
-    [Verb("endpoints", HelpText = "Manage saved endpoints.")]
+    [Verb("endpoints", Description = "Manage saved endpoints.")]
     internal sealed class EndpointVerb : BaseVerb
     {
-        [Option('l', "list", HelpText = "Lists the ids of saved endpoints")]
+        [Option('l', "list", Description = "Lists the ids of saved endpoints")]
         public bool List { get; set; }
 
-        [Option('a', "add", HelpText = "[ID] [URI] [CRT PATH] [KEY PATH] Saves a new endpoint")]
+        [Option('a', "add", ArgumentHelpName = "ID", Description = "<uri> <cert-path> <key-path> Saves a new endpoint")]
         public string? Add { get; set; }
 
-        [Value(0, MetaName = "uri", HelpText = "The Uri of the endpoint being added")]
+        [Value(0, Name = "uri", Description = "The Uri of the endpoint being added")]
         public string? Uri { get; set; }
 
-        [Value(1, MetaName = "cert-path", HelpText = "The full path to the .crt file to use for authentication")]
-        public string? CertPath { get; set; }
+        [Value(1, Name = "cert-path", Description = "The full path to the .crt file to use for authentication")]
+        public FileInfo? CertPath { get; set; }
 
-        [Value(2, MetaName = "key-path", HelpText = "The full path to the .key file to use for authentication")]
-        public string? KeyPath { get; set; }
+        [Value(2, Name = "key-path", Description = "The full path to the .key file to use for authentication")]
+        public FileInfo? KeyPath { get; set; }
 
-        [Option('r', "remove", HelpText = "[ID] Removes a saved endpoint")]
+        [Option('r', "remove", ArgumentHelpName = "ID", Description = "Removes a saved endpoint")]
         public string? Remove { get; set; }
 
-        [Option('s', "show", HelpText = "[ID] Shows the details of a saved endpoint")]
+        [Option('s', "show", ArgumentHelpName = "ID", Description = "Shows the details of a saved endpoint")]
         public string? Show { get; set; }
 
-        [Option('d', "set-default", HelpText = "[ID] Sets the endpoint to be the default for --use-default-endpoint")]
+        [Option('d', "set-default", ArgumentHelpName = "ID", Description = "Sets the endpoint to be the default for --use-default-endpoint")]
         public string? SetDefault { get; set; }
 
-        [Option('t', "test", HelpText = "[ID] Test the connection to a saved endpoint")]
+        [Option('t', "test", ArgumentHelpName = "ID", Description = "Test the connection to a saved endpoint")]
         public string? Test { get; set; }
 
         public override async Task<int> Run()
@@ -60,17 +59,17 @@ namespace chia.dotnet.console.EndPoints
                         throw new InvalidOperationException($"The Uri must be provided in position 0");
                     }
 
-                    if (string.IsNullOrEmpty(CertPath))
+                    if (CertPath is null)
                     {
                         throw new InvalidOperationException($"The CertPath must be provided in position 1");
                     }
 
-                    if (string.IsNullOrEmpty(KeyPath))
+                    if (KeyPath is null)
                     {
                         throw new InvalidOperationException($"The KeyPath must be provided in position 2");
                     }
 
-                    var endpoint = EndpointCommands.Add(endpoints, Add, Uri, CertPath, KeyPath);
+                    var endpoint = EndpointCommands.Add(endpoints, Add, Uri, CertPath.FullName, KeyPath.FullName);
 
                     EndpointLibrary.Save(endpoints, endpointsFilePath);
 

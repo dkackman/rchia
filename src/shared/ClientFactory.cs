@@ -77,7 +77,7 @@ namespace chia.dotnet.console
 
         private static EndpointInfo GetEndpointInfo(SharedOptions options, string serviceName)
         {
-            if (options.UseDefaultEndpoint)
+            if (options.DefaultEndpoint)
             {
                 var config = Settings.GetConfig();
                 var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
@@ -97,15 +97,15 @@ namespace chia.dotnet.console
                     : endpoints[options.SavedEndpoint].EndpointInfo;
             }
 
-            return options.UseDefaultConfig
+            return options.DefaultConfig
                 ? Config.Open().GetEndpoint(serviceName)
-                : !string.IsNullOrEmpty(options.ConfigPath)
-                ? Config.Open(options.ConfigPath).GetEndpoint(serviceName)
+                : options.ConfigPath is not null
+                ? Config.Open(options.ConfigPath.FullName).GetEndpoint(serviceName)
                 : new EndpointInfo()
                 {
-                    Uri = new Uri(options.Uri ?? string.Empty),
-                    CertPath = options.CertPath ?? string.Empty,
-                    KeyPath = options.KeyPath ?? string.Empty
+                    Uri = new Uri(options.EndpointUri ?? string.Empty),
+                    CertPath = options.CertPath?.FullName ?? string.Empty,
+                    KeyPath = options.KeyPath?.FullName ?? string.Empty
                 };
         }
     }

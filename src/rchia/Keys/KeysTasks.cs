@@ -15,5 +15,45 @@ namespace rchia.Keys
             : base(wallet, consoleMessage)
         {
         }
+
+        public async Task Add()
+        {
+
+        }
+
+        public async Task Delete()
+        {
+
+        }
+
+        public async Task DeleteAll()
+        {
+
+        }
+
+        public async Task Generate()
+        {
+
+        }
+
+        public async Task GenerateAndPrint()
+        {
+
+        }
+
+        public async Task Show()
+        {
+
+        }
+
+        public async Task Sign()
+        {
+
+        }
+
+        public async Task Verify()
+        {
+
+        }
     }
 }

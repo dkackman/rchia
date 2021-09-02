@@ -9,6 +9,7 @@
     <Import_RootNamespace>chia.dotnet.console</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)BaseAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BaseVerb.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ClientFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Endpoints\EndpointsVerb.cs" />
@@ -17,8 +18,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Endpoints\EndpointLibrary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IConsoleMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IVerb.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Runner.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OptionAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SharedOptions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ValueAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)VerbAttribute.cs" />
   </ItemGroup>
 </Project>

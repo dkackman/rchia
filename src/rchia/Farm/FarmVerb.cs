@@ -4,20 +4,19 @@ using System.Threading.Tasks;
 using chia.dotnet;
 using chia.dotnet.console;
 
-using CommandLine;
 
 namespace rchia.Farm
 {
-    [Verb("farm", HelpText = "Manage your farm.\nRequires a daemon endpoint.")]
+    [Verb("farm", Description = "Manage your farm.\nRequires a daemon endpoint.")]
     internal sealed class FarmVerb : SharedOptions
     {
-        [Option('c', "challenges", HelpText = "Show the latest challenges")]
+        [Option('c', "challenges", Description = "Show the latest challenges")]
         public bool Challenges { get; set; }
 
-        [Value(0, MetaName = "limit", Default = 20, HelpText = "Limit the number of challenges shown. Use 0 to disable the limit")]
+        [Value(0, Name = "limit", Default = 20, Description = "Limit the number of challenges shown. Use 0 to disable the limit")]
         public int Limit { get; set; }
 
-        [Option('s', "summary", HelpText = "Summary of farming information")]
+        [Option('s', "summary", Description = "Summary of farming information")]
         public bool Summary { get; set; }
 
         public override async Task<int> Run()

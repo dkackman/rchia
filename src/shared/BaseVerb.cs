@@ -2,13 +2,11 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-using CommandLine;
-
 namespace chia.dotnet.console
 {
     public abstract class BaseVerb : IVerb, IConsoleMessage
     {
-        [Option('v', "verbose", HelpText = "Set output to verbose messages")]
+        [Option('v', "verbose", Description = "Set output to verbose messages")]
         public bool Verbose { get; set; }
 
         public void Message(string msg, bool important = false)
