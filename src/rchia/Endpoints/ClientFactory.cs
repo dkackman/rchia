@@ -85,15 +85,15 @@ namespace rchia.Endpoints
                 return endpoint.EndpointInfo;
             }
 
-            if (!string.IsNullOrEmpty(options.SavedEndpoint))
+            if (!string.IsNullOrEmpty(options.Endpoint))
             {
                 var config = Settings.GetConfig();
                 var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
                 var endpoints = EndpointLibrary.Open(endpointsFilePath);
 
-                return !endpoints.ContainsKey(options.SavedEndpoint)
-                    ? throw new InvalidOperationException($"There is no saved endpoint {options.SavedEndpoint}")
-                    : endpoints[options.SavedEndpoint].EndpointInfo;
+                return !endpoints.ContainsKey(options.Endpoint)
+                    ? throw new InvalidOperationException($"There is no saved endpoint {options.Endpoint}")
+                    : endpoints[options.Endpoint].EndpointInfo;
             }
 
             return options.DefaultConfig

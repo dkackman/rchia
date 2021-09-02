@@ -25,6 +25,6 @@ namespace rchia.Endpoints
         public bool DefaultEndpoint { get; set; }
 
         [Option("ep", "endpoint", ArgumentHelpName = "ID", Description = "Use a saved endpoint")]
-        public string? SavedEndpoint { get; set; }
+        public string? Endpoint { get; set; }
     }
 }
