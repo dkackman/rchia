@@ -32,6 +32,7 @@ namespace rchia.Show
         [Option("s", "state", Description = "Show the current state of the blockchain")]
         public bool State { get; set; }
 
+        [CommandTarget]
         public override async Task<int> Run()
         {
             try

@@ -2,7 +2,7 @@
   "profiles": {
     "rchia": {
       "commandName": "Project",
-      "commandLineArgs": "netspace -de"
+      "commandLineArgs": "delete-all"
     }
   }
 }

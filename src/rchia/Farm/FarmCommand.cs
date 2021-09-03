@@ -17,6 +17,7 @@ namespace rchia.Farm
         [Option("s", "summary", Description = "Summary of farming information")]
         public bool Summary { get; set; }
 
+        [CommandTarget]
         public override async Task<int> Run()
         {
             try

@@ -14,6 +14,7 @@ namespace rchia.Plots
         [Option("s", "show", Description = "Shows the directory of current plots")]
         public bool Show { get; set; }
 
+        [CommandTarget]
         public override async Task<int> Run()
         {
             try

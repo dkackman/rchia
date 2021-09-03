@@ -20,13 +20,14 @@ namespace rchia.StartStop
         [Option("f", "force", Description = "Do not prompt before stopping the daemon")]
         public bool Force { get; set; }
 
+        [CommandTarget]
         public override async Task<int> Run()
         {
             try
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Daemon);
                 var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var commands = new StartStopTasks(daemon, this);
+                var tasks = new StartStopTasks(daemon, this);
 
                 if (ServiceGroup is not null)
                 {
@@ -35,12 +36,12 @@ namespace rchia.StartStop
                         throw new InvalidOperationException($"Unrecognized service group {ServiceGroup}. It must be one of\n  {string.Join("|", ServiceGroups.Groups.Keys)}.");
                     }
 
-                    await commands.Stop(ServiceGroup);
+                    await tasks.Stop(ServiceGroup);
                     if (Daemon)
                     {
                         if (Confirm("The daemon cannot be restared remotely. You will need shell access to the node in orer to restart it.", "Are you sure you want to stop the daemon?", Force))
                         {
-                            await commands.StopDeamon();
+                            await tasks.StopDeamon();
                         }
                     }
                 }

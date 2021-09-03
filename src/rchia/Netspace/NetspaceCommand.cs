@@ -19,6 +19,7 @@ namespace rchia.Netspace
         [Option("s", "start", ArgumentHelpName = "HEADER_HASH", Description = "Newest block used to calculate estimated total network space.Defaults to Peak block.")]
         public string? Start { get; set; }
 
+        [CommandTarget]
         public override async Task<int> Run()
         {
             try

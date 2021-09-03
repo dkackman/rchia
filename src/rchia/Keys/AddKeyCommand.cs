@@ -17,6 +17,7 @@ namespace rchia.Keys
         [Option("f", "filename", Description = "A filename containing the secret key mnemonic to add")]
         public FileInfo? Filename { get; set; }
 
+        [CommandTarget]
         public override async Task<int> Run()
         {
             try

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -21,13 +20,14 @@ namespace rchia.Endpoints
         [Argument(3, Name = "key-path", Description = "The full path to the .key file to use for authentication")]
         public FileInfo? KeyPath { get; set; }
 
+        [CommandTarget]
         public override async Task<int> Run()
         {
             try
             {
                 var config = Settings.GetConfig();
                 var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
-                IDictionary<string, Endpoint> endpoints = EndpointLibrary.Open(endpointsFilePath);
+                var endpoints = EndpointLibrary.Open(endpointsFilePath);
 
                 if (!string.IsNullOrEmpty(Id))
                 {

@@ -16,6 +16,7 @@ namespace rchia.Keys
         [Option("f", "force", Description = "Do not prompt before deleting the key")]
         public bool Force { get; set; }
 
+        [CommandTarget]
         public override async Task<int> Run()
         {
             try

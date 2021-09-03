@@ -51,7 +51,6 @@ namespace rchia.Commands
             return true;
         }
 
-        [CommandTarget]
         public abstract Task<int> Run();
     }
 }

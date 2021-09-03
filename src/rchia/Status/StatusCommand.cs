@@ -14,6 +14,7 @@ namespace rchia.Status
         [Option("s", "services", Description = "Show which services are running on the node")]
         public bool Services { get; set; }
 
+        [CommandTarget]
         public override async Task<int> Run()
         {
             try

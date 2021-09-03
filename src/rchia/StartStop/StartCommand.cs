@@ -17,13 +17,14 @@ namespace rchia.StartStop
         [Option("r", "restart", Description = "Restart the specified service(s)")]
         public bool Restart { get; set; }
 
+        [CommandTarget]
         public override async Task<int> Run()
         {
             try
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Daemon);
                 var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var commands = new StartStopTasks(daemon, this);
+                var tasks = new StartStopTasks(daemon, this);
 
                 if (ServiceGroup is not null)
                 {
@@ -32,7 +33,7 @@ namespace rchia.StartStop
                         throw new InvalidOperationException($"Unrecognized service group {ServiceGroup}. It must be one of\n  {string.Join('|', ServiceGroups.Groups.Keys)}.");
                     }
 
-                    await commands.Start(ServiceGroup, Restart);
+                    await tasks.Start(ServiceGroup, Restart);
                 }
                 else
                 {

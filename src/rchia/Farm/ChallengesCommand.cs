@@ -13,6 +13,7 @@ namespace rchia.Farm
         [Argument(0, Name = "limit", Default = 20, Description = "Limit the number of challenges shown. Use 0 to disable the limit")]
         public int Limit { get; set; } = 20;
 
+        [CommandTarget]
         public override async Task<int> Run()
         {
             try

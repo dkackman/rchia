@@ -27,6 +27,7 @@ namespace rchia.Endpoints
         [Option("t", "test", ArgumentHelpName = "ID", Description = "Test the connection to a saved endpoint")]
         public string? Test { get; set; }
 
+        [CommandTarget]
         public override async Task<int> Run()
         {
             try

@@ -29,39 +29,40 @@ namespace rchia.Keys
         [Option("m", "show-mnemonic-seed", Default = false, Description = "Show the mnemonic seed of the keys")]
         public bool ShowMnemonicSeed { get; set; }
 
-        [Option("a", "delete-all", Default = false, Description = "Delete all private keys in keychain")]
+        [Command("delete-all", Description = "Delete all private keys in keychain")]
         public bool DeleteAll { get; set; }
 
         [Option("f", "force", Description = "Do not prompt before deleting keys")]
         public bool Force { get; set; }
 
+        [CommandTarget]
         public override async Task<int> Run()
         {
             try
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Wallet);
                 var wallet = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var commands = new KeysTasks(wallet, this);
+                var tasks = new KeysTasks(wallet, this);
 
                 if (GenerateAndPrint)
                 {
-                    await commands.GenerateAndPrint();
+                    await tasks.GenerateAndPrint();
 
                 }
                 else if (Generate)
                 {
-                    await commands.Generate();
+                    await tasks.Generate();
                 }
                 else if (Show)
                 {
-                    await commands.Show(ShowMnemonicSeed);
+                    await tasks.Show(ShowMnemonicSeed);
                 }
                 else if (DeleteAll)
                 {
                     if (Confirm("Deleting all of your keys CANNOT be undone.", "Are you sure you want to delete all of your keys?", Force))
                     {
                         Message("Deleting all keys...");
-                        await commands.DeleteAll();
+                        await tasks.DeleteAll();
                         Message("All keys deleted.");
                     }
                 }
