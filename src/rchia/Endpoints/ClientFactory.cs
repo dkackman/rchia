@@ -76,19 +76,11 @@ namespace rchia.Endpoints
 
         private static EndpointInfo GetEndpointInfo(SharedOptions options, string serviceName)
         {
-            if (options.DefaultEndpoint)
-            {
-                var config = Settings.GetConfig();
-                var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
-                var endpoint = EndpointLibrary.GetDefault(endpointsFilePath);
-
-                return endpoint.EndpointInfo;
-            }
+            var config = Settings.GetConfig();
+            var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
 
             if (!string.IsNullOrEmpty(options.Endpoint))
             {
-                var config = Settings.GetConfig();
-                var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
                 var endpoints = EndpointLibrary.Open(endpointsFilePath);
 
                 return !endpoints.ContainsKey(options.Endpoint)
@@ -96,16 +88,36 @@ namespace rchia.Endpoints
                     : endpoints[options.Endpoint].EndpointInfo;
             }
 
-            return options.DefaultConfig
-                ? Config.Open().GetEndpoint(serviceName)
-                : options.ConfigPath is not null
-                ? Config.Open(options.ConfigPath.FullName).GetEndpoint(serviceName)
-                : new EndpointInfo()
-                {
-                    Uri = new Uri(options.EndpointUri ?? string.Empty),
-                    CertPath = options.CertPath?.FullName ?? string.Empty,
-                    KeyPath = options.KeyPath?.FullName ?? string.Empty
-                };
+            if (options.DefaultConfig)
+            {
+                return Config.Open().GetEndpoint(serviceName);
+            }
+
+            if (options.ConfigPath is not null)
+            {
+                return Config.Open(options.ConfigPath.FullName).GetEndpoint(serviceName);
+            }
+
+            if (!string.IsNullOrEmpty(options.EndpointUri))
+            {
+                return options.CertPath is null || options.KeyPath is null
+                    ? throw new InvalidOperationException("When a --endpoint-uri is set both --key-path and --cert-path must also be set")
+                    : new EndpointInfo()
+                    {
+                        Uri = new Uri(options.EndpointUri),
+                        CertPath = options.CertPath.FullName,
+                        KeyPath = options.KeyPath.FullName
+                    };
+            }
+
+            if (!options.DefaultEndpoint)
+            {
+                options.Message("No endpoint opions set. Using default endpoint.");
+            }
+
+
+            var endpoint = EndpointLibrary.GetDefault(endpointsFilePath);
+            return endpoint.EndpointInfo;
         }
     }
 }

@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>dkackman</Authors>
-    <Version>0.2.0</Version>
+    <Version>0.3.0-prerelease-01</Version>
     <Description>A cross platform (Linux, Windows, MacOS) command line utility that mirrors the chia CLI, but uses RPC rather than running locally on the node. This allows management of any number of nodes from a central location as long as their RPC interface is exposed on the network.</Description>
     <Copyright>2021 Don Kackman</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -17,7 +17,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>chia chia-dotnet</PackageTags>
     <NeutralLanguage>en</NeutralLanguage>
-    <PackageReleaseNotes>0.2.0 work in progress release</PackageReleaseNotes>
+    <PackageReleaseNotes>0.3.0 first pre-release</PackageReleaseNotes>
     <ApplicationIcon>chia.ico</ApplicationIcon>
   </PropertyGroup>
 
