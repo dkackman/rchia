@@ -55,19 +55,25 @@ Options:
   -?, -h, --help  Show help and usage information
 
 Commands:
-  status                 Shows the status of the node.
+  endpoints              Manage saved endpoints.
+  farm                   Manage your farm.
                          Requires a daemon endpoint.
-  start <service-group>  Start service groups.
-                         Requires a daemon endpoint.
-  stop <service-group>   Stop service groups.
+  keys                   Manage your keys
+                         Requires a wallet or daemon endpoint.
+  netspace               Calculates the estimated space on the network given two block header hashes.
+                         Requires a daemon or full_node endpoint.
+  plots                  Manage your plots.
                          Requires a daemon endpoint.
   show                   Shows various properties of a full node.
                          Requires a daemon or full_node endpoint.
-  keys                   Manage your keys
-                         Requires a wallet or daemon endpoint.
-  farm                   Manage your farm.
+  start <service-group>  Start service groups.
                          Requires a daemon endpoint.
-  endpoints              Manage saved endpoints.   
+  status                 Shows the status of the node.
+                         Requires a daemon endpoint.
+  stop <service-group>   Stop service groups.
+                         Requires a daemon endpoint.
+  wallet                 Manage your wallet.
+                         Requires a wallet or daemon endpoint.
 ```
 
 ### Example output
