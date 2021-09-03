@@ -8,7 +8,7 @@ using rchia.Endpoints;
 
 namespace rchia.Netspace
 {
-    [Command("netspace", Description = "Shows various properties of a full node.\nRequires a daemon or full_node endpoint.")]
+    [Command("netspace", Description = "Calculates the estimated space on the network given two block header hashes.\nRequires a daemon or full_node endpoint.")]
     internal sealed class NetspaceCommand : SharedOptions
     {
         [Option("d", "delta-block-height", ArgumentHelpName = "DELTA", Description = "Compare a block X blocks older to estimate total network space.Defaults to 4608 blocks\n" +

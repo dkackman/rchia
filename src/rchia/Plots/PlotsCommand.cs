@@ -1,45 +1,17 @@
-﻿using System;
-using System.Threading.Tasks;
-
-using chia.dotnet;
-
-using rchia.Commands;
-using rchia.Endpoints;
+﻿using rchia.Commands;
 
 namespace rchia.Plots
 {
     [Command("plots", Description = "Manage your plots.\nRequires a daemon endpoint.")]
-    internal sealed class PlotsCommand : SharedOptions
+    internal sealed class PlotsCommand
     {
-        [Option("s", "show", Description = "Shows the directory of current plots")]
-        public bool Show { get; set; }
+        [Command("show", Description = "Shows the directory of current plots")]
+        public ShowPlotsCommand Show { get; set; } = new();
 
-        [CommandTarget]
-        public override async Task<int> Run()
-        {
-            try
-            {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Farmer);
-                var harvester = new HarvesterProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new PlotsTasks(harvester, this);
+        [Command("remove", Description = "Removes a directory of plots from config.yaml")]
+        public RemovePlotsCommand Remove { get; set; } = new();
 
-                if (Show)
-                {
-                    await tasks.Show();
-                }
-                else
-                {
-                    throw new InvalidOperationException("Unrecognized command");
-                }
-
-                return 0;
-            }
-            catch (Exception e)
-            {
-                Message(e);
-
-                return -1;
-            }
-        }
+        [Command("add", Description = "Adds a directory of plots")]
+        public AddPlotsCommand Add { get; set; } = new();
     }
 }

@@ -15,6 +15,18 @@ namespace rchia.Plots
         {
         }
 
+        public async Task Remove(string dirname)
+        {
+            using var cts = new CancellationTokenSource(10000);
+            await Service.RemovePlotDirectory(dirname, cts.Token);
+        }
+
+        public async Task Add(string dirname)
+        {
+            using var cts = new CancellationTokenSource(10000);
+            await Service.AddPlotDirectory(dirname, cts.Token);
+        }
+
         public async Task Show()
         {
             Console.WriteLine("Directories where plots are being searched for:");

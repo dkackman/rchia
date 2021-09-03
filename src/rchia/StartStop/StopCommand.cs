@@ -17,7 +17,7 @@ namespace rchia.StartStop
         [Option("d", "daemon", Description = "Stop the daemon service as well\nThe daemon cannot be restarted remotely")]
         public bool Daemon { get; set; }
 
-        [Option("f", "force", Description = "Do not prompt before stopping the daemon")]
+        [Option("f", "force", Default = false, Description = "If -d is specified, shut down the daemon without prompting")]
         public bool Force { get; set; }
 
         [CommandTarget]

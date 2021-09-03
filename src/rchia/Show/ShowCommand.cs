@@ -39,35 +39,35 @@ namespace rchia.Show
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.FullNode);
                 var fullNode = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var commands = new ShowTasks(fullNode, this);
+                var tasks = new ShowTasks(fullNode, this);
 
                 if (State)
                 {
-                    await commands.State();
+                    await tasks.State();
                 }
                 else if (Exit)
                 {
-                    await commands.Exit();
+                    await tasks.Exit();
                 }
                 else if (Connections)
                 {
-                    await commands.Connections();
+                    await tasks.Connections();
                 }
                 else if (!string.IsNullOrEmpty(AddConnection))
                 {
-                    await commands.AddConnection(AddConnection);
+                    await tasks.AddConnection(AddConnection);
                 }
                 else if (!string.IsNullOrEmpty(RemoveConnection))
                 {
-                    await commands.RemoveConnection(RemoveConnection);
+                    await tasks.RemoveConnection(RemoveConnection);
                 }
                 else if (!string.IsNullOrEmpty(BlockByHeaderHash))
                 {
-                    await commands.BlockByHeaderHash(BlockByHeaderHash);
+                    await tasks.BlockByHeaderHash(BlockByHeaderHash);
                 }
                 else if (BlockHeaderHashByHeight.HasValue)
                 {
-                    await commands.BlockHeaderHashByHeight(BlockHeaderHashByHeight.Value);
+                    await tasks.BlockHeaderHashByHeight(BlockHeaderHashByHeight.Value);
                 }
                 else
                 {
