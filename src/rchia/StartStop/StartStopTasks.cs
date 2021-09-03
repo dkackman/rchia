@@ -18,7 +18,7 @@ namespace rchia.StartStop
         {
             foreach (var service in ServiceGroups.Groups[groupName])
             {
-                using var cts = new CancellationTokenSource(2000);
+                using var cts = new CancellationTokenSource(20000);
                 var isRunnnig = await Service.IsServiceRunning(service, cts.Token);
 
                 if (isRunnnig && !restart)
@@ -44,7 +44,7 @@ namespace rchia.StartStop
         {
             foreach (var service in ServiceGroups.Groups[groupName])
             {
-                using var cts = new CancellationTokenSource(2000);
+                using var cts = new CancellationTokenSource(20000);
                 var isRunnnig = await Service.IsServiceRunning(service, cts.Token);
 
                 if (isRunnnig)
@@ -62,7 +62,7 @@ namespace rchia.StartStop
 
         public async Task StopDeamon()
         {
-            using var cts = new CancellationTokenSource(2000);
+            using var cts = new CancellationTokenSource(20000);
             await Service.Exit(cts.Token);
         }
     }

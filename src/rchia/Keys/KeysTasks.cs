@@ -20,7 +20,7 @@ namespace rchia.Keys
 
         public async Task Add(IEnumerable<string> mnemonic)
         {
-            using var cts = new CancellationTokenSource(1000);
+            using var cts = new CancellationTokenSource(10000);
             var fingerprint = await Service.AddKey(mnemonic, true, cts.Token);
 
             Console.WriteLine($"Added private key with public key fingerprint {fingerprint}");
@@ -28,7 +28,7 @@ namespace rchia.Keys
 
         public async Task Delete(uint fingerprint)
         {
-            using var cts = new CancellationTokenSource(1000);
+            using var cts = new CancellationTokenSource(10000);
             await Service.DeleteKey(fingerprint, cts.Token);
 
             Console.WriteLine($"Deleted the key with fingerprint {fingerprint}");
@@ -36,13 +36,13 @@ namespace rchia.Keys
 
         public async Task DeleteAll()
         {
-            using var cts = new CancellationTokenSource(1000);
+            using var cts = new CancellationTokenSource(10000);
             await Service.DeleteAllKeys(cts.Token);
         }
 
         public async Task Generate()
         {
-            using var cts = new CancellationTokenSource(1000);
+            using var cts = new CancellationTokenSource(10000);
             Console.WriteLine("Generating private key.");
 
             var mnemonic = await Service.GenerateMnemonic(cts.Token);
@@ -53,7 +53,7 @@ namespace rchia.Keys
 
         public async Task GenerateAndPrint()
         {
-            using var cts = new CancellationTokenSource(1000);
+            using var cts = new CancellationTokenSource(10000);
             var mnemonic = await Service.GenerateMnemonic(cts.Token);
 
             Console.WriteLine("Generating private key. Mnemonic (24 secret words):");
@@ -65,7 +65,7 @@ namespace rchia.Keys
         {
             Console.WriteLine("Showing all public keys derived from your private keys:");
 
-            using var cts = new CancellationTokenSource(5000);
+            using var cts = new CancellationTokenSource(15000);
             var keys = await Service.GetPublicKeys(cts.Token);
 
             if (keys.Any())
@@ -76,7 +76,7 @@ namespace rchia.Keys
                 foreach (var fingerprint in keys.Take(1))
                 {
                     Console.WriteLine($"Fingerprint: {fingerprint}");
-                    using var cts1 = new CancellationTokenSource(5000);
+                    using var cts1 = new CancellationTokenSource(15000);
                     var (Fingerprint, Sk, Pk, FarmerPk, PoolPk, Seed) = await Service.GetPrivateKey(fingerprint, cts1.Token);
 
                     Console.WriteLine($"Master public key (m): {Pk}");

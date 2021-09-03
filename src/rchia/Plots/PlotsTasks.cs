@@ -22,7 +22,7 @@ namespace rchia.Plots
             Console.WriteLine("Add with 'chia plots add [dir]' and remove with 'chia plots remove [dir]' Scan and check plots with 'chia plots check'");
             Console.WriteLine("");
 
-            using var cts = new CancellationTokenSource(1000);
+            using var cts = new CancellationTokenSource(10000);
             var directories = await Service.GetPlotDirectories(cts.Token);
             foreach (var path in directories)
             {
