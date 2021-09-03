@@ -10,7 +10,7 @@ namespace rchia.Keys
 {
     internal sealed class DeleteKeyCommand : SharedOptions
     {
-        [Argument(0, Name = "fingerprint", Description = "Enter the fingerprint of the key you want to delete")]
+        [Option("fp", "fingerprint", IsRequired = true, ArgumentHelpName = "FINGERPRINT", Description = "Enter the fingerprint of the key you want to delete")]
         public uint Fingerprint { get; set; }
 
         [Option("f", "force", Default = false, Description = "Delete the key without prompting for confirmation")]
