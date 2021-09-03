@@ -4,8 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using chia.dotnet;
-using rchia.Commands;
 
+using rchia.Commands;
 using rchia.Bech32;
 
 namespace rchia.Show
