@@ -75,9 +75,11 @@ namespace rchia.Commands
                 command.AddCommands(property.PropertyType, subcommand);
             }
 
-            var target = type.GetCommandTarget() ?? throw new InvalidOperationException($"No method decorated with [CommandTarget] was found on {type.FullName}");
-
-            command.Handler = CommandHandler.Create(target);
+            var target = type.GetCommandTarget(); // ?? throw new InvalidOperationException($"No method decorated with [CommandTarget] was found on {type.FullName}");
+            if (target is not null)
+            {
+                command.Handler = CommandHandler.Create(target);
+            }
             parent.AddCommand(command);
         }
 
