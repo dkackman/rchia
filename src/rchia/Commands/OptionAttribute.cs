@@ -7,6 +7,11 @@ namespace rchia.Commands
     {
         public OptionAttribute(string? shortName, string? longName = null)
         {
+            if (shortName is null && longName is null)
+            {
+                throw new InvalidOperationException($"Both {nameof(shortName)} and {nameof(longName)} cannot be null");
+            }
+
             ShortName = shortName;
             LongName = longName;
         }

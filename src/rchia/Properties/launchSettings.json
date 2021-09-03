@@ -2,7 +2,7 @@
   "profiles": {
     "rchia": {
       "commandName": "Project",
-      "commandLineArgs": "keys -s -m --default-endpoint"
+      "commandLineArgs": "netspace -de"
     }
   }
 }
