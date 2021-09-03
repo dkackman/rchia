@@ -64,7 +64,8 @@ namespace rchia
 
                 var option = new Option(aliases.ToArray(), o.Description, p.PropertyType)
                 {
-                    ArgumentHelpName = o.ArgumentHelpName ?? p.Name
+                    ArgumentHelpName = o.ArgumentHelpName ?? p.Name,
+                    IsRequired = o.IsRequired
                 };
                 if (o.Default is not null)
                 {

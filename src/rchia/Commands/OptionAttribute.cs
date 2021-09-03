@@ -19,6 +19,8 @@ namespace rchia.Commands
 
         public string? ArgumentHelpName { get; set; }
 
+        public bool IsRequired { get; set; }
+
         public object? Default { get; set; }
     }
 }
