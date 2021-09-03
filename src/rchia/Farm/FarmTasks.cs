@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Linq;
 using System.Numerics;
 using System.Text;
-
+using System.Threading;
+using System.Threading.Tasks;
 using chia.dotnet;
-
 using rchia.Commands;
 
 namespace rchia.Farm

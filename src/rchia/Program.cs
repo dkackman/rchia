@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-
 using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
-
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 using rchia.Commands;
 using rchia.Endpoints;
 
