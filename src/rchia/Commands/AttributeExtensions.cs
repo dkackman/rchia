@@ -16,6 +16,7 @@ namespace rchia.Commands
             var types = from type in assembly.GetTypes()
                         let attr = type.GetCustomAttribute<CommandAttribute>()
                         where attr is not null
+                        orderby attr.Name
                         select (type, attr);
 
             foreach (var (type, attr) in types)
