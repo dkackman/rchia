@@ -96,5 +96,28 @@ namespace rchia.Wallet
 
             Console.WriteLine($"Successfully deleted all unconfirmed transactions for wallet id {id}");
         }
+
+        public async Task GetAddress(uint fingerprint)
+        {
+            using var cts = new CancellationTokenSource(20000);
+
+            var wallets = await GetAllWalletInfo();
+            var walletInfo = wallets.First(info => info.Fingerprint == fingerprint);
+
+            var wallet = new chia.dotnet.Wallet(walletInfo.Wallet.Id, Service);
+            var address = await wallet.GetNextAddress(false, cts.Token);
+
+            Console.WriteLine(address);
+        }
+
+        public async Task GetAddress(int id)
+        {
+            using var cts = new CancellationTokenSource(20000);
+
+            var wallet = new chia.dotnet.Wallet((uint)id, Service);
+            var address = await wallet.GetNextAddress(false, cts.Token);
+
+            Console.WriteLine(address);
+        }
     }
 }

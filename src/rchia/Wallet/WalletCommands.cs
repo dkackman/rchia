@@ -13,6 +13,9 @@ namespace rchia.Wallet
 
         [Command("delete-unconfirmed-transactions", Description = "Deletes all unconfirmed transactions for this wallet ID")]
         public DeleteUnconfirmedTransactionsCommand DeleteUnconfirmedTransactions { get; set; } = new();
+
+        [Command("get-address", Description = "Get a wallet receive address")]
+        public GetAddressCommand GetAddress { get; set; } = new();
     }
 }
 
