@@ -14,35 +14,35 @@ namespace rchia
             Initialize();
         }
 
-        public static string ConfigDirectory => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".rchia");
+        public static string SettingsDirectory => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".rchia");
 
-        public static string ConfigFilePath => Path.Combine(ConfigDirectory, "settings.json");
+        public static string SettingsFilePath => Path.Combine(SettingsDirectory, "settings.json");
 
-        public static string DefaultEndpointsFilePath => Path.Combine(ConfigDirectory, "endpoints.json");
+        public static string DefaultEndpointsFilePath => Path.Combine(SettingsDirectory, "endpoints.json");
 
         public static dynamic GetConfig()
         {
             try
             {
-                using var reader = new StreamReader(ConfigFilePath);
+                using var reader = new StreamReader(SettingsFilePath);
                 var json = reader.ReadToEnd();
-                var config = JsonConvert.DeserializeObject<dynamic>(json, new ExpandoObjectConverter());
+                var settings = JsonConvert.DeserializeObject<dynamic>(json, new ExpandoObjectConverter());
 
-                return config ?? GetDefaultConfig();
+                return settings ?? GetDefaultSettings();
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
 
-                return GetDefaultConfig();
+                return GetDefaultSettings();
             }
         }
 
-        private static dynamic GetDefaultConfig()
+        private static dynamic GetDefaultSettings()
         {
-            dynamic config = new ExpandoObject();
-            config.endpointsfile = DefaultEndpointsFilePath;
-            return config;
+            dynamic settings = new ExpandoObject();
+            settings.endpointsfile = DefaultEndpointsFilePath;
+            return settings;
         }
 
         private static void Initialize()
@@ -50,18 +50,18 @@ namespace rchia
             try
             {
                 // create the settings folder and file if they don't exist
-                if (!Directory.Exists(ConfigDirectory))
+                if (!Directory.Exists(SettingsDirectory))
                 {
-                    _ = Directory.CreateDirectory(ConfigDirectory);
+                    _ = Directory.CreateDirectory(SettingsDirectory);
                 }
 
-                if (!File.Exists(ConfigFilePath))
+                if (!File.Exists(SettingsFilePath))
                 {
-                    var defaultEndPointFile = Path.Combine(ConfigDirectory, ConfigFilePath);
+                    var defaultEndPointFile = Path.Combine(SettingsDirectory, SettingsFilePath);
 
-                    var json = JsonConvert.SerializeObject(GetDefaultConfig(), Formatting.Indented, new ExpandoObjectConverter());
+                    var json = JsonConvert.SerializeObject(GetDefaultSettings(), Formatting.Indented, new ExpandoObjectConverter());
 
-                    using var writer = new StreamWriter(ConfigFilePath, false);
+                    using var writer = new StreamWriter(SettingsFilePath, false);
                     writer.WriteLine(json);
                 }
             }
