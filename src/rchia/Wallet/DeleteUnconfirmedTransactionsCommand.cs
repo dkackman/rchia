@@ -6,7 +6,7 @@ using rchia.Endpoints;
 
 namespace rchia.Wallet
 {
-    internal sealed class ShowWalletCommand : SharedOptions
+    internal sealed class DeleteUnconfirmedTransactionsCommand : SharedOptions
     {
         [Option("fp", "fingerprint", Description = "Set the fingerprint to specify which wallet to use")]
         public uint Fingerprint { get; set; }
@@ -25,11 +25,11 @@ namespace rchia.Wallet
 
                 if (Fingerprint > 0)
                 {
-                    await tasks.Show(Fingerprint);
+                    await tasks.DeleteUnconfirmedTransactions(Fingerprint);
                 }
                 else
                 {
-                    await tasks.Show(Id);
+                    await tasks.DeleteUnconfirmedTransactions(Id);
                 }
 
                 return 0;

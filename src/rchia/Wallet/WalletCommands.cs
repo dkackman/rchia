@@ -10,6 +10,9 @@ namespace rchia.Wallet
 
         [Command("show", Description = "Show wallet information")]
         public ShowWalletCommand Show { get; set; } = new();
+
+        [Command("delete-unconfirmed-transactions", Description = "Deletes all unconfirmed transactions for this wallet ID")]
+        public DeleteUnconfirmedTransactionsCommand DeleteUnconfirmedTransactions { get; set; } = new();
     }
 }
 
