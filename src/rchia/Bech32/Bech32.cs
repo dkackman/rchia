@@ -20,6 +20,11 @@ namespace rchia.Bech32
             AddressPrefix = prefix;
         }
 
+        public string PuzzleHashToAddress(string puzzleHash)
+        {
+            return PuzzleHashToAddress(HexBytes.FromHex(puzzleHash));
+        }
+
         public string PuzzleHashToAddress(HexBytes puzzleHash)
         {
             var puzzleHashBytes = GetPuzzleHashBytes(puzzleHash.Hex);

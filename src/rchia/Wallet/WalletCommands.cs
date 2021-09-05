@@ -16,6 +16,12 @@ namespace rchia.Wallet
 
         [Command("get-address", Description = "Get a wallet receive address")]
         public GetAddressCommand GetAddress { get; set; } = new();
+
+        [Command("get-transaction", Description = "Get a transaction")]
+        public GetTransactionCommand GetTransaction { get; set; } = new();
+
+        [Command("get-transactions", Description = "Get all transactions")]
+        public GetTransactionsCommand GetTransactions { get; set; } = new();
     }
 }
 

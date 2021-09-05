@@ -74,8 +74,8 @@ namespace rchia.Show
             Console.WriteLine($"Tx Filter Hash         {txFilterHash}");
 
             var bech32 = new Bech32M(NetworkPrefix);
-            var farmerAddress = bech32.PuzzleHashToAddress(HexBytes.FromHex(block.FarmerPuzzleHash));
-            var poolAddress = bech32.PuzzleHashToAddress(HexBytes.FromHex(block.PoolPuzzleHash));
+            var farmerAddress = bech32.PuzzleHashToAddress(block.FarmerPuzzleHash);
+            var poolAddress = bech32.PuzzleHashToAddress(block.PoolPuzzleHash);
 
             Console.WriteLine($"Farmer Address         {farmerAddress}");
             Console.WriteLine($"Pool Address           {poolAddress}");

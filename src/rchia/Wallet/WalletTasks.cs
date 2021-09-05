@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using chia.dotnet;
 
 using rchia.Commands;
+using rchia.Bech32;
 
 namespace rchia.Wallet
 {
@@ -134,6 +135,69 @@ namespace rchia.Wallet
             var address = await wallet.GetNextAddress(false, cts.Token);
 
             Console.WriteLine(address);
+        }
+
+        public async Task GetTransaction(string txId)
+        {
+            using var cts = new CancellationTokenSource(20000);
+            var tx = await Service.GetTransaction(txId, cts.Token);
+            var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
+            PrintTransaction(tx, NetworkPrefix);
+        }
+
+        public async Task GetTransactions(uint fingerprint)
+        {
+            using var cts = new CancellationTokenSource(20000);
+
+            var wallets = await GetAllWalletInfo();
+            var walletInfo = wallets.First(info => info.Fingerprint == fingerprint);
+
+            await GetTransactions(walletInfo.Wallet.Id);
+        }
+
+        public async Task GetTransactions(int id)
+        {
+            using var cts = new CancellationTokenSource(20000);
+
+            var wallet = new chia.dotnet.Wallet((uint)id, Service);
+            var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
+            var transactions = await wallet.GetTransactions(cts.Token);
+
+            if (transactions.Any())
+            {
+                foreach (var tx in transactions)
+                {
+                    PrintTransaction(tx, NetworkPrefix);
+                }
+            }
+            else
+            {
+                Console.WriteLine("There are no transactions to this address");
+            }
+        }
+
+        private static void PrintTransaction(TransactionRecord tx, string prefix)
+        {
+            using var cts = new CancellationTokenSource(20000);
+            Console.WriteLine($"Transaction {tx.Name}");
+            if (tx.Confirmed)
+            {
+                Console.WriteLine($"Status: Confirmed");
+            }
+            else if (tx.IsInMempool)
+            {
+                Console.WriteLine($"Status: In mempool");
+            }
+            else
+            {
+                Console.WriteLine($"Status: Pending");
+            }
+
+            Console.WriteLine($"Amount {(tx.Sent > 0 ? "sent" : "received")} {tx.Amount.AsChia()} {prefix}");
+            var bech32 = new Bech32M(prefix);
+            Console.WriteLine($"To address: {bech32.PuzzleHashToAddress(tx.ToPuzzleHash)}");
+            Console.WriteLine($"Created at: {tx.CreatedAtDateTime.ToLocalTime()}");
+            Console.WriteLine("");
         }
     }
 }
