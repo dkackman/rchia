@@ -21,11 +21,11 @@ namespace rchia.Wallet
         {
             var wallets = await GetAllWalletInfo();
 
-            Console.WriteLine($"{"Id",-5} {"Name",-20} {"Type",-20} {"Fingerprint",-20}");
+            Console.WriteLine($"{"Id",-5} {"Name",-20} {"Type",-20} {"Fingerprint",-20}"); ;
 
             foreach (var wallet in wallets)
             {
-                Console.WriteLine($"{wallet.Wallet.Id,-5} {wallet.Wallet.Name,-20} {wallet.Wallet.Type,-20} {wallet.Fingerprint,-20}");
+                Console.WriteLine($"{wallet.Wallet.Id,-5} {wallet.Wallet.Name,-20} {wallet.Wallet.Type,-20} {wallet.Fingerprint,-20}"); ;
             }
         }
 
@@ -57,6 +57,22 @@ namespace rchia.Wallet
             var walletInfo = wallets.First(info => info.Fingerprint == fingerprint);
 
             var wallet = new chia.dotnet.Wallet(walletInfo.Wallet.Id, Service);
+
+            Console.WriteLine($"Wallet height: {await Service.GetHeightInfo(cts.Token)}");
+            var synced = await Service.GetSyncStatus(cts.Token);
+            Console.WriteLine($"Sync status: {(synced.Synced ? "Synced" : "Not synced")}");
+            Console.WriteLine($"Balances, fingerprint: {fingerprint}");
+
+            foreach (var summary in wallets)
+            {
+                var newWallet = new chia.dotnet.Wallet(summary.Wallet.Id, Service);
+                var (ConfirmedWalletBalance, UnconfirmedWalletBalance, SpendableBalance, PendingChange, MaxSendAmount, UnspentCoinCount, PendingCoinRemovalCount) = await newWallet.GetBalance(cts.Token);
+
+                Console.WriteLine($"Wallet ID {summary.Wallet.Id} type {summary.Wallet.Type} {summary.Wallet.Name}");
+                Console.WriteLine($"   -Total Balance: {((ulong)ConfirmedWalletBalance).AsChia()} {NetworkPrefix}");
+                Console.WriteLine($"   -Pending Total Balance: {((ulong)UnconfirmedWalletBalance).AsChia()} {NetworkPrefix}");
+                Console.WriteLine($"   -Spendable: {((ulong)SpendableBalance).AsChia()} {NetworkPrefix}");
+            }
         }
 
         public async Task Show(int id)
