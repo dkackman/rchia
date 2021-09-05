@@ -69,9 +69,9 @@ namespace rchia.Wallet
                 var (ConfirmedWalletBalance, UnconfirmedWalletBalance, SpendableBalance, PendingChange, MaxSendAmount, UnspentCoinCount, PendingCoinRemovalCount) = await newWallet.GetBalance(cts.Token);
 
                 Console.WriteLine($"Wallet ID {summary.Wallet.Id} type {summary.Wallet.Type} {summary.Wallet.Name}");
-                Console.WriteLine($"   -Total Balance: {((ulong)ConfirmedWalletBalance).AsChia()} {NetworkPrefix}");
-                Console.WriteLine($"   -Pending Total Balance: {((ulong)UnconfirmedWalletBalance).AsChia()} {NetworkPrefix}");
-                Console.WriteLine($"   -Spendable: {((ulong)SpendableBalance).AsChia()} {NetworkPrefix}");
+                Console.WriteLine($"   -Total Balance: {ConfirmedWalletBalance.AsChia()} {NetworkPrefix}");
+                Console.WriteLine($"   -Pending Total Balance: {UnconfirmedWalletBalance.AsChia()} {NetworkPrefix}");
+                Console.WriteLine($"   -Spendable: {SpendableBalance.AsChia()} {NetworkPrefix}");
             }
         }
 

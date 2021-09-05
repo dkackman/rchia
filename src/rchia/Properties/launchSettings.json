@@ -2,7 +2,7 @@
   "profiles": {
     "rchia": {
       "commandName": "Project",
-      "commandLineArgs": "wallet show -i 1"
+      "commandLineArgs": "show -s -ep farmer"
     }
   }
 }
