@@ -17,9 +17,50 @@ namespace rchia.Plots
         {
         }
 
+        public async Task Queue()
+        {
+            using var cts = new CancellationTokenSource(20000);
+
+            var plotter = new PlotterProxy((WebSocketRpcClient)Service.RpcClient, Service.OriginService);
+            var q = await plotter.RegisterPlotter(cts.Token);
+            var plots = from p in q
+                        group p by p.PlotState into g
+                        select g;
+
+            foreach (var group in plots)
+            {
+                Console.WriteLine($"{group.Count()} {group.Key}");
+                if (ConsoleMessage.Verbose)
+                {
+                    foreach (var item in group)
+                    {
+                        Console.WriteLine($"  {item.Id}");
+                    }
+                }
+            }
+        }
+
+
+        public async Task Log()
+        {
+            using var cts = new CancellationTokenSource(20000);
+
+            var plotter = new PlotterProxy((WebSocketRpcClient)Service.RpcClient, Service.OriginService);
+            var q = await plotter.RegisterPlotter(cts.Token);
+            var last = q.LastOrDefault(p => p.PlotState == PlotState.RUNNING);
+            if (last is null)
+            {
+                Console.WriteLine("There are no running plots");
+            }
+            else
+            {
+                Console.WriteLine(last.Log);
+            }
+        }
+
         public async Task List()
         {
-            using var cts = new CancellationTokenSource(10000);
+            using var cts = new CancellationTokenSource(20000);
 
             var plots = await Service.GetPlots(cts.Token);
 

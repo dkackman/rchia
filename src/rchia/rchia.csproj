@@ -24,7 +24,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="chia-dotnet" Version="0.5.2" />
+    <PackageReference Include="chia-dotnet" Version="0.5.3" />
     <PackageReference Include="HexMate" Version="0.0.3" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21308.1" />
   </ItemGroup>
