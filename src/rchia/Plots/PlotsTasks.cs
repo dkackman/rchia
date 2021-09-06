@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,6 +15,34 @@ namespace rchia.Plots
         public PlotsTasks(HarvesterProxy harvester, IConsoleMessage consoleMessage)
             : base(harvester, consoleMessage)
         {
+        }
+
+        public async Task List()
+        {
+            using var cts = new CancellationTokenSource(10000);
+
+            var plots = await Service.GetPlots(cts.Token);
+
+            ListPlots(plots.FailedToOpenFilenames, "failed to open");
+            ListPlots(plots.NotFoundFileNames, "not found");
+            ListPlots(plots.Plots.Select(p => p.Filename), "plots");
+
+            if (!ConsoleMessage.Verbose)
+            {
+                ConsoleMessage.Message("(use '-v/--verbose' to see file names)", true);
+            }
+        }
+
+        private void ListPlots(IEnumerable<string> plots, string msg)
+        {
+            Console.WriteLine($"{plots.Count()} {msg}.");
+            if (plots.Any() && ConsoleMessage.Verbose)
+            {
+                foreach (var plot in plots)
+                {
+                    Console.WriteLine(plot);
+                }
+            }
         }
 
         public async Task Remove(string dirname)
@@ -31,7 +61,7 @@ namespace rchia.Plots
         {
             Console.WriteLine("Directories where plots are being searched for:");
             Console.WriteLine("Note that subdirectories must be added manually");
-            Console.WriteLine("Add with 'chia plots add [dir]' and remove with 'chia plots remove [dir]' Scan and check plots with 'chia plots check'");
+            Console.WriteLine("Add with 'chia plots add [dir]' and remove with 'chia plots remove [dir]'");
             Console.WriteLine("");
 
             using var cts = new CancellationTokenSource(10000);

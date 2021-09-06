@@ -13,5 +13,8 @@ namespace rchia.Plots
 
         [Command("add", Description = "Adds a directory of plots")]
         public AddPlotsCommand Add { get; set; } = new();
+
+        [Command("list", Description = "List plots on this node")]
+        public ListPlotsCommand List { get; set; } = new();
     }
 }

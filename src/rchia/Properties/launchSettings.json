@@ -2,7 +2,7 @@
   "profiles": {
     "rchia": {
       "commandName": "Project",
-      "commandLineArgs": "show -s -ep farmer"
+      "commandLineArgs": "plots list"
     }
   }
 }
