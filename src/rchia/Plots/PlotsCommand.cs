@@ -14,7 +14,7 @@ namespace rchia.Plots
         [Command("list", Description = "List plots on this node")]
         public ListPlotsCommand List { get; set; } = new();
 
-        [Command("log", Description = "View the log for running plot jobs")]
+        [Command("log", Description = "View the log for running plot jobs or a specific plot")]
         public LogPlotsCommand Log { get; set; } = new();
 
         [Command("queue", Description = "View the plot queue")]

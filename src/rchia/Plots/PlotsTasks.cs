@@ -59,10 +59,10 @@ namespace rchia.Plots
 
             var plotter = new PlotterProxy((WebSocketRpcClient)Service.RpcClient, Service.OriginService);
             var q = await plotter.RegisterPlotter(cts.Token);
-            var running = q.Where(p => p.PlotState == PlotState.RUNNING);
 
             if (string.IsNullOrEmpty(plotId))
             {
+                var running = q.Where(p => p.PlotState == PlotState.RUNNING);
                 var count = running.Count();
                 Console.Write($"There {(count == 1 ? "is" : "are")} {count} running plot job{(count == 1 ? "" : "s")}");
                 foreach (var plot in running)
@@ -74,10 +74,10 @@ namespace rchia.Plots
             }
             else
             {
-                var plot = running.FirstOrDefault(p => p.Id == plotId);
+                var plot = q.FirstOrDefault(p => p.Id == plotId);
                 if (plot is null)
                 {
-                    throw new InvalidOperationException($"No running plot with an id of {plotId} was found");
+                    throw new InvalidOperationException($"No plot with an id of {plotId} was found");
                 }
 
                 Console.WriteLine(plot.Log);
