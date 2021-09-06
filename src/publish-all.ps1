@@ -1,4 +1,4 @@
-$version = "0.3.0-prerelease-01"
+$version = "0.3.3-prerelease-03"
 Remove-Item '.\publish' -Recurse
 
 
