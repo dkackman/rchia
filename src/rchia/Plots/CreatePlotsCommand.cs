@@ -6,10 +6,10 @@ using rchia.Endpoints;
 
 namespace rchia.Plots
 {
-    internal sealed class LogPlotsCommand : SharedOptions
+    internal sealed class CreatePlotsCommand : SharedOptions
     {
-        [Option("i", "id", Description = "The id of the plot log. Omit to see logs for all running plots.")]
-        public string? Id { get; set; }
+        [Option("d", "final-dir", Default = ".", Description = "Final directory for plots (relative or absolute)")]
+        public string FinalDir { get; set; } = ".";
 
         [CommandTarget]
         public override async Task<int> Run()
@@ -20,7 +20,7 @@ namespace rchia.Plots
                 var harvester = new HarvesterProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var tasks = new PlotsTasks(harvester, this);
 
-                await tasks.Log(Id);
+                await tasks.Add(FinalDir);
 
                 return 0;
             }

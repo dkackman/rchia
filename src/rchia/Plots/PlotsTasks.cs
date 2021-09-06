@@ -17,6 +17,19 @@ namespace rchia.Plots
         {
         }
 
+        public async Task CreatePlotsCommand(PlotterConfig config)
+        {
+            using var cts = new CancellationTokenSource(20000);
+
+            Console.WriteLine("Queueing plot...");
+            var webSocket = (WebSocketRpcClient)Service.RpcClient;
+            var plotter = new PlotterProxy(webSocket, Service.OriginService);
+            var q = await plotter.RegisterPlotter(cts.Token);
+            await plotter.StartPlotting(config, cts.Token);
+
+            Console.WriteLine("Plot queued. Run 'rchia plots queue -v' or 'rchia plots log' to check status");
+        }
+
         public async Task Queue()
         {
             using var cts = new CancellationTokenSource(20000);
@@ -40,21 +53,35 @@ namespace rchia.Plots
             }
         }
 
-
-        public async Task Log()
+        public async Task Log(string? plotId)
         {
             using var cts = new CancellationTokenSource(20000);
 
             var plotter = new PlotterProxy((WebSocketRpcClient)Service.RpcClient, Service.OriginService);
             var q = await plotter.RegisterPlotter(cts.Token);
-            var last = q.LastOrDefault(p => p.PlotState == PlotState.RUNNING);
-            if (last is null)
+            var running = q.Where(p => p.PlotState == PlotState.RUNNING);
+
+            if (string.IsNullOrEmpty(plotId))
             {
-                Console.WriteLine("There are no running plots");
+                var count = running.Count();
+                Console.Write($"There {(count == 1 ? "is" : "are")} {count} running plot job{(count == 1 ? "" : "s")}");
+                foreach (var plot in running)
+                {
+                    Console.WriteLine($"Log for plot {plot.Id}:");
+                    Console.WriteLine(plot.Log);
+                    Console.WriteLine("");
+                }
             }
             else
             {
-                Console.WriteLine(last.Log);
+                var plot = running.FirstOrDefault(p => p.Id == plotId);
+                if (plot is null)
+                {
+                    throw new InvalidOperationException($"No running plot with an id of {plotId} was found");
+                }
+
+                Console.WriteLine(plot.Log);
+                Console.WriteLine("");
             }
         }
 
