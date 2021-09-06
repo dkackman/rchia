@@ -12,7 +12,7 @@ namespace rchia.Wallet
         public uint Fingerprint { get; set; }
 
         [Option("i", "id", Default = 1, Description = "Id of the wallet to use")]
-        public int Id { get; set; } = 1;
+        public uint Id { get; set; } = 1;
 
         [CommandTarget]
         public override async Task<int> Run()

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +19,8 @@ namespace rchia.Wallet
 
         public async Task List()
         {
-            var wallets = await GetAllWalletInfo();
+            using var cts = new CancellationTokenSource(20000);
+            var wallets = await Service.GetWalletsEx(cts.Token);
 
             Console.WriteLine($"{"Id",-5} {"Name",-20} {"Type",-20} {"Fingerprint",-20}"); ;
 
@@ -30,31 +30,25 @@ namespace rchia.Wallet
             }
         }
 
-        private async Task<IEnumerable<(WalletInfo Wallet, uint Fingerprint)>> GetAllWalletInfo()
+        public async Task Show(uint id)
         {
-            using var cts = new CancellationTokenSource(10000);
-            var wallets = await Service.GetWallets(cts.Token);
+            using var cts = new CancellationTokenSource(30000);
 
-            if (wallets.Any())
+            var fingerprints = await Service.GetPublicKeys(cts.Token);
+
+            var skipped = fingerprints.Skip((int)id - 1);
+            if (!skipped.Any())
             {
-                var fingerprints = await Service.GetPublicKeys(cts.Token);
-
-                return wallets.Zip(fingerprints);
+                throw new InvalidOperationException($"No wallet with an id of {id}");
             }
 
-            throw new InvalidOperationException("No wallets");
-        }
-
-        public async Task Show(uint fingerprint)
-        {
-            using var cts = new CancellationTokenSource(20000);
-
+            var fingerprint = skipped.First();
             var fp = await Service.LogIn(fingerprint, true, cts.Token);
             var (GenesisInitialized, Synced, Syncing) = await Service.GetSyncStatus(cts.Token);
             var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
             var height = await Service.GetHeightInfo(cts.Token);
 
-            var wallets = await GetAllWalletInfo();
+            var wallets = await Service.GetWalletsEx(cts.Token);
             var walletInfo = wallets.First(info => info.Fingerprint == fingerprint);
 
             var wallet = new chia.dotnet.Wallet(walletInfo.Wallet.Id, Service);
@@ -76,63 +70,22 @@ namespace rchia.Wallet
             }
         }
 
-        public async Task Show(int id)
-        {
-            using var cts = new CancellationTokenSource(10000);
-
-            var fingerprints = await Service.GetPublicKeys(cts.Token);
-
-            var skipped = fingerprints.Skip(id - 1);
-            if (!skipped.Any())
-            {
-                throw new InvalidOperationException($"No wallet with an id of {id}");
-            }
-
-            await Show(skipped.First());
-        }
-
-        public async Task DeleteUnconfirmedTransactions(uint fingerprint)
+        public async Task DeleteUnconfirmedTransactions(uint id)
         {
             using var cts = new CancellationTokenSource(20000);
 
-            var wallets = await GetAllWalletInfo();
-            var walletInfo = wallets.First(info => info.Fingerprint == fingerprint);
-
-            var wallet = new chia.dotnet.Wallet(walletInfo.Wallet.Id, Service);
-            await wallet.DeleteUnconfirmedTransactions(cts.Token);
-
-            Console.WriteLine($"Successfully deleted all unconfirmed transactions for wallet id {walletInfo.Wallet.Id} on key {fingerprint}");
-        }
-
-        public async Task DeleteUnconfirmedTransactions(int id)
-        {
-            using var cts = new CancellationTokenSource(20000);
-
-            var wallet = new chia.dotnet.Wallet((uint)id, Service);
+            var wallet = new chia.dotnet.Wallet(id, Service);
             await wallet.DeleteUnconfirmedTransactions(cts.Token);
 
             Console.WriteLine($"Successfully deleted all unconfirmed transactions for wallet id {id}");
         }
 
-        public async Task GetAddress(uint fingerprint)
+        public async Task GetAddress(uint id, bool newAddress)
         {
             using var cts = new CancellationTokenSource(20000);
 
-            var wallets = await GetAllWalletInfo();
-            var walletInfo = wallets.First(info => info.Fingerprint == fingerprint);
-
-            var wallet = new chia.dotnet.Wallet(walletInfo.Wallet.Id, Service);
-            var address = await wallet.GetNextAddress(false, cts.Token);
-
-            Console.WriteLine(address);
-        }
-
-        public async Task GetAddress(int id)
-        {
-            using var cts = new CancellationTokenSource(20000);
-
-            var wallet = new chia.dotnet.Wallet((uint)id, Service);
-            var address = await wallet.GetNextAddress(false, cts.Token);
+            var wallet = new chia.dotnet.Wallet(id, Service);
+            var address = await wallet.GetNextAddress(newAddress, cts.Token);
 
             Console.WriteLine(address);
         }
@@ -145,21 +98,12 @@ namespace rchia.Wallet
             PrintTransaction(tx, NetworkPrefix);
         }
 
-        public async Task GetTransactions(uint fingerprint)
+
+        public async Task GetTransactions(uint id)
         {
             using var cts = new CancellationTokenSource(20000);
 
-            var wallets = await GetAllWalletInfo();
-            var walletInfo = wallets.First(info => info.Fingerprint == fingerprint);
-
-            await GetTransactions(walletInfo.Wallet.Id);
-        }
-
-        public async Task GetTransactions(int id)
-        {
-            using var cts = new CancellationTokenSource(20000);
-
-            var wallet = new chia.dotnet.Wallet((uint)id, Service);
+            var wallet = new chia.dotnet.Wallet(id, Service);
             var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
             var transactions = await wallet.GetTransactions(cts.Token);
 
@@ -198,6 +142,21 @@ namespace rchia.Wallet
             Console.WriteLine($"To address: {bech32.PuzzleHashToAddress(tx.ToPuzzleHash)}");
             Console.WriteLine($"Created at: {tx.CreatedAtDateTime.ToLocalTime()}");
             Console.WriteLine("");
+        }
+
+
+        public async Task Send(uint id, string address, decimal amount, decimal fee)
+        {
+            Console.WriteLine("Submitting transaction...");
+
+            using var cts = new CancellationTokenSource(20000);
+            var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
+            var wallet = new chia.dotnet.Wallet(id, Service);
+            var tx = await wallet.SendTransaction(address, amount.ToMojo(), fee.ToMojo(), cts.Token);
+
+            PrintTransaction(tx, NetworkPrefix);
+
+            Console.WriteLine($"Do 'rchia wallet get-transaction -tx {tx.TransactionId}' to get status");
         }
     }
 }

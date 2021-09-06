@@ -22,18 +22,8 @@ namespace rchia.Wallet
 
         [Command("get-transactions", Description = "Get all transactions")]
         public GetTransactionsCommand GetTransactions { get; set; } = new();
+
+        [Command("send", Description = "Send chia to another wallet")]
+        public SendTransactionCommand Send { get; set; } = new();
     }
 }
-
-
-/*
- *   delete_unconfirmed_transactions
-                                  Deletes all unconfirmed transactions for
-                                  this wallet ID
-
-  get_address                     Get a wallet receive address
-  get_transaction                 Get a transaction
-  get_transactions                Get all transactions
-  send                            Send chia to another wallet
-  show                            Show wallet information
-*/

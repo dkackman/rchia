@@ -12,7 +12,10 @@ namespace rchia.Wallet
         public uint Fingerprint { get; set; }
 
         [Option("i", "id", Default = 1, Description = "Id of the wallet to use")]
-        public int Id { get; set; } = 1;
+        public uint Id { get; set; } = 1;
+
+        [Option("n", "new", Default = false, Description = "Flag indicating whether to create a new address")]
+        public bool New { get; set; }
 
         [CommandTarget]
         public override async Task<int> Run()
@@ -25,11 +28,11 @@ namespace rchia.Wallet
 
                 if (Fingerprint > 0)
                 {
-                    await tasks.GetAddress(Fingerprint);
+                    await tasks.GetAddress(Fingerprint, New);
                 }
                 else
                 {
-                    await tasks.GetAddress(Id);
+                    await tasks.GetAddress(Id, New);
                 }
 
                 return 0;
