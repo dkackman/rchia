@@ -1,6 +1,7 @@
 ﻿using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.Parsing;
+using System.CommandLine.Rendering;
 using System.Threading.Tasks;
 using System.Reflection;
 using rchia.Commands;
@@ -19,6 +20,7 @@ namespace rchia
         {
             return await new CommandLineBuilder()
                 .UseDefaults()
+                .UseAnsiTerminalWhenAvailable()
                 .UseAttributes(Assembly.GetExecutingAssembly())
                 .Build()
                 .InvokeAsync(args);

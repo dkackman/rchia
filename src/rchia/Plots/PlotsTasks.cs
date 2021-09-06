@@ -17,11 +17,12 @@ namespace rchia.Plots
         {
         }
 
-        public async Task CreatePlotsCommand(PlotterConfig config)
+        public async Task CreatePlots(PlotterConfig config)
         {
             using var cts = new CancellationTokenSource(20000);
 
             Console.WriteLine("Queueing plot...");
+
             var webSocket = (WebSocketRpcClient)Service.RpcClient;
             var plotter = new PlotterProxy(webSocket, Service.OriginService);
             var q = await plotter.RegisterPlotter(cts.Token);
