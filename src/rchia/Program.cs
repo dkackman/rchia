@@ -2,8 +2,8 @@
 using System.CommandLine.Builder;
 using System.CommandLine.Parsing;
 using System.CommandLine.Rendering;
-using System.Threading.Tasks;
 using System.Reflection;
+using System.Threading.Tasks;
 using rchia.Commands;
 using rchia.Endpoints;
 

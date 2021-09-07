@@ -1,10 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Diagnostics;
-
 using chia.dotnet;
 using rchia.Commands;
 

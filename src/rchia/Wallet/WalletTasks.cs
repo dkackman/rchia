@@ -2,11 +2,9 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
 using chia.dotnet;
-
-using rchia.Commands;
 using rchia.Bech32;
+using rchia.Commands;
 
 namespace rchia.Wallet
 {
