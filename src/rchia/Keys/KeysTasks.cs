@@ -63,7 +63,7 @@ namespace rchia.Keys
         {
             Console.WriteLine("Showing all public keys derived from your private keys:");
 
-            using var cts = new CancellationTokenSource(15000);
+            using var cts = new CancellationTokenSource(20000);
             var keys = await Service.GetPublicKeys(cts.Token);
 
             if (keys.Any())
@@ -74,7 +74,7 @@ namespace rchia.Keys
                 foreach (var fingerprint in keys.Take(1))
                 {
                     Console.WriteLine($"Fingerprint: {fingerprint}");
-                    using var cts1 = new CancellationTokenSource(15000);
+                    using var cts1 = new CancellationTokenSource(20000);
                     var (Fingerprint, Sk, Pk, FarmerPk, PoolPk, Seed) = await Service.GetPrivateKey(fingerprint, cts1.Token);
 
                     Console.WriteLine($"Master public key (m): {Pk}");

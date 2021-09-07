@@ -11,7 +11,7 @@ namespace rchia.Wallet
         public string TxId { get; set; } = string.Empty;
 
         [CommandTarget]
-        public override async Task<int> Run()
+        public async override Task<int> Run()
         {
             return await Execute(async () =>
             {

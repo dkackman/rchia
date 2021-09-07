@@ -8,7 +8,7 @@ namespace rchia.Wallet
     internal sealed class ListWalletsCommand : SharedOptions
     {
         [CommandTarget]
-        public override async Task<int> Run()
+        public async override Task<int> Run()
         {
             return await Execute(async () =>
             {

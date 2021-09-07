@@ -11,7 +11,7 @@ namespace rchia.Plots
         public string FinalDir { get; set; } = ".";
 
         [CommandTarget]
-        public override async Task<int> Run()
+        public async override Task<int> Run()
         {
             return await Execute(async () =>
             {

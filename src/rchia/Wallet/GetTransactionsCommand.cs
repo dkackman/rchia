@@ -14,7 +14,7 @@ namespace rchia.Wallet
         public uint Id { get; set; } = 1;
 
         [CommandTarget]
-        public override async Task<int> Run()
+        public async override Task<int> Run()
         {
             return await Execute(async () =>
             {

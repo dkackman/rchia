@@ -17,7 +17,7 @@ namespace rchia.Netspace
 
         public async Task Netspace(string? start, uint delta)
         {
-            using var cts = new CancellationTokenSource(15000);
+            using var cts = new CancellationTokenSource(20000);
 
             uint newer_block_height = 0;
             if (string.IsNullOrEmpty(start))

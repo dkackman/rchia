@@ -16,7 +16,7 @@ namespace rchia
             ClientFactory.Initialize("rchia");
         }
 
-        private static async Task<int> Main(string[] args)
+        private async static Task<int> Main(string[] args)
         {
             return await new CommandLineBuilder()
                 .UseDefaults()

@@ -8,7 +8,7 @@ namespace rchia.Plots
     internal sealed class PlotQueueCommand : SharedOptions
     {
         [CommandTarget]
-        public override async Task<int> Run()
+        public async override Task<int> Run()
         {
             return await Execute(async () =>
             {

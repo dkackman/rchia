@@ -11,7 +11,7 @@ namespace rchia.Endpoints
         public string Id { get; set; } = string.Empty;
 
         [CommandTarget]
-        public override async Task<int> Run()
+        public async override Task<int> Run()
         {
             return await Execute(async () =>
             {

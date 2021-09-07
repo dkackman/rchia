@@ -10,7 +10,7 @@ namespace rchia.Status
     internal sealed class PingCommand : SharedOptions
     {
         [CommandTarget]
-        public override async Task<int> Run()
+        public async override Task<int> Run()
         {
             return await Execute(async () =>
             {

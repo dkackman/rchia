@@ -7,7 +7,7 @@ namespace rchia.Endpoints
     internal sealed class ListEndpointsCommand : BaseCommand
     {
         [CommandTarget]
-        public override async Task<int> Run()
+        public async override Task<int> Run()
         {
             return await Execute(async () =>
             {
