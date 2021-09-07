@@ -10,7 +10,7 @@ namespace rchia.Farm
     internal sealed class SummaryCommand : SharedOptions
     {
         [CommandTarget]
-        public override async Task<int> Run()
+        public async override Task<int> Run()
         {
             return await Execute(async () =>
             {
