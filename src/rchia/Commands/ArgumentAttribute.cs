@@ -15,8 +15,7 @@ namespace rchia.Commands
 
         public int Index { get; }
 
-        public string Name
-        {
+        public string Name {
             get => name;
             set => name = value ?? throw new ArgumentNullException(nameof(value));
         }
