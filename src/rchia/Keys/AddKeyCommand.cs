@@ -20,7 +20,7 @@ namespace rchia.Keys
         [CommandTarget]
         public override async Task<int> Run()
         {
-            try
+            return await Execute(async () =>
             {
                 var mnemonic = Mnemonic;
 
@@ -42,15 +42,7 @@ namespace rchia.Keys
                 var commands = new KeysTasks(wallet, this);
 
                 await commands.Add(Mnemonic);
-
-                return 0;
-            }
-            catch (Exception e)
-            {
-                Message(e);
-
-                return -1;
-            }
+            });
         }
     }
 }

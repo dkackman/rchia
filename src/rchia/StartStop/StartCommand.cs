@@ -20,7 +20,7 @@ namespace rchia.StartStop
         [CommandTarget]
         public override async Task<int> Run()
         {
-            try
+            return await Execute(async () =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Daemon);
                 var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
@@ -39,15 +39,7 @@ namespace rchia.StartStop
                 {
                     throw new InvalidOperationException("Unrecognized command");
                 }
-
-                return 0;
-            }
-            catch (Exception e)
-            {
-                Message(e);
-
-                return -1;
-            }
+            });
         }
     }
 }

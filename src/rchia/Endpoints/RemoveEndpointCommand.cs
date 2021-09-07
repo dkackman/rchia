@@ -13,7 +13,7 @@ namespace rchia.Endpoints
         [CommandTarget]
         public override async Task<int> Run()
         {
-            try
+            return await Execute(async () =>
             {
                 var config = Settings.GetConfig();
                 var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
@@ -30,14 +30,7 @@ namespace rchia.Endpoints
                 Console.WriteLine($"Endpoint {Id} removed");
 
                 await Task.CompletedTask;
-                return 0;
-            }
-            catch (Exception e)
-            {
-                Message(e);
-
-                return -1;
-            }
+            });
         }
     }
 }

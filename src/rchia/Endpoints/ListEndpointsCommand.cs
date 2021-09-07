@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 using rchia.Commands;
 
@@ -10,7 +9,7 @@ namespace rchia.Endpoints
         [CommandTarget]
         public override async Task<int> Run()
         {
-            try
+            return await Execute(async () =>
             {
                 var config = Settings.GetConfig();
                 var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
@@ -19,14 +18,7 @@ namespace rchia.Endpoints
                 EndpointTasks.List(endpoints);
 
                 await Task.CompletedTask;
-                return 0;
-            }
-            catch (Exception e)
-            {
-                Message(e);
-
-                return -1;
-            }
+            });
         }
     }
 }

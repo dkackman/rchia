@@ -29,7 +29,7 @@ namespace rchia.Wallet
         [CommandTarget]
         public override async Task<int> Run()
         {
-            try
+            return await Execute(async () =>
             {
                 if (string.IsNullOrEmpty(Address))
                 {
@@ -58,22 +58,14 @@ namespace rchia.Wallet
 
                 if (Fingerprint > 0)
                 {
-                    var id = await wallet.GetWalletId(Fingerprint);
-                    await tasks.Send(Id, Address, Amount, Fee);
+                    var idForFingerprint = await wallet.GetWalletId(Fingerprint);
+                    await tasks.Send(idForFingerprint, Address, Amount, Fee);
                 }
                 else
                 {
                     await tasks.Send(Id, Address, Amount, Fee);
                 }
-
-                return 0;
-            }
-            catch (Exception e)
-            {
-                Message(e);
-
-                return -1;
-            }
+            });
         }
     }
 }

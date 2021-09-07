@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 using rchia.Endpoints;
@@ -20,7 +19,7 @@ namespace rchia.Wallet
         [CommandTarget]
         public override async Task<int> Run()
         {
-            try
+            return await Execute(async () =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.Wallet);
                 var wallet = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
@@ -28,21 +27,14 @@ namespace rchia.Wallet
 
                 if (Fingerprint > 0)
                 {
-                    await tasks.GetAddress(Fingerprint, New);
+                    var idForFingerprint = await wallet.GetWalletId(Fingerprint);
+                    await tasks.GetAddress(idForFingerprint, New);
                 }
                 else
                 {
                     await tasks.GetAddress(Id, New);
                 }
-
-                return 0;
-            }
-            catch (Exception e)
-            {
-                Message(e);
-
-                return -1;
-            }
+            });
         }
     }
 }

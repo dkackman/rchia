@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 using rchia.Endpoints;
@@ -14,7 +13,7 @@ namespace rchia.Keys
         [CommandTarget]
         public override async Task<int> Run()
         {
-            try
+            return await Execute(async () =>
             {
                 if (Confirm("Deleting all of your keys CANNOT be undone.", "Are you sure you want to delete all of your keys?", Force))
                 {
@@ -26,15 +25,7 @@ namespace rchia.Keys
                     await tasks.DeleteAll();
                     Message("All keys deleted.");
                 }
-
-                return 0;
-            }
-            catch (Exception e)
-            {
-                Message(e);
-
-                return -1;
-            }
+            });
         }
     }
 }

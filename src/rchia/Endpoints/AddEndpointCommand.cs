@@ -23,7 +23,7 @@ namespace rchia.Endpoints
         [CommandTarget]
         public override async Task<int> Run()
         {
-            try
+            return await Execute(async () =>
             {
                 var config = Settings.GetConfig();
                 var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
@@ -59,18 +59,9 @@ namespace rchia.Endpoints
                     Console.WriteLine(endpoint);
 
                     await Task.CompletedTask;
-                    return 0;
+
                 }
-
-                Message("Wrong arguments to the add subcommand", true);
-                return -1;
-            }
-            catch (Exception e)
-            {
-                Message(e);
-
-                return -1;
-            }
+            });
         }
     }
 }

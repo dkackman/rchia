@@ -23,7 +23,7 @@ namespace rchia.StartStop
         [CommandTarget]
         public override async Task<int> Run()
         {
-            try
+            return await Execute(async () =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Daemon);
                 var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
@@ -39,7 +39,7 @@ namespace rchia.StartStop
                     await tasks.Stop(ServiceGroup);
                     if (Daemon)
                     {
-                        if (Confirm("The daemon cannot be restared remotely. You will need shell access to the node in orer to restart it.", "Are you sure you want to stop the daemon?", Force))
+                        if (Confirm("The daemon cannot be restared remotely. You will need shell access to the node in order to restart it.", "Are you sure you want to stop the daemon?", Force))
                         {
                             await tasks.StopDeamon();
                         }
@@ -49,15 +49,7 @@ namespace rchia.StartStop
                 {
                     throw new InvalidOperationException("Unrecognized command");
                 }
-
-                return 0;
-            }
-            catch (Exception e)
-            {
-                Message(e);
-
-                return -1;
-            }
+            });
         }
     }
 }

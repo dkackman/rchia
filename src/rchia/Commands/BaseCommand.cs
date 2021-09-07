@@ -52,5 +52,21 @@ namespace rchia.Commands
         }
 
         public abstract Task<int> Run();
+
+        protected async Task<int> Execute(Func<Task> run)
+        {
+            try
+            {
+                await run();
+
+                return 0;
+            }
+            catch (Exception e)
+            {
+                Message(e);
+
+                return -1;
+            }
+        }
     }
 }

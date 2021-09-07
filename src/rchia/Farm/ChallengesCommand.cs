@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 using chia.dotnet;
 
@@ -16,22 +15,14 @@ namespace rchia.Farm
         [CommandTarget]
         public override async Task<int> Run()
         {
-            try
-            {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Daemon);
-                var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new FarmTasks(daemon, this);
+            return await Execute(async () =>
+                {
+                    using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Daemon);
+                    var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
+                    var tasks = new FarmTasks(daemon, this);
 
-                await tasks.Challenges(Limit);
-
-                return 0;
-            }
-            catch (Exception e)
-            {
-                Message(e);
-
-                return -1;
-            }
+                    await tasks.Challenges(Limit);
+                });
         }
     }
 }

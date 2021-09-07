@@ -19,7 +19,7 @@ namespace rchia.Keys
         [CommandTarget]
         public override async Task<int> Run()
         {
-            try
+            return await Execute(async () =>
             {
                 if (Fingerprint == 0)
                 {
@@ -35,15 +35,7 @@ namespace rchia.Keys
                     Message($"Deleting key {Fingerprint}...");
                     await commands.Delete(Fingerprint);
                 }
-
-                return 0;
-            }
-            catch (Exception e)
-            {
-                Message(e);
-
-                return -1;
-            }
+            });
         }
     }
 }
