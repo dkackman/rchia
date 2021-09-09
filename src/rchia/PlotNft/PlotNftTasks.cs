@@ -15,6 +15,23 @@ namespace rchia.PlotNft
         {
         }
 
+        public async Task GetLoginLink(string launcherId)
+        {
+            using var cts = new CancellationTokenSource(30000);
+
+            var farmer = new FarmerProxy(Service.RpcClient, Service.OriginService);
+            var link = await farmer.GetPoolLoginLink(launcherId, cts.Token);
+
+            if (string.IsNullOrEmpty(link))
+            {
+                Console.WriteLine("Was not able to get login link.");
+            }
+            else
+            {
+                Console.WriteLine(link);
+            }
+        }
+
         public async Task Show(uint? walletId)
         {
             using var cts = new CancellationTokenSource(30000);
