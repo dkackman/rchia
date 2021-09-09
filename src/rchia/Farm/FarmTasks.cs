@@ -17,7 +17,7 @@ namespace rchia.Farm
 
         public async Task Challenges(int limit)
         {
-            using var cts = new CancellationTokenSource(10000);
+            using var cts = new CancellationTokenSource(20000);
 
             var farmer = new FarmerProxy(Service.RpcClient, Service.OriginService);
             var signagePoints = await farmer.GetSignagePoints(cts.Token);

@@ -2,7 +2,7 @@
   "profiles": {
     "rchia": {
       "commandName": "Project",
-      "commandLineArgs": "plots log"
+      "commandLineArgs": "plotnft show -ep farmer"
     }
   }
 }

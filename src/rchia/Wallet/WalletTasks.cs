@@ -30,14 +30,14 @@ namespace rchia.Wallet
 
         public async Task<uint> GetWalletId(uint fingerprint)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(20000);
 
             return await Service.GetWalletId(fingerprint, cts.Token);
         }
 
         public async Task Show(uint id)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(20000);
 
             var fingerprints = await Service.GetPublicKeys(cts.Token);
 

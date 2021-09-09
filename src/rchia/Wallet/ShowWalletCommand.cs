@@ -5,14 +5,8 @@ using rchia.Endpoints;
 
 namespace rchia.Wallet
 {
-    internal sealed class ShowWalletCommand : SharedOptions
+    internal sealed class ShowWalletCommand : WalletCommand
     {
-        [Option("fp", "fingerprint", Description = "Set the fingerprint to specify which wallet to use")]
-        public uint Fingerprint { get; set; }
-
-        [Option("i", "id", Default = 1, Description = "Id of the wallet to use")]
-        public uint Id { get; set; } = 1;
-
         [CommandTarget]
         public async override Task<int> Run()
         {
@@ -22,15 +16,7 @@ namespace rchia.Wallet
                 var wallet = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var tasks = new WalletTasks(wallet, this);
 
-                if (Fingerprint > 0)
-                {
-                    var idForFingerprint = await wallet.GetWalletId(Fingerprint);
-                    await tasks.Show(idForFingerprint);
-                }
-                else
-                {
-                    await tasks.Show(Id);
-                }
+                await tasks.Show(await GetWalletId(wallet));
             });
         }
     }

@@ -30,11 +30,11 @@ namespace rchia.StartStop
                     if (isRunnnig && restart)
                     {
                         Console.WriteLine($"Stopping {service}...");
-                        using var cts2 = new CancellationTokenSource(30000);
+                        using var cts2 = new CancellationTokenSource(20000);
                         await Service.StopService(service, cts2.Token);
                     }
                     Console.WriteLine($"Starting {service}...");
-                    using var cts3 = new CancellationTokenSource(30000);
+                    using var cts3 = new CancellationTokenSource(20000);
                     await Service.StartService(service, cts3.Token);
                 }
             }
@@ -50,7 +50,7 @@ namespace rchia.StartStop
                 if (isRunnnig)
                 {
                     Console.WriteLine($"Stopping {service}...");
-                    using var cts3 = new CancellationTokenSource(30000);
+                    using var cts3 = new CancellationTokenSource(20000);
                     await Service.StopService(service, cts3.Token);
                 }
                 else

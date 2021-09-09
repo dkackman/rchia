@@ -18,7 +18,7 @@ namespace rchia.Keys
 
         public async Task Add(IEnumerable<string> mnemonic)
         {
-            using var cts = new CancellationTokenSource(10000);
+            using var cts = new CancellationTokenSource(20000);
             var fingerprint = await Service.AddKey(mnemonic, true, cts.Token);
 
             Console.WriteLine($"Added private key with public key fingerprint {fingerprint}");
@@ -26,7 +26,7 @@ namespace rchia.Keys
 
         public async Task Delete(uint fingerprint)
         {
-            using var cts = new CancellationTokenSource(10000);
+            using var cts = new CancellationTokenSource(20000);
             await Service.DeleteKey(fingerprint, cts.Token);
 
             Console.WriteLine($"Deleted the key with fingerprint {fingerprint}");
@@ -34,13 +34,13 @@ namespace rchia.Keys
 
         public async Task DeleteAll()
         {
-            using var cts = new CancellationTokenSource(10000);
+            using var cts = new CancellationTokenSource(20000);
             await Service.DeleteAllKeys(cts.Token);
         }
 
         public async Task Generate()
         {
-            using var cts = new CancellationTokenSource(10000);
+            using var cts = new CancellationTokenSource(20000);
             Console.WriteLine("Generating private key.");
 
             var mnemonic = await Service.GenerateMnemonic(cts.Token);
@@ -51,7 +51,7 @@ namespace rchia.Keys
 
         public async Task GenerateAndPrint()
         {
-            using var cts = new CancellationTokenSource(10000);
+            using var cts = new CancellationTokenSource(20000);
             var mnemonic = await Service.GenerateMnemonic(cts.Token);
 
             Console.WriteLine("Generating private key. Mnemonic (24 secret words):");

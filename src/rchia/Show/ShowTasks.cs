@@ -188,7 +188,7 @@ namespace rchia.Show
                 var block = await Service.GetBlockRecord(state.Peak.HeaderHash, cts.Token);
                 while (block is not null && blocks.Count < 10 && block.Height > 0)
                 {
-                    using var cts1 = new CancellationTokenSource(10000);
+                    using var cts1 = new CancellationTokenSource(20000);
                     blocks.Add(block);
                     block = await Service.GetBlockRecord(block.PrevHash, cts.Token);
                 }

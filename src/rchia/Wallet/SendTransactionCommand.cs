@@ -6,14 +6,8 @@ using rchia.Endpoints;
 
 namespace rchia.Wallet
 {
-    internal sealed class SendTransactionCommand : SharedOptions
+    internal sealed class SendTransactionCommand : WalletCommand
     {
-        [Option("fp", "fingerprint", Description = "Set the fingerprint to specify which wallet to use")]
-        public uint Fingerprint { get; set; }
-
-        [Option("i", "id", Default = 1, Description = "Id of the wallet to use")]
-        public uint Id { get; set; } = 1;
-
         [Option("a", "amount", IsRequired = true, Description = "How much chia to send, in XCH")]
         public decimal Amount { get; set; }
 
@@ -56,15 +50,7 @@ namespace rchia.Wallet
                 var wallet = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var tasks = new WalletTasks(wallet, this);
 
-                if (Fingerprint > 0)
-                {
-                    var idForFingerprint = await wallet.GetWalletId(Fingerprint);
-                    await tasks.Send(idForFingerprint, Address, Amount, Fee);
-                }
-                else
-                {
-                    await tasks.Send(Id, Address, Amount, Fee);
-                }
+                await tasks.Send(await GetWalletId(wallet), Address, Amount, Fee);
             });
         }
     }
