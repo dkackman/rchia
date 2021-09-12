@@ -17,7 +17,7 @@ namespace rchia.Status
         }
         public async Task Ping()
         {
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
 
             Console.WriteLine("Pinging the daemon...");
 

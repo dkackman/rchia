@@ -17,7 +17,7 @@ namespace rchia.Farm
 
         public async Task Challenges(int limit)
         {
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
 
             var farmer = new FarmerProxy(Service.RpcClient, Service.OriginService);
             var signagePoints = await farmer.GetSignagePoints(cts.Token);
@@ -38,7 +38,7 @@ namespace rchia.Farm
             var fullNode = new FullNodeProxy(Service.RpcClient, Service.OriginService);
             var wallet = new WalletProxy(Service.RpcClient, Service.OriginService);
 
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
 
             var all_harvesters = await farmer.GetHarvesters(cts.Token);
             var blockchain_state = await fullNode.GetBlockchainState(cts.Token);

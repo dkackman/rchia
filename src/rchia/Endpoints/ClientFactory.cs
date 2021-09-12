@@ -24,7 +24,7 @@ namespace rchia.Endpoints
 
         public async Task TestConnection(EndpointInfo endpoint)
         {
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
 
             using var rpcClient = await CreateRpcClient(endpoint);
         }
@@ -54,7 +54,7 @@ namespace rchia.Endpoints
 
         private async Task<WebSocketRpcClient> CreateWebSocketClient(EndpointInfo endpoint)
         {
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
 
             var rpcClient = new WebSocketRpcClient(endpoint);
             await rpcClient.Connect(cts.Token);

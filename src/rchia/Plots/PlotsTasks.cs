@@ -17,7 +17,7 @@ namespace rchia.Plots
 
         public async Task CreatePlots(PlotterConfig config)
         {
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
 
             Console.WriteLine("Queueing plot...");
 
@@ -31,7 +31,7 @@ namespace rchia.Plots
 
         public async Task Queue()
         {
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
 
             var plotter = new PlotterProxy((WebSocketRpcClient)Service.RpcClient, Service.OriginService);
             var q = await plotter.RegisterPlotter(cts.Token);
@@ -54,7 +54,7 @@ namespace rchia.Plots
 
         public async Task Log(string? plotId)
         {
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
 
             var plotter = new PlotterProxy((WebSocketRpcClient)Service.RpcClient, Service.OriginService);
             var q = await plotter.RegisterPlotter(cts.Token);
@@ -86,7 +86,7 @@ namespace rchia.Plots
 
         public async Task List()
         {
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
 
             var plots = await Service.GetPlots(cts.Token);
 
@@ -114,13 +114,13 @@ namespace rchia.Plots
 
         public async Task Remove(string dirname)
         {
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
             await Service.RemovePlotDirectory(dirname, cts.Token);
         }
 
         public async Task Add(string dirname)
         {
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
             await Service.AddPlotDirectory(dirname, cts.Token);
         }
 
@@ -131,7 +131,7 @@ namespace rchia.Plots
             Console.WriteLine("Add with 'chia plots add [dir]' and remove with 'chia plots remove [dir]'");
             Console.WriteLine("");
 
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
             var directories = await Service.GetPlotDirectories(cts.Token);
             foreach (var path in directories)
             {

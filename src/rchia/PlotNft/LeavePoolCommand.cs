@@ -5,8 +5,11 @@ using rchia.Endpoints;
 
 namespace rchia.PlotNft
 {
-    internal sealed class ShowPlotNftCommand : WalletCommand
+    internal sealed class LeavePoolCommand : WalletCommand
     {
+        [Option("f", "force", Default = false, Description = "Do not prompt before nft creation")]
+        public bool Force { get; set; }
+
         [CommandTarget]
         public async override Task<int> Run()
         {
@@ -16,7 +19,10 @@ namespace rchia.PlotNft
                 var wallet = await LoginToWallet(rpcClient);
                 var tasks = new PlotNftTasks(wallet, this);
 
-                await tasks.Show(Id);
+                if (Confirm($"Will start self - farming with Plot NFT on wallet id {Id}", "Are you sure?", Force))
+                {
+                    await tasks.LeavePool(Id);
+                }
             });
         }
     }

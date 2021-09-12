@@ -13,10 +13,10 @@ namespace rchia.Wallet
             return await Execute(async () =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.Wallet);
-                var wallet = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
+                var wallet = await LoginToWallet(rpcClient);
                 var tasks = new WalletTasks(wallet, this);
 
-                await tasks.GetTransactions(await GetWalletId(wallet));
+                await tasks.GetTransactions(Id);
             });
         }
     }

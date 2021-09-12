@@ -19,7 +19,7 @@ namespace rchia.Show
         {
             ConsoleMessage.Message($"Adding {hostUri}...");
 
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
             var uri = new Uri("https://" + hostUri); // need to add a scheme so uri can be parsed
             await Service.OpenConnection(uri.Host, uri.Port, cts.Token);
 
@@ -29,7 +29,7 @@ namespace rchia.Show
         public async Task BlockHeaderHashByHeight(uint height)
         {
             ConsoleMessage.Message($"Retrieving header hash at {height}...");
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
             var block = await Service.GetBlockRecordByHeight(height, cts.Token);
             Console.WriteLine(block.HeaderHash);
         }
@@ -38,7 +38,7 @@ namespace rchia.Show
         {
             ConsoleMessage.Message($"Retrieving block {headerHash}...");
 
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
             var full_block = await Service.GetBlock(headerHash, cts.Token);
             var block = await Service.GetBlockRecord(headerHash, cts.Token);
             var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
@@ -86,7 +86,7 @@ namespace rchia.Show
 
         public async Task Connections()
         {
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
             var connections = await Service.GetConnections(cts.Token);
 
             Console.WriteLine("Connections:");
@@ -124,7 +124,7 @@ namespace rchia.Show
         {
             ConsoleMessage.Message("Stopping the full node...");
 
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
             await Service.StopNode(cts.Token);
         }
 
@@ -132,7 +132,7 @@ namespace rchia.Show
         {
             ConsoleMessage.Message($"Removing {nodeId}...");
 
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
             await Service.CloseConnection(nodeId, cts.Token);
 
             ConsoleMessage.Message($"Removed {nodeId}.");
@@ -188,7 +188,7 @@ namespace rchia.Show
                 var block = await Service.GetBlockRecord(state.Peak.HeaderHash, cts.Token);
                 while (block is not null && blocks.Count < 10 && block.Height > 0)
                 {
-                    using var cts1 = new CancellationTokenSource(20000);
+                    using var cts1 = new CancellationTokenSource(30000);
                     blocks.Add(block);
                     block = await Service.GetBlockRecord(block.PrevHash, cts.Token);
                 }

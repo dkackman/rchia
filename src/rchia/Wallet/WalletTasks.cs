@@ -17,67 +17,68 @@ namespace rchia.Wallet
 
         public async Task List()
         {
-            using var cts = new CancellationTokenSource(20000);
-            var wallets = await Service.GetWalletsEx(cts.Token);
-
-            Console.WriteLine($"{"Id",-5} {"Name",-20} {"Type",-20} {"Fingerprint",-20}"); ;
-
-            foreach (var wallet in wallets)
+            using var cts = new CancellationTokenSource(30000);
+            var keys = await Service.GetPublicKeys(cts.Token);
+            if (!keys.Any())
             {
-                Console.WriteLine($"{wallet.Wallet.Id,-5} {wallet.Wallet.Name,-20} {wallet.Wallet.Type,-20} {wallet.Fingerprint,-20}"); ;
+                throw new InvalidOperationException("No public keys found. You'll need to run `rchia keys generate`");
             }
-        }
 
-        public async Task<uint> GetWalletId(uint fingerprint)
-        {
-            using var cts = new CancellationTokenSource(20000);
+            foreach (var fingerprint in keys)
+            {
+                Console.WriteLine($"Fingerprint: {fingerprint}");
 
-            return await Service.GetWalletId(fingerprint, cts.Token);
+                using var cts1 = new CancellationTokenSource(30000);
+                _ = Service.LogIn(fingerprint, false, cts1.Token);
+                var wallets = await Service.GetWallets(cts1.Token);
+
+                Console.WriteLine($"{"Id",-5} {"Name",-20} {"Type",-20}"); ;
+
+                foreach (var wallet in wallets)
+                {
+                    Console.WriteLine($"{wallet.Id,-5} {wallet.Name,-20} {wallet.Type,-20}"); ;
+                }
+                Console.WriteLine("");
+            }
         }
 
         public async Task Show(uint id)
         {
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
 
-            var fingerprints = await Service.GetPublicKeys(cts.Token);
-
-            var skipped = fingerprints.Skip((int)id - 1);
-            if (!skipped.Any())
-            {
-                throw new InvalidOperationException($"No wallet with an id of {id}");
-            }
-
-            var fingerprint = skipped.First();
-            var fp = await Service.LogIn(fingerprint, true, cts.Token);
             var (GenesisInitialized, Synced, Syncing) = await Service.GetSyncStatus(cts.Token);
             var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
             var height = await Service.GetHeightInfo(cts.Token);
 
-            var wallets = await Service.GetWalletsEx(cts.Token);
-            var walletInfo = wallets.First(info => info.Fingerprint == fingerprint);
-
-            var wallet = new chia.dotnet.Wallet(walletInfo.Wallet.Id, Service);
+            var wallets = await Service.GetWallets(cts.Token);
 
             Console.WriteLine($"Wallet height: {await Service.GetHeightInfo(cts.Token)}");
             var synced = await Service.GetSyncStatus(cts.Token);
             Console.WriteLine($"Sync status: {(synced.Synced ? "Synced" : "Not synced")}");
-            Console.WriteLine($"Balances, fingerprint: {fingerprint}");
+            Console.WriteLine($"Balances, fingerprint: {Service.Fingerprint}");
 
             foreach (var summary in wallets)
             {
-                var newWallet = new chia.dotnet.Wallet(summary.Wallet.Id, Service);
+                var newWallet = new chia.dotnet.Wallet(summary.Id, Service);
                 var (ConfirmedWalletBalance, UnconfirmedWalletBalance, SpendableBalance, PendingChange, MaxSendAmount, UnspentCoinCount, PendingCoinRemovalCount) = await newWallet.GetBalance(cts.Token);
 
-                Console.WriteLine($"Wallet ID {summary.Wallet.Id} type {summary.Wallet.Type} {summary.Wallet.Name}");
+                Console.WriteLine($"Wallet ID {summary.Id} type {summary.Type} {summary.Name}");
                 Console.WriteLine($"   -Total Balance: {ConfirmedWalletBalance.AsChia()} {NetworkPrefix}");
                 Console.WriteLine($"   -Pending Total Balance: {UnconfirmedWalletBalance.AsChia()} {NetworkPrefix}");
                 Console.WriteLine($"   -Spendable: {SpendableBalance.AsChia()} {NetworkPrefix}");
+                if (ConsoleMessage.Verbose)
+                {
+                    Console.WriteLine($"   -Pending Changee: {PendingChange.AsChia()} {NetworkPrefix}");
+                    Console.WriteLine($"   -Max Spend Amount: {MaxSendAmount.AsChia()} {NetworkPrefix}");
+                    Console.WriteLine($"   -Unspent Coin Count: {UnspentCoinCount}");
+                    Console.WriteLine($"   -Pending Coin Removal Count: {PendingCoinRemovalCount}");
+                }
             }
         }
 
         public async Task DeleteUnconfirmedTransactions(uint id)
         {
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
 
             var wallet = new chia.dotnet.Wallet(id, Service);
             await wallet.DeleteUnconfirmedTransactions(cts.Token);
@@ -87,7 +88,7 @@ namespace rchia.Wallet
 
         public async Task GetAddress(uint id, bool newAddress)
         {
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
 
             var wallet = new chia.dotnet.Wallet(id, Service);
             var address = await wallet.GetNextAddress(newAddress, cts.Token);
@@ -97,7 +98,7 @@ namespace rchia.Wallet
 
         public async Task GetTransaction(string txId)
         {
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
             var tx = await Service.GetTransaction(txId, cts.Token);
             var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
             PrintTransaction(tx, NetworkPrefix);
@@ -106,7 +107,7 @@ namespace rchia.Wallet
 
         public async Task GetTransactions(uint id)
         {
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
 
             var wallet = new chia.dotnet.Wallet(id, Service);
             var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
@@ -127,7 +128,7 @@ namespace rchia.Wallet
 
         private static void PrintTransaction(TransactionRecord tx, string prefix)
         {
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
             Console.WriteLine($"Transaction {tx.Name}");
             if (tx.Confirmed)
             {
@@ -154,7 +155,7 @@ namespace rchia.Wallet
         {
             Console.WriteLine("Submitting transaction...");
 
-            using var cts = new CancellationTokenSource(20000);
+            using var cts = new CancellationTokenSource(30000);
             var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
             var wallet = new chia.dotnet.Wallet(id, Service);
             var tx = await wallet.SendTransaction(address, amount.ToMojo(), fee.ToMojo(), cts.Token);

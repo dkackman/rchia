@@ -45,9 +45,9 @@ namespace rchia.Commands
                     Message("Cancelled");
                     return false;
                 }
+                Message("Confirmed");
             }
 
-            Message("Confirmed");
             return true;
         }
 
@@ -63,6 +63,7 @@ namespace rchia.Commands
             }
             catch (Exception e)
             {
+                Console.WriteLine($"An error occured: {(Verbose ? e.GetType().Name : string.Empty)}");
                 Message(e);
 
                 return -1;

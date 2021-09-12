@@ -8,7 +8,7 @@ namespace rchia.PlotNft
 {
     internal sealed class GetLoginLinkCommand : SharedOptions
     {
-        [Option("l", "launcher-id", Description = "Set the fingerprint to specify which wallet to use")]
+        [Option("l", "launcher-id", IsRequired = true, Description = "Launcher ID of the plotnft")]
         public string LauncherId { get; set; } = string.Empty;
 
         [CommandTarget]

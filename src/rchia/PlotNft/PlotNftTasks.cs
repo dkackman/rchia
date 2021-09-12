@@ -3,11 +3,17 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
-using rchia.Commands;
 using rchia.Bech32;
+using rchia.Commands;
 
 namespace rchia.PlotNft
 {
+    public enum InitialPoolingState
+    {
+        local,
+        pool
+    }
+
     internal class PlotNftTasks : ConsoleTask<WalletProxy>
     {
         public PlotNftTasks(WalletProxy wallet, IConsoleMessage consoleMessage)
@@ -15,6 +21,58 @@ namespace rchia.PlotNft
         {
         }
 
+        public async Task LeavePool(uint walletId)
+        {
+            using var cts = new CancellationTokenSource(30000);
+            var wallet = new PoolWallet(walletId, Service);
+            await wallet.Validate(cts.Token);
+
+            var tx = await wallet.SelfPool(cts.Token);
+
+            Console.WriteLine($"Self pooling transaction submitted to nodes: {tx.SentTo.FirstOrDefault()}");
+            Console.WriteLine($"Do chia wallet get_transaction -tx 0x{tx.Name} to get status");
+        }
+
+        public async Task<string> CheckCreate(InitialPoolingState state, Uri? poolUri)
+        {
+            using var cts = new CancellationTokenSource(30000);
+
+            var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
+
+            if (state == InitialPoolingState.pool && NetworkName == "mainnet" && poolUri is not null && poolUri.Scheme != "https")
+            {
+                throw new InvalidOperationException($"Pool URLs must be HTTPS on mainnet {poolUri}. Aborting.");
+            }
+
+
+            return $"Will create a plot NFT{(poolUri is not null ? $" and join pool: {poolUri}" : "")}.";
+        }
+
+        public async Task Create(InitialPoolingState state, Uri? poolUri)
+        {
+            var poolInfo = new PoolInfo();
+
+            if (poolUri is not null)
+            {
+                using var cts1 = new CancellationTokenSource(30000);
+                poolInfo = await WalletProxy.GetPoolInfo(poolUri, cts1.Token);
+            }
+
+            var poolState = new PoolState()
+            {
+                PoolUrl = poolUri is not null ? poolUri.ToString() : "",
+                State = state == InitialPoolingState.pool ? PoolSingletonState.FARMING_TO_POOL : PoolSingletonState.SELF_POOLING,
+                TargetPuzzleHash = poolInfo.TargetPuzzleHash!,
+                RelativeLockHeight = poolInfo.RelativeLockHeight
+            };
+
+            using var cts = new CancellationTokenSource(30000);
+            var (transaction, launcherId, p2SingletonHash) = await Service.CreatePoolWallet(poolState, null, null, cts.Token);
+            Console.WriteLine($"Launcher Id: {launcherId}");
+            Console.WriteLine($"Do rchia wallet get-transaction -tx 0x{transaction.Name} to get status");
+        }
+
+        //@dkackman https://testpool.xchpool.org
         public async Task GetLoginLink(string launcherId)
         {
             using var cts = new CancellationTokenSource(30000);
@@ -96,10 +154,10 @@ namespace rchia.PlotNft
 
                 Console.WriteLine($"Pool contract address (use ONLY for plotting - do not send money to this address): {bech32.PuzzleHashToAddress(State.P2SingletonPuzzleHash)}");
 
-                if (State.target is not null)
+                if (State.Target is not null)
                 {
-                    Console.WriteLine($"Target state: {State.target.State}");
-                    Console.WriteLine($"Target pooll url: {State.target.PoolUrl}");
+                    Console.WriteLine($"Target state: {State.Target.State}");
+                    Console.WriteLine($"Target pooll url: {State.Target.PoolUrl}");
                 }
 
                 if (State.Current.State == PoolSingletonState.SELF_POOLING)
@@ -137,7 +195,7 @@ namespace rchia.PlotNft
                 else if (State.Current.State == PoolSingletonState.LEAVING_POOL)
                 {
                     var expected = State.SingletonBlockHeight - State.Current.RelativeLockHeight;
-                    if (State.target is not null)
+                    if (State.Target is not null)
                     {
                         Console.WriteLine($"Expected to leave after block height: {expected}");
                     }

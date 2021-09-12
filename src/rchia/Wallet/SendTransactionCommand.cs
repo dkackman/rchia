@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
@@ -47,10 +48,10 @@ namespace rchia.Wallet
                 }
 
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.Wallet);
-                var wallet = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
+                var wallet = await LoginToWallet(rpcClient);
                 var tasks = new WalletTasks(wallet, this);
 
-                await tasks.Send(await GetWalletId(wallet), Address, Amount, Fee);
+                await tasks.Send(Id, Address, Amount, Fee);
             });
         }
     }
