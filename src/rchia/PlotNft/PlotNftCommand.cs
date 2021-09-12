@@ -11,6 +11,9 @@ namespace rchia.PlotNft
         [Command("get-login-link", Description = "Create a login link for a pool. To get the launcher id, use 'plotnft show'.")]
         public GetLoginLinkCommand GetLoginLink { get; set; } = new();
 
+        [Command("inspect", Description = " Get Detailed plotnft information as JSON")]
+        public InspectNftCmmand Inspect{ get; set; } = new();
+
         [Command("leave", Description = "Leave a pool and return to self-farming")]
         public LeavePoolCommand Leave { get; set; } = new();
 

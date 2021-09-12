@@ -21,6 +21,26 @@ namespace rchia.PlotNft
         {
         }
 
+        public async Task Inspect(uint walletId)
+        {
+            using var cts = new CancellationTokenSource(30000);
+            var wallet = new PoolWallet(walletId, Service);
+            await wallet.Validate(cts.Token);
+
+            var (State, UnconfirmedTransactions) = await wallet.Status(cts.Token);
+
+            Console.WriteLine(State);
+
+            foreach (var tx in UnconfirmedTransactions)
+            {
+                Console.WriteLine($"Transaction Id: {tx.Name}");
+                foreach (var sentTo in tx.SentTo)
+                {
+                    Console.WriteLine($"Sent to {sentTo.Peer}");
+                }
+            }
+        }
+
         public async Task LeavePool(uint walletId)
         {
             using var cts = new CancellationTokenSource(30000);
@@ -45,7 +65,7 @@ namespace rchia.PlotNft
             }
 
 
-            return $"Will create a plot NFT{(poolUri is not null ? $" and join pool: {poolUri}" : "")}.";
+            return $"Will create a plot NFT{(poolUri is not null ? $" and join pool: {poolUri}" : string.Empty)}.";
         }
 
         public async Task Create(InitialPoolingState state, Uri? poolUri)
