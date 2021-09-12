@@ -5,7 +5,10 @@ namespace rchia.PlotNft
     [Command("plotnft", Description = "Manage your plot NFTs.\nRequires a daemon endpoint.")]
     internal sealed class PlotNftCommand
     {
-        [Command("create", Description = "Create a plot NFT.")]
+        [Command("claim", Description = "Claim rewards from a plot NFT")]
+        public ClaimNftCommand Claim { get; set; } = new();
+
+        [Command("create", Description = "Create a plot NFT")]
         public CreatePlotNftCommand Create { get; set; } = new();
 
         [Command("get-login-link", Description = "Create a login link for a pool. To get the launcher id, use 'plotnft show'.")]

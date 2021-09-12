@@ -21,6 +21,17 @@ namespace rchia.PlotNft
         {
         }
 
+        public async Task Claim(uint walletId)
+        {
+            using var cts = new CancellationTokenSource(30000);
+            var wallet = new PoolWallet(walletId, Service);
+            await wallet.Validate(cts.Token);
+
+            var (State, tx) = await wallet.AbsorbRewards(0, cts.Token);
+            Console.WriteLine($"Absorb rewards submitted to node: {tx.SentTo.FirstOrDefault()}");
+            Console.WriteLine($"Do 'rchia wallet get-transaction -tx {tx.Name}' to get status");
+        }
+
         public async Task Inspect(uint walletId)
         {
             using var cts = new CancellationTokenSource(30000);
@@ -49,7 +60,7 @@ namespace rchia.PlotNft
 
             var tx = await wallet.SelfPool(cts.Token);
 
-            Console.WriteLine($"Self pooling transaction submitted to nodes: {tx.SentTo.FirstOrDefault()}");
+            Console.WriteLine($"Self pooling transaction submitted to node: {tx.SentTo.FirstOrDefault()}");
             Console.WriteLine($"Do 'rchia wallet get-transaction -tx {tx.Name}' to get status");
         }
 
