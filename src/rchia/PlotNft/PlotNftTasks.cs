@@ -30,7 +30,7 @@ namespace rchia.PlotNft
             var tx = await wallet.SelfPool(cts.Token);
 
             Console.WriteLine($"Self pooling transaction submitted to nodes: {tx.SentTo.FirstOrDefault()}");
-            Console.WriteLine($"Do chia wallet get_transaction -tx 0x{tx.Name} to get status");
+            Console.WriteLine($"Do 'rchia wallet get-transaction -tx {tx.Name}' to get status");
         }
 
         public async Task<string> CheckCreate(InitialPoolingState state, Uri? poolUri)
