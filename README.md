@@ -32,7 +32,7 @@ The details of the endpoint can be specified in the following ways:
 ### By using the `chia` config
 
 ```bash
-./rchia show -s --default-config
+./rchia show -s --default-chia-config
 ```
 
 ### Using saved endpoint connections
@@ -62,6 +62,8 @@ Commands:
                          Requires a wallet or daemon endpoint.
   netspace               Calculates the estimated space on the network given two block header hashes.
                          Requires a daemon or full_node endpoint.
+  plotnft                Manage your plot NFTs.
+                         Requires a daemon endpoint.
   plots                  Manage your plots.
                          Requires a daemon endpoint.
   show                   Shows various properties of a full node.
@@ -125,8 +127,8 @@ Options:
   -uri, --endpoint-uri <PATH>                  The uri of the rpc endpoint, including the proper port and wss/https scheme prefix
   -cp, --cert-path <PATH>                      The full path to the .crt file to use for authentication
   -kp, --key-path <PATH>                       The full path to the .key file to use for authentication
-  -ccp, --config-path <PATH>                   The full path to a chia config yaml file for endpoints
-  -dc, --default-config                        Flag indicating to use the default chia config for endpoints
+  -ccp, --chia-config-path <PATH>              The full path to a chia config yaml file for endpoints
+  -dcc, --default-chia-config                  Flag indicating to use the default chia config for endpoints
   -de, --default-endpoint                      Flag indicating to use the default saved endpoint
   -ep, --endpoint <ID>                         Use a saved endpoint
   -v, --verbose                                Set output to verbose messages
