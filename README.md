@@ -19,6 +19,14 @@ cd src/rchia/bin/Debug/net5.0/
 ./rchia --help
 ```
 
+## Install
+
+Download the appropriate installer from [the latest release](https://github.com/dkackman/rchia/releases).
+There are three downloads types for each OS:
+- `standalone` - the dotnet framework is bundled in the executable. Large file but no dependencies
+- `singlefile` - the executable and its dependencies are bundled as a single file. Smaller file but requires the [dotnet runtime](https://dotnet.microsoft.com/download/dotnet/5.0)
+- `files` - the executable and its dependencies are not bundled together. Smaller file but requires the [dotnet runtime](https://dotnet.microsoft.com/download/dotnet/5.0)
+
 ## Example
 
 The details of the endpoint can be specified in the following ways:
