@@ -8,10 +8,10 @@ namespace rchia.PlotNft
 {
     internal sealed class CreatePlotNftCommand : WalletCommand
     {
-        [Option("u", "pool-url", Description = "HTTPS host:port of the pool to join. Omit for self pooling.")]
+        [Option("u", "pool-url", Description = "HTTPS host:port of the pool to join. Omit for self pooling")]
         public Uri? PoolUrl { get; set; }
 
-        [Option("s", "state", IsRequired = true, Description = "HTTPS host:port of the pool to join. Omit for self pooling.")]
+        [Option("s", "state", IsRequired = true, Description = "Initial state of Plot NFT")]
         public InitialPoolingState State { get; set; }
 
         [Option("f", "force", Default = false, Description = "Do not prompt before nft creation")]
@@ -31,7 +31,6 @@ namespace rchia.PlotNft
                 {
                     await tasks.Create(State, PoolUrl);
                 }
-
             });
         }
     }

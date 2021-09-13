@@ -113,16 +113,11 @@ namespace rchia.PlotNft
 
         public async Task Create(InitialPoolingState state, Uri? poolUri)
         {
-            var poolInfo = new PoolInfo();
-
-            if (poolUri is not null)
-            {
-                poolInfo = await GetPoolInfo(poolUri);
-            }
+            var poolInfo = poolUri is not null ? await GetPoolInfo(poolUri) : new PoolInfo();
 
             var poolState = new PoolState()
             {
-                PoolUrl = poolUri is not null ? poolUri.ToString() : "",
+                PoolUrl = poolUri?.ToString(),
                 State = state == InitialPoolingState.pool ? PoolSingletonState.FARMING_TO_POOL : PoolSingletonState.SELF_POOLING,
                 TargetPuzzleHash = poolInfo.TargetPuzzleHash!,
                 RelativeLockHeight = poolInfo.RelativeLockHeight
@@ -131,7 +126,7 @@ namespace rchia.PlotNft
             using var cts = new CancellationTokenSource(30000);
             var (transaction, launcherId, p2SingletonHash) = await Service.CreatePoolWallet(poolState, null, null, cts.Token);
             Console.WriteLine($"Launcher Id: {launcherId}");
-            Console.WriteLine($"Do rchia wallet get-transaction -tx 0x{transaction.Name} to get status");
+            Console.WriteLine($"Do 'rchia wallet get-transaction -tx {transaction.Name}' to get status");
         }
 
         // https://testpool.xchpool.org
