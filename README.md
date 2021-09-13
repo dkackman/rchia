@@ -32,7 +32,7 @@ The details of the endpoint can be specified in the following ways:
 ### By using the `chia` config
 
 ```bash
-./rchia show -s --default-config
+./rchia show -s --default-chia-config
 ```
 
 ### Using saved endpoint connections
@@ -62,6 +62,8 @@ Commands:
                          Requires a wallet or daemon endpoint.
   netspace               Calculates the estimated space on the network given two block header hashes.
                          Requires a daemon or full_node endpoint.
+  plotnft                Manage your plot NFTs.
+                         Requires a daemon endpoint.
   plots                  Manage your plots.
                          Requires a daemon endpoint.
   show                   Shows various properties of a full node.
