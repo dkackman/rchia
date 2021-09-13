@@ -14,7 +14,7 @@ namespace rchia.Endpoints
             var endpoints = Open(endpointsFilePath);
             var endpoint = endpoints.FirstOrDefault(kvp => kvp.Value.IsDefault);
 
-            return endpoint.Value ?? throw new InvalidOperationException("No default endpoint is set. Try ./rchia endpoints --set-default NAME");
+            return endpoint.Value ?? throw new InvalidOperationException("No default endpoint is set. Try './rchia endpoints --set-default NAME'");
         }
 
         public static IDictionary<string, Endpoint> Open(string filepath)
