@@ -5,7 +5,7 @@ using rchia.Endpoints;
 
 namespace rchia.Plots
 {
-    internal sealed class CreatePlotsCommand : SharedOptions
+    internal sealed class CreatePlotsCommand : EndpointOptions
     {
         [Option("k", "size", Default = KValues.K32, Description = "Plot szie")]
         public KValues Size { get; set; } = KValues.K32;

@@ -7,7 +7,7 @@ using rchia.Endpoints;
 
 namespace rchia.Keys
 {
-    internal sealed class GenerateKeyCommand : SharedOptions
+    internal sealed class GenerateKeyCommand : EndpointOptions
     {
         [CommandTarget]
         public async override Task<int> Run()

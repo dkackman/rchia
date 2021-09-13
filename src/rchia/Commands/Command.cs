@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace rchia.Commands
 {
-    public abstract class BaseCommand : IConsoleMessage
+    public abstract class Command : IConsoleMessage
     {
         [Option("v", "verbose", Description = "Set output to verbose messages")]
         public bool Verbose { get; set; }

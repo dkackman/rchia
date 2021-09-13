@@ -6,15 +6,15 @@ using rchia.Endpoints;
 
 namespace rchia.PlotNft
 {
-    internal sealed class CreatePlotNftCommand : WalletCommand
+    internal sealed class JoinPoolCommand : WalletCommand
     {
-        [Option("u", "pool-url", Description = "HTTPS host:port of the pool to join. Omit for self pooling.")]
-        public Uri? PoolUrl { get; set; }
+        [Option("i", "id", Default = 1, Description = "Id of the user wallet to use")]
+        public uint Id { get; set; } = 1;
 
-        [Option("s", "state", IsRequired = true, Description = "HTTPS host:port of the pool to join. Omit for self pooling.")]
-        public InitialPoolingState State { get; set; }
+        [Option("u", "pool-url", Description = "HTTPS host:port of the pool to join.")]
+        public Uri PoolUrl { get; set; } = new Uri("http://localhost");
 
-        [Option("f", "force", Default = false, Description = "Do not prompt before nft creation")]
+        [Option("f", "force", Default = false, Description = "Do not prompt before joining")]
         public bool Force { get; set; }
 
         [CommandTarget]
@@ -26,12 +26,11 @@ namespace rchia.PlotNft
                 var wallet = await LoginToWallet(rpcClient);
                 var tasks = new PlotNftTasks(wallet, this);
 
-                var msg = await tasks.ValidatePoolingOptions(State, PoolUrl);
+                var msg = await tasks.ValidatePoolingOptions(InitialPoolingState.pool, PoolUrl);
                 if (Confirm(msg, "Are you sure?", Force))
                 {
-                    await tasks.Create(State, PoolUrl);
+                    await tasks.Join(Id, PoolUrl);
                 }
-
             });
         }
     }

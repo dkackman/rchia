@@ -9,7 +9,7 @@ using rchia.Endpoints;
 namespace rchia.StartStop
 {
     [Command("stop", Description = "Stop service groups.\nRequires a daemon endpoint.")]
-    internal sealed class StopCommand : SharedOptions
+    internal sealed class StopCommand : EndpointOptions
     {
         [Argument(0, Name = "service-group", Description = "[all|node|harvester|farmer|farmer-no-wallet|farmer-only|timelord|\ntimelord-only|timelord-launcher-only|wallet|wallet-only|introducer|simulator]")]
         public string? ServiceGroup { get; set; }

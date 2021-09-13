@@ -4,7 +4,7 @@ using rchia.Commands;
 
 namespace rchia.Endpoints
 {
-    public abstract class SharedOptions : BaseCommand
+    public abstract class EndpointOptions : Command
     {
         [Option("uri", "endpoint-uri", ArgumentHelpName = "PATH", Description = "The uri of the rpc endpoint, including the proper port and wss/https scheme prefix")]
         public string? EndpointUri { get; set; }
@@ -15,10 +15,10 @@ namespace rchia.Endpoints
         [Option("kp", "key-path", ArgumentHelpName = "PATH", Description = "The full path to the .key file to use for authentication")]
         public FileInfo? KeyPath { get; set; }
 
-        [Option("ccp", "config-path", ArgumentHelpName = "PATH", Description = "The full path to a chia config yaml file for endpoints")]
+        [Option("ccp", "chia-config-path", ArgumentHelpName = "PATH", Description = "The full path to a chia config yaml file for endpoints")]
         public FileInfo? ConfigPath { get; set; }
 
-        [Option("dc", "default-config", Description = "Flag indicating to use the default chia config for endpoints")]
+        [Option("dcc", "default-chia-config", Description = "Flag indicating to use the default chia config for endpoints")]
         public bool DefaultConfig { get; set; }
 
         [Option("de", "default-endpoint", Description = "Flag indicating to use the default saved endpoint")]

@@ -4,7 +4,7 @@ using rchia.Commands;
 
 namespace rchia.Endpoints
 {
-    internal sealed class ListEndpointsCommand : BaseCommand
+    internal sealed class ListEndpointsCommand : Command
     {
         [CommandTarget]
         public async override Task<int> Run()

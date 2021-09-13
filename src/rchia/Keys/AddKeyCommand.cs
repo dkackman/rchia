@@ -9,7 +9,7 @@ using rchia.Endpoints;
 
 namespace rchia.Keys
 {
-    internal sealed class AddKeyCommand : SharedOptions
+    internal sealed class AddKeyCommand : EndpointOptions
     {
         [Argument(0, Name = "mnemonic", Description = "The 24 word mnemonic key phrase")]
         public List<string> Mnemonic { get; set; } = new List<string>();

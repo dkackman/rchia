@@ -5,7 +5,7 @@ using rchia.Endpoints;
 
 namespace rchia.Keys
 {
-    internal sealed class DeleteAllKeys : SharedOptions
+    internal sealed class DeleteAllKeys : EndpointOptions
     {
         [Option("f", "force", Default = false, Description = "Delete all keys without prompting for confirmation")]
         public bool Force { get; set; }

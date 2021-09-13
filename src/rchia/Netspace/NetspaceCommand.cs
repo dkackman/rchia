@@ -8,7 +8,7 @@ using rchia.Endpoints;
 namespace rchia.Netspace
 {
     [Command("netspace", Description = "Calculates the estimated space on the network given two block header hashes.\nRequires a daemon or full_node endpoint.")]
-    internal sealed class NetspaceCommand : SharedOptions
+    internal sealed class NetspaceCommand : EndpointOptions
     {
         [Option("d", "delta-block-height", ArgumentHelpName = "DELTA", Description = "Compare a block X blocks older to estimate total network space.Defaults to 4608 blocks\n" +
                                                                                          "(~1 day) and Peak block as the starting block.Use --start BLOCK_HEIGHT to specify\n" +

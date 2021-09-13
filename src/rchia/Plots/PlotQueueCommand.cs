@@ -5,7 +5,7 @@ using rchia.Endpoints;
 
 namespace rchia.Plots
 {
-    internal sealed class PlotQueueCommand : SharedOptions
+    internal sealed class PlotQueueCommand : EndpointOptions
     {
         [CommandTarget]
         public async override Task<int> Run()

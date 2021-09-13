@@ -5,7 +5,7 @@ using rchia.Commands;
 
 namespace rchia.Endpoints
 {
-    internal sealed class ShowEndpointCommand : BaseCommand
+    internal sealed class ShowEndpointCommand : Command
     {
         [Argument(0, Name = "id", Description = "The id of the endpoint to show")]
         public string Id { get; set; } = string.Empty;

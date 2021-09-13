@@ -10,6 +10,9 @@ namespace rchia.Wallet
         [Option("n", "new", Default = false, Description = "Flag indicating whether to create a new address")]
         public bool New { get; set; }
 
+        [Option("i", "id", Default = 1, Description = "Id of the user wallet to use")]
+        public uint Id { get; set; } = 1;
+
         [CommandTarget]
         public async override Task<int> Run()
         {

@@ -29,7 +29,7 @@ namespace rchia.Endpoints
             using var rpcClient = await CreateRpcClient(endpoint);
         }
 
-        public async Task<IRpcClient> CreateRpcClient(SharedOptions options, string serviceName)
+        public async Task<IRpcClient> CreateRpcClient(EndpointOptions options, string serviceName)
         {
             var endpoint = GetEndpointInfo(options, serviceName);
 
@@ -38,7 +38,7 @@ namespace rchia.Endpoints
             return await CreateRpcClient(endpoint);
         }
 
-        public async Task<WebSocketRpcClient> CreateWebSocketClient(SharedOptions options, string serviceName)
+        public async Task<WebSocketRpcClient> CreateWebSocketClient(EndpointOptions options, string serviceName)
         {
             var endpoint = GetEndpointInfo(options, serviceName);
 
@@ -74,7 +74,7 @@ namespace rchia.Endpoints
                 : throw new InvalidOperationException($"Unrecognized endpoint Uri scheme {endpoint.Uri.Scheme}");
         }
 
-        private static EndpointInfo GetEndpointInfo(SharedOptions options, string serviceName)
+        private static EndpointInfo GetEndpointInfo(EndpointOptions options, string serviceName)
         {
             var config = Settings.GetConfig();
             var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;

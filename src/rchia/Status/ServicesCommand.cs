@@ -7,7 +7,7 @@ using rchia.Endpoints;
 
 namespace rchia.Status
 {
-    internal sealed class ServicesCommand : SharedOptions
+    internal sealed class ServicesCommand : EndpointOptions
     {
         [CommandTarget]
         public async override Task<int> Run()

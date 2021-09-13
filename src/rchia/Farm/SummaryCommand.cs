@@ -7,7 +7,7 @@ using rchia.Endpoints;
 
 namespace rchia.Farm
 {
-    internal sealed class SummaryCommand : SharedOptions
+    internal sealed class SummaryCommand : EndpointOptions
     {
         [CommandTarget]
         public async override Task<int> Run()

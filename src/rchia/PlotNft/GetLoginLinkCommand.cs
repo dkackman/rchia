@@ -6,7 +6,7 @@ using rchia.Endpoints;
 
 namespace rchia.PlotNft
 {
-    internal sealed class GetLoginLinkCommand : SharedOptions
+    internal sealed class GetLoginLinkCommand : EndpointOptions
     {
         [Option("l", "launcher-id", IsRequired = true, Description = "Launcher ID of the plotnft")]
         public string LauncherId { get; set; } = string.Empty;

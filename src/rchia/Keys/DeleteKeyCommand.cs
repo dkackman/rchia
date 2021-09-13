@@ -8,7 +8,7 @@ using rchia.Endpoints;
 
 namespace rchia.Keys
 {
-    internal sealed class DeleteKeyCommand : SharedOptions
+    internal sealed class DeleteKeyCommand : EndpointOptions
     {
         [Option("fp", "fingerprint", IsRequired = true, ArgumentHelpName = "FINGERPRINT", Description = "Enter the fingerprint of the key you want to delete")]
         public uint Fingerprint { get; set; }

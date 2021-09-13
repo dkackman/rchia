@@ -5,7 +5,7 @@ using rchia.Endpoints;
 
 namespace rchia.Plots
 {
-    internal sealed class RemovePlotsCommand : SharedOptions
+    internal sealed class RemovePlotsCommand : EndpointOptions
     {
         [Option("d", "final-dir", Default = ".", Description = "Final directory for plots (relative or absolute)")]
         public string FinalDir { get; set; } = ".";

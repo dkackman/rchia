@@ -7,7 +7,7 @@ using rchia.Endpoints;
 
 namespace rchia.Status
 {
-    internal sealed class PingCommand : SharedOptions
+    internal sealed class PingCommand : EndpointOptions
     {
         [CommandTarget]
         public async override Task<int> Run()

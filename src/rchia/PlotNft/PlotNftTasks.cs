@@ -16,6 +16,8 @@ namespace rchia.PlotNft
 
     internal class PlotNftTasks : ConsoleTask<WalletProxy>
     {
+        private const byte POOL_PROTOCOL_VERSION = 1;
+
         public PlotNftTasks(WalletProxy wallet, IConsoleMessage consoleMessage)
             : base(wallet, consoleMessage)
         {
@@ -64,7 +66,7 @@ namespace rchia.PlotNft
             Console.WriteLine($"Do 'rchia wallet get-transaction -tx {tx.Name}' to get status");
         }
 
-        public async Task<string> CheckCreate(InitialPoolingState state, Uri? poolUri)
+        public async Task<string> ValidatePoolingOptions(InitialPoolingState state, Uri? poolUri)
         {
             using var cts = new CancellationTokenSource(30000);
 
@@ -75,8 +77,38 @@ namespace rchia.PlotNft
                 throw new InvalidOperationException($"Pool URLs must be HTTPS on mainnet {poolUri}. Aborting.");
             }
 
+            return $"This operation Will join pool {poolUri} with Plot NFT {Service.Fingerprint}.";
+        }
 
-            return $"Will create a plot NFT{(poolUri is not null ? $" and join pool: {poolUri}" : string.Empty)}.";
+        public async Task Join(uint walletId, Uri poolUri)
+        {
+            using var cts = new CancellationTokenSource(30000);
+            var wallet = new PoolWallet(walletId, Service);
+            await wallet.Validate(cts.Token);
+
+            var poolInfo = await GetPoolInfo(poolUri);
+            var tx = await wallet.JoinPool(poolInfo.TargetPuzzleHash ?? string.Empty, poolUri.ToString(), poolInfo.RelativeLockHeight, cts.Token);
+
+            Console.WriteLine($"Join pool transaction submitted to node: {tx.SentTo.FirstOrDefault()}");
+            Console.WriteLine($"Do 'rchia wallet get-transaction -tx {tx.Name}' to get status");
+        }
+
+        private async static Task<PoolInfo> GetPoolInfo(Uri uri)
+        {
+            using var cts = new CancellationTokenSource(30000);
+            var info = await WalletProxy.GetPoolInfo(uri, cts.Token);
+
+            if (info.RelativeLockHeight > 1000)
+            {
+                throw new InvalidOperationException("Relative lock height too high for this pool, cannot join");
+            }
+
+            if (info.ProtocolVersion != POOL_PROTOCOL_VERSION)
+            {
+                throw new InvalidOperationException($"Unsupported version: {info.ProtocolVersion}, should be { POOL_PROTOCOL_VERSION}");
+            }
+
+            return info;
         }
 
         public async Task Create(InitialPoolingState state, Uri? poolUri)
@@ -85,8 +117,7 @@ namespace rchia.PlotNft
 
             if (poolUri is not null)
             {
-                using var cts1 = new CancellationTokenSource(30000);
-                poolInfo = await WalletProxy.GetPoolInfo(poolUri, cts1.Token);
+                poolInfo = await GetPoolInfo(poolUri);
             }
 
             var poolState = new PoolState()
@@ -103,7 +134,7 @@ namespace rchia.PlotNft
             Console.WriteLine($"Do rchia wallet get-transaction -tx 0x{transaction.Name} to get status");
         }
 
-        //@dkackman https://testpool.xchpool.org
+        // https://testpool.xchpool.org
         public async Task GetLoginLink(string launcherId)
         {
             using var cts = new CancellationTokenSource(30000);

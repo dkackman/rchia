@@ -6,13 +6,10 @@ using rchia.Endpoints;
 
 namespace rchia
 {
-    internal abstract class WalletCommand : SharedOptions
+    internal abstract class WalletCommand : EndpointOptions
     {
         [Option("fp", "fingerprint", Description = "Set the fingerprint to specify which wallet to use - the first fingerprint will be used if not set")]
         public uint? Fingerprint { get; set; }
-
-        [Option("i", "id", Default = 1, Description = "Id of the user wallet to use")]
-        public uint Id { get; set; } = 1;
 
         protected async Task<WalletProxy> LoginToWallet(IRpcClient rpcClient)
         {

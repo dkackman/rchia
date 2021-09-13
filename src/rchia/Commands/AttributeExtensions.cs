@@ -27,9 +27,9 @@ namespace rchia.Commands
             return builder;
         }
 
-        private static void AddCommands(this Command parent, Type type, CommandAttribute c)
+        private static void AddCommands(this System.CommandLine.Command parent, Type type, CommandAttribute c)
         {
-            var command = new Command(c.Name, c.Description);
+            var command = new System.CommandLine.Command(c.Name, c.Description);
 
             // get all the options for the command
             foreach (var (property, attr) in type.GetAttributedProperties<OptionAttribute>())

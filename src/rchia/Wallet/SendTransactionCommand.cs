@@ -17,6 +17,9 @@ namespace rchia.Wallet
         [Option("t", "address", IsRequired = true, Description = "Address to send the XCH")]
         public string Address { get; set; } = string.Empty;
 
+        [Option("i", "id", Default = 1, Description = "Id of the user wallet to use")]
+        public uint Id { get; set; } = 1;
+
         [Option("f", "force", Default = false, Description = "If Fee > Amount, send the transaction anyway")]
         public bool Force { get; set; }
 

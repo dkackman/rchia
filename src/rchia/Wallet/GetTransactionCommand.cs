@@ -5,7 +5,7 @@ using rchia.Endpoints;
 
 namespace rchia.Wallet
 {
-    internal sealed class GetTransactionCommand : SharedOptions
+    internal sealed class GetTransactionCommand : EndpointOptions
     {
         [Option("tx", "tx-id", IsRequired = true, Description = "Transaction id to search for")]
         public string TxId { get; set; } = string.Empty;

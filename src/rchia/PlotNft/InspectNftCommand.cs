@@ -5,8 +5,11 @@ using rchia.Endpoints;
 
 namespace rchia.PlotNft
 {
-    internal sealed class InspectNftCmmand : WalletCommand
+    internal sealed class InspectNftCommand : WalletCommand
     {
+        [Option("i", "id", Default = 1, Description = "Id of the user wallet to use")]
+        public uint Id { get; set; } = 1;
+
         [CommandTarget]
         public async override Task<int> Run()
         {

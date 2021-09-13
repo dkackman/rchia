@@ -5,7 +5,7 @@ using rchia.Commands;
 
 namespace rchia.Endpoints
 {
-    internal sealed class RemoveEndpointCommand : BaseCommand
+    internal sealed class RemoveEndpointCommand : Command
     {
         [Argument(0, Name = "id", Description = "The id of the endpoint to remove")]
         public string Id { get; set; } = string.Empty;

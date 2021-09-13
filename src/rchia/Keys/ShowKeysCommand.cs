@@ -7,7 +7,7 @@ using rchia.Endpoints;
 
 namespace rchia.Keys
 {
-    internal sealed class ShowKeysCommand : SharedOptions
+    internal sealed class ShowKeysCommand : EndpointOptions
     {
         [Option("m", "show-mnemonic-seed", Default = false, Description = "Show the mnemonic seed of the keys")]
         public bool ShowMnemonicSeed { get; set; }
