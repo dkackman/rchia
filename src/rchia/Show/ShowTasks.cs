@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
@@ -13,6 +14,27 @@ namespace rchia.Show
         public ShowTasks(FullNodeProxy fullNode, IConsoleMessage consoleMessage)
             : base(fullNode, consoleMessage)
         {
+        }
+
+        public async Task Prune(int age)
+        {
+            using var cts = new CancellationTokenSource(30000);
+
+            var cutoff = DateTime.UtcNow - new TimeSpan(age, 0, 0);
+            Console.WriteLine($"Pruning connections that haven't sent a message since {cutoff.ToLocalTime()}");
+
+            var connections = await Service.GetConnections(cts.Token);
+            var n = 0;
+            // only prune other full nodes, not famers, harvesters, and wallets etc
+            foreach (var connection in connections.Where(c => c.Type == NodeType.FULL_NODE && c.LastMessageDateTime < cutoff))
+            {
+                using var cts1 = new CancellationTokenSource(10000);
+                await Service.CloseConnection(connection.NodeId, cts1.Token);
+                Console.WriteLine($"Closed connection at {connection.PeerHost}:{connection.PeerServerPort} that last updated {connection.LastMessageDateTime}");
+                n++;
+            }
+
+            Console.WriteLine($"Pruned {n} connections");
         }
 
         public async Task AddConnection(string hostUri)

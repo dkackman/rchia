@@ -32,6 +32,9 @@ namespace rchia.Show
         [Option("s", "state", Description = "Show the current state of the blockchain")]
         public bool State { get; set; }
 
+        [Command("prune", Description = "Prune stale connections")]
+        public PruneCommand Prune { get; set; } = new();
+
         [CommandTarget]
         public async override Task<int> Run()
         {
