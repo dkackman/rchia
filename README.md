@@ -7,7 +7,7 @@ Remote management CLI for [chia nodes](https://github.com/Chia-Network/chia-bloc
 
 ## Introduction
 
-A cross platform (Linux, Windows, MacOS) command line utility that mirrors the `chia` CLI, but uses RPC rather than running locally on the node. This allows management of any number of nodes from a central location as long as their RPC interface is exposed on the network.
+A cross platform (Linux, Windows, MacOS) command line utility that mirrors the `chia` CLI, but uses RPC rather than running locally on the node. This allows management of any number of nodes from a central location, as long as [their RPC interface is exposed on the network](https://github.com/dkackman/rchia/wiki/Exposing-a-Node-on-the-Network).
 
 ## Build and Run
 
@@ -18,6 +18,14 @@ dotnet build src
 cd src/rchia/bin/Debug/net5.0/
 ./rchia --help
 ```
+
+## Install
+
+Download the appropriate installer from [the latest release](https://github.com/dkackman/rchia/releases).
+There are three downloads types for each OS:
+- `standalone` - the dotnet framework is bundled in the executable. Large file but no dependencies
+- `singlefile` - the executable and its dependencies are bundled as a single file. Smaller file but requires the [dotnet runtime](https://dotnet.microsoft.com/download/dotnet/5.0)
+- `files` - the executable and its dependencies are not bundled together. Smaller file but requires the [dotnet runtime](https://dotnet.microsoft.com/download/dotnet/5.0)
 
 ## Example
 
