@@ -2,7 +2,7 @@
   "profiles": {
     "rchia": {
       "commandName": "Project",
-      "commandLineArgs": "plotnft leave -v "
+      "commandLineArgs": "wallet show "
     }
   }
 }

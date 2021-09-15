@@ -42,7 +42,7 @@ namespace rchia.Wallet
             }
         }
 
-        public async Task Show(uint id)
+        public async Task Show()
         {
             using var cts = new CancellationTokenSource(30000);
 
@@ -50,12 +50,17 @@ namespace rchia.Wallet
             var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
             var height = await Service.GetHeightInfo(cts.Token);
 
-            var wallets = await Service.GetWallets(cts.Token);
-
             Console.WriteLine($"Wallet height: {await Service.GetHeightInfo(cts.Token)}");
             var synced = await Service.GetSyncStatus(cts.Token);
             Console.WriteLine($"Sync status: {(synced.Synced ? "Synced" : "Not synced")}");
             Console.WriteLine($"Balances, fingerprint: {Service.Fingerprint}");
+
+            var wallets = await Service.GetWallets(cts.Token);
+            if (!wallets.Any())
+            {
+                Console.WriteLine($"There are no wallets for a this public key {Service.Fingerprint}");
+                return;
+            }
 
             foreach (var summary in wallets)
             {

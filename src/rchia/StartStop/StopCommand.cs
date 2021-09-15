@@ -17,7 +17,7 @@ namespace rchia.StartStop
         [Option("d", "daemon", Description = "Stop the daemon service as well\nThe daemon cannot be restarted remotely")]
         public bool Daemon { get; set; }
 
-        [Option("f", "force", Default = false, Description = "If -d is specified, shut down the daemon without prompting")]
+        [Option("f", "force", Default = false, Description = "If specified in conjunstion with '-d', shut down the daemon without prompting")]
         public bool Force { get; set; }
 
         [CommandTarget]
@@ -29,26 +29,25 @@ namespace rchia.StartStop
                 var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var tasks = new StartStopTasks(daemon, this);
 
-                if (ServiceGroup is not null)
+                if (ServiceGroup is null || !ServiceGroups.Groups.ContainsKey(ServiceGroup))
                 {
-                    if (!ServiceGroups.Groups.ContainsKey(ServiceGroup))
-                    {
-                        throw new InvalidOperationException($"Unrecognized service group {ServiceGroup}. It must be one of\n  {string.Join("|", ServiceGroups.Groups.Keys)}.");
-                    }
+                    throw new InvalidOperationException($"Unrecognized service group {ServiceGroup}. It must be one of\n  {string.Join("|", ServiceGroups.Groups.Keys)}.");
+                }
 
-                    await tasks.Stop(ServiceGroup);
-                    if (Daemon)
+                if (Daemon)
+                {
+                    if (Confirm("The daemon cannot be restared remotely. You will need shell access to the node in order to restart it.", "Are you sure you want to stop the daemon?", Force))
                     {
-                        if (Confirm("The daemon cannot be restared remotely. You will need shell access to the node in order to restart it.", "Are you sure you want to stop the daemon?", Force))
-                        {
-                            await tasks.StopDeamon();
-                        }
+                        await tasks.StopDeamon();
+                    }
+                    else
+                    {
+                        Console.WriteLine("No services were stopped.");
+                        return;
                     }
                 }
-                else
-                {
-                    throw new InvalidOperationException("Unrecognized command");
-                }
+
+                await tasks.Stop(ServiceGroup);
             });
         }
     }

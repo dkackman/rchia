@@ -30,8 +30,8 @@ namespace rchia.PlotNft
             await wallet.Validate(cts.Token);
 
             var (State, tx) = await wallet.AbsorbRewards(0, cts.Token);
-            Console.WriteLine($"Absorb rewards submitted to node: {tx.SentTo.FirstOrDefault()}");
-            Console.WriteLine($"Do 'rchia wallet get-transaction -tx {tx.Name}' to get status");
+
+            PrintTransactionSentTo(tx);
         }
 
         public async Task Inspect(uint walletId)
@@ -46,12 +46,19 @@ namespace rchia.PlotNft
 
             foreach (var tx in UnconfirmedTransactions)
             {
-                Console.WriteLine($"Transaction Id: {tx.Name}");
-                foreach (var sentTo in tx.SentTo)
-                {
-                    Console.WriteLine($"Sent to {sentTo.Peer}");
-                }
+                PrintTransactionSentTo(tx, $"Transaction Id: {tx.Name}");
             }
+        }
+
+        private static void PrintTransactionSentTo(TransactionRecord tx, string msg = "Transaction submitted to:")
+        {
+            Console.WriteLine(msg);
+            foreach (var sentTo in tx.SentTo)
+            {
+                Console.WriteLine($"Sent to {sentTo.Peer}");
+            }
+
+            Console.WriteLine($"Do 'rchia wallet get-transaction -tx {tx.Name}' to get status");
         }
 
         public async Task LeavePool(uint walletId)
@@ -62,8 +69,7 @@ namespace rchia.PlotNft
 
             var tx = await wallet.SelfPool(cts.Token);
 
-            Console.WriteLine($"Self pooling transaction submitted to node: {tx.SentTo.FirstOrDefault()}");
-            Console.WriteLine($"Do 'rchia wallet get-transaction -tx {tx.Name}' to get status");
+            PrintTransactionSentTo(tx);
         }
 
         public async Task<string> ValidatePoolingOptions(InitialPoolingState state, Uri? poolUri)
@@ -89,8 +95,7 @@ namespace rchia.PlotNft
             var poolInfo = await GetPoolInfo(poolUri);
             var tx = await wallet.JoinPool(poolInfo.TargetPuzzleHash ?? string.Empty, poolUri.ToString(), poolInfo.RelativeLockHeight, cts.Token);
 
-            Console.WriteLine($"Join pool transaction submitted to node: {tx.SentTo.FirstOrDefault()}");
-            Console.WriteLine($"Do 'rchia wallet get-transaction -tx {tx.Name}' to get status");
+            PrintTransactionSentTo(tx);
         }
 
         private async static Task<PoolInfo> GetPoolInfo(Uri uri)
@@ -114,7 +119,6 @@ namespace rchia.PlotNft
         public async Task Create(InitialPoolingState state, Uri? poolUri)
         {
             var poolInfo = poolUri is not null ? await GetPoolInfo(poolUri) : new PoolInfo();
-
             var poolState = new PoolState()
             {
                 PoolUrl = poolUri?.ToString(),
@@ -124,9 +128,9 @@ namespace rchia.PlotNft
             };
 
             using var cts = new CancellationTokenSource(30000);
-            var (transaction, launcherId, p2SingletonHash) = await Service.CreatePoolWallet(poolState, null, null, cts.Token);
+            var (tx, launcherId, p2SingletonHash) = await Service.CreatePoolWallet(poolState, null, null, cts.Token);
             Console.WriteLine($"Launcher Id: {launcherId}");
-            Console.WriteLine($"Do 'rchia wallet get-transaction -tx {transaction.Name}' to get status");
+            PrintTransactionSentTo(tx);
         }
 
         // https://testpool.xchpool.org
