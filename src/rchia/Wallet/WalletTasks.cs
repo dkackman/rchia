@@ -109,21 +109,27 @@ namespace rchia.Wallet
             PrintTransaction(tx, NetworkPrefix);
         }
 
-
-        public async Task GetTransactions(uint id)
+        public async Task GetTransactions(uint id, uint start, uint? count)
         {
             using var cts = new CancellationTokenSource(30000);
 
             var wallet = new chia.dotnet.Wallet(id, Service);
             var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
-            var transactions = await wallet.GetTransactions(cts.Token);
 
+            if (count is null)
+            {
+                count = await wallet.GetTransactionCount(cts.Token);
+            }
+
+            var transactions = await wallet.GetTransactions(start, count.Value - start, cts.Token);
             if (transactions.Any())
             {
                 foreach (var tx in transactions)
                 {
                     PrintTransaction(tx, NetworkPrefix);
                 }
+                var c = transactions.Count();
+                ConsoleMessage.Message($"{c} transaction{(c > 0 ? "s" : string.Empty)}");
             }
             else
             {
