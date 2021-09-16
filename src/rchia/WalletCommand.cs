@@ -11,6 +11,12 @@ namespace rchia
         [Option("fp", "fingerprint", Description = "Set the fingerprint to specify which wallet to use - the first fingerprint will be used if not set")]
         public uint? Fingerprint { get; set; }
 
+        protected async Task<WalletProxy> Login()
+        {
+            var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.Wallet);
+            return await LoginToWallet(rpcClient);
+        }
+
         protected async Task<WalletProxy> LoginToWallet(IRpcClient rpcClient)
         {
             using var cts = new CancellationTokenSource(30000);

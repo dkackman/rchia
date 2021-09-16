@@ -1,9 +1,11 @@
-﻿using chia.dotnet;
+﻿using System;
+using chia.dotnet;
 using rchia.Commands;
 
 namespace rchia
 {
-    internal abstract class ConsoleTask<T> where T : ServiceProxy
+    internal abstract class ConsoleTask<T> : IDisposable
+        where T : ServiceProxy
     {
         protected ConsoleTask(T service, IConsoleMessage consoleMessage)
         {
@@ -14,5 +16,10 @@ namespace rchia
         public IConsoleMessage ConsoleMessage { get; init; }
 
         public T Service { get; init; }
+
+        public void Dispose()
+        {
+            Service.RpcClient.Dispose();
+        }
     }
 }

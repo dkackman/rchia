@@ -15,7 +15,7 @@ namespace rchia.Keys
         {
             return await Execute(async () =>
             {
-                if (Confirm("Deleting all of your keys CANNOT be undone.", "Are you sure you want to delete all of your keys?", Force))
+                if (Confirm("Deleting all of your keys CANNOT be undone.\nAre you sure you want to delete them?", Force))
                 {
                     using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Wallet);
                     var wallet = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);

@@ -15,11 +15,8 @@ namespace rchia.PlotNft
         {
             return await Execute(async () =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Wallet);
-                var wallet = await LoginToWallet(rpcClient);
-                var tasks = new PlotNftTasks(wallet, this);
-
-                await tasks.Inspect(Id);
+                using var tasks = new PlotNftTasks(await Login(), this);
+                await DoWork("Retrieving nft plot info...", async ctx => await tasks.Inspect(Id));
             });
         }
     }

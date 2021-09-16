@@ -24,8 +24,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="chia-dotnet" Version="0.5.13" />
+    <PackageReference Include="chia-dotnet" Version="0.5.17" />
     <PackageReference Include="HexMate" Version="0.0.3" />
+    <PackageReference Include="Spectre.Console" Version="0.41.0" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21308.1" />
   </ItemGroup>
 

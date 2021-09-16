@@ -45,15 +45,12 @@ namespace rchia.Wallet
 
                 if (Fee > Amount && !Force)
                 {
-                    Console.WriteLine($"A transaction of amount {Amount} and fee {Fee} is unusual.");
+                    Warning($"A transaction of amount {Amount} and fee {Fee} is unusual.");
                     throw new InvalidOperationException("Pass in --force if you are sure you mean to do this.");
                 }
 
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.Wallet);
-                var wallet = await LoginToWallet(rpcClient);
-                var tasks = new WalletTasks(wallet, this);
-
-                await tasks.Send(Id, Address, Amount, Fee);
+                using var tasks = new WalletTasks(await Login(), this);
+                await DoWork("Sending transaction...", async ctx => { await tasks.Send(Id, Address, Amount, Fee); });
             });
         }
     }
