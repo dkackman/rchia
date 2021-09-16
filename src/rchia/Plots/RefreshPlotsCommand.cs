@@ -5,7 +5,7 @@ using rchia.Endpoints;
 
 namespace rchia.Plots
 {
-    internal sealed class ListPlotsCommand : EndpointOptions
+    internal sealed class RefreshPlotsCommand : EndpointOptions
     {
         [CommandTarget]
         public async override Task<int> Run()
@@ -13,10 +13,10 @@ namespace rchia.Plots
             return await Execute(async () =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.Harvester);
-                var harvester = new HarvesterProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new HarvesterPlotTasks(harvester, this);
+                var proxy = new HarvesterProxy(rpcClient, ClientFactory.Factory.OriginService);
+                var tasks = new HarvesterPlotTasks(proxy, this);
 
-                await tasks.List();
+                await tasks.Refresh();
             });
         }
     }

@@ -30,7 +30,7 @@ namespace rchia.Show
             {
                 using var cts1 = new CancellationTokenSource(10000);
                 await Service.CloseConnection(connection.NodeId, cts1.Token);
-                Console.WriteLine($"Closed connection at {connection.PeerHost}:{connection.PeerServerPort} that last updated {connection.LastMessageDateTime}");
+                Console.WriteLine($"Closed connection at {connection.PeerHost}:{connection.PeerServerPort} that last updated {connection.LastMessageDateTime.ToLocalTime()}");
                 n++;
             }
 

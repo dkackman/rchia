@@ -2,7 +2,7 @@
 
 namespace rchia.Plots
 {
-    [Command("plots", Description = "Manage your plots.\nRequires a daemon endpoint.")]
+    [Command("plots", Description = "Manage your plots.\nRequires a harvester, plotter or daemon endpoint.")]
     internal sealed class PlotsCommand
     {
         [Command("add", Description = "Adds a directory of plots")]
@@ -19,6 +19,9 @@ namespace rchia.Plots
 
         [Command("queue", Description = "View the plot queue")]
         public PlotQueueCommand Queue { get; set; } = new();
+
+        [Command("refresh", Description = "Refreshes the harvester's plot list")]
+        public RefreshPlotsCommand Refresh { get; set; } = new();
 
         [Command("remove", Description = "Removes a directory of plots from config.yaml")]
         public RemovePlotsCommand Remove { get; set; } = new();

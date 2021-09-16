@@ -15,9 +15,9 @@ namespace rchia.Plots
         {
             return await Execute(async () =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Farmer);
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.Harvester);
                 var harvester = new HarvesterProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new PlotsTasks(harvester, this);
+                var tasks = new HarvesterPlotTasks(harvester, this);
 
                 await tasks.Remove(FinalDir);
             });

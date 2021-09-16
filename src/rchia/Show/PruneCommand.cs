@@ -10,7 +10,7 @@ namespace rchia.Show
 {
     internal sealed class PruneCommand : EndpointOptions
     {
-        [Option("a", "age", Default = 12, Description = "Prune nodes that haven't sent data since this number of hours")]
+        [Option("a", "age", Default = 12, Description = "Prune nodes that haven't sent data in this number of hours")]
         public int Age { get; set; } = 12;
 
         [CommandTarget]
