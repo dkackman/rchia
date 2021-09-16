@@ -9,7 +9,7 @@ using Spectre.Console;
 
 namespace rchia.Wallet
 {
-    internal class WalletTasks : ConsoleTask<WalletProxy>
+    internal class WalletTasks : ConsoleTask<WalletProxy>, IDisposable
     {
         public WalletTasks(WalletProxy wallet, IConsoleMessage consoleMessage)
             : base(wallet, consoleMessage)
@@ -74,7 +74,7 @@ namespace rchia.Wallet
                 var newWallet = new chia.dotnet.Wallet(summary.Id, Service);
                 var (ConfirmedWalletBalance, UnconfirmedWalletBalance, SpendableBalance, PendingChange, MaxSendAmount, UnspentCoinCount, PendingCoinRemovalCount) = await newWallet.GetBalance(cts.Token);
 
-                AnsiConsole.MarkupLine($"Wallet ID [bold]{summary.Id}[/] of type [green]{summary.Type}[/] '[italic]{summary.Name}[/]'");
+                AnsiConsole.MarkupLine($"Wallet ID [bold]{summary.Id}[/] of type [green]{summary.Type}[/] '{summary.Name}'");
                 ConsoleMessage.NameValue("   -Total Balance", $"{ConfirmedWalletBalance.AsChia()} {NetworkPrefix}");
                 ConsoleMessage.NameValue("   -Pending Total Balance", $"{UnconfirmedWalletBalance.AsChia()} {NetworkPrefix}");
                 ConsoleMessage.NameValue("   -Spendable", $"{SpendableBalance.AsChia()} {NetworkPrefix}");
@@ -95,7 +95,7 @@ namespace rchia.Wallet
             var wallet = new chia.dotnet.Wallet(id, Service);
             await wallet.DeleteUnconfirmedTransactions(cts.Token);
 
-            AnsiConsole.MarkupLine($"Successfully deleted all unconfirmed transactions for wallet id {id}");
+            AnsiConsole.MarkupLine($"Successfully deleted all unconfirmed transactions for wallet id [bold]{id}[/]");
         }
 
         public async Task GetAddress(uint id, bool newAddress)
@@ -178,6 +178,11 @@ namespace rchia.Wallet
             PrintTransaction(tx, NetworkPrefix);
 
             ConsoleMessage.Helpful($"Do 'rchia wallet get-transaction -tx {tx.TransactionId}' to get status");
+        }
+
+        public void Dispose()
+        {
+            Service.RpcClient.Dispose();
         }
     }
 }
