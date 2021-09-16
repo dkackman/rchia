@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Bech32;
 using rchia.Commands;
+using Spectre.Console;
 
 namespace rchia.Wallet
 {
@@ -26,19 +27,23 @@ namespace rchia.Wallet
 
             foreach (var fingerprint in keys)
             {
-                Console.WriteLine($"Fingerprint: {fingerprint}");
+                ConsoleMessage.NameValue("Fingerprint", fingerprint);
 
                 using var cts1 = new CancellationTokenSource(30000);
                 _ = Service.LogIn(fingerprint, false, cts1.Token);
                 var wallets = await Service.GetWallets(cts1.Token);
 
-                Console.WriteLine($"{"Id",-5} {"Name",-20} {"Type",-20}"); ;
+                var table = new Table();
+                table.AddColumn("Id");
+                table.AddColumn("Name");
+                table.AddColumn("Type");
 
                 foreach (var wallet in wallets)
                 {
-                    Console.WriteLine($"{wallet.Id,-5} {wallet.Name,-20} {wallet.Type,-20}"); ;
+                    table.AddRow(wallet.Id.ToString(), wallet.Name, $"[green]{wallet.Type}[/]");
                 }
-                Console.WriteLine("");
+
+                AnsiConsole.Render(table);
             }
         }
 
@@ -50,15 +55,17 @@ namespace rchia.Wallet
             var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
             var height = await Service.GetHeightInfo(cts.Token);
 
-            Console.WriteLine($"Wallet height: {await Service.GetHeightInfo(cts.Token)}");
+            ConsoleMessage.NameValue("Wallet height", await Service.GetHeightInfo(cts.Token));
+
             var synced = await Service.GetSyncStatus(cts.Token);
-            Console.WriteLine($"Sync status: {(synced.Synced ? "Synced" : "Not synced")}");
-            Console.WriteLine($"Balances, fingerprint: {Service.Fingerprint}");
+            ConsoleMessage.NameValue("Sync status", synced.Synced ? "Synced" : "Not synced");
+            ConsoleMessage.NameValue("Wallet height", await Service.GetHeightInfo(cts.Token));
+            ConsoleMessage.NameValue("Fingerprint", Service.Fingerprint);
 
             var wallets = await Service.GetWallets(cts.Token);
             if (!wallets.Any())
             {
-                Console.WriteLine($"There are no wallets for a this public key {Service.Fingerprint}");
+                ConsoleMessage.Warning($"There are no wallets for a this public key {Service.Fingerprint}");
                 return;
             }
 
@@ -67,16 +74,16 @@ namespace rchia.Wallet
                 var newWallet = new chia.dotnet.Wallet(summary.Id, Service);
                 var (ConfirmedWalletBalance, UnconfirmedWalletBalance, SpendableBalance, PendingChange, MaxSendAmount, UnspentCoinCount, PendingCoinRemovalCount) = await newWallet.GetBalance(cts.Token);
 
-                Console.WriteLine($"Wallet ID {summary.Id} type {summary.Type} {summary.Name}");
-                Console.WriteLine($"   -Total Balance: {ConfirmedWalletBalance.AsChia()} {NetworkPrefix}");
-                Console.WriteLine($"   -Pending Total Balance: {UnconfirmedWalletBalance.AsChia()} {NetworkPrefix}");
-                Console.WriteLine($"   -Spendable: {SpendableBalance.AsChia()} {NetworkPrefix}");
+                AnsiConsole.MarkupLine($"Wallet ID [bold]{summary.Id}[/] of type [green]{summary.Type}[/] '[italic]{summary.Name}[/]'");
+                ConsoleMessage.NameValue("   -Total Balance", $"{ConfirmedWalletBalance.AsChia()} {NetworkPrefix}");
+                ConsoleMessage.NameValue("   -Pending Total Balance", $"{UnconfirmedWalletBalance.AsChia()} {NetworkPrefix}");
+                ConsoleMessage.NameValue("   -Spendable", $"{SpendableBalance.AsChia()} {NetworkPrefix}");
                 if (ConsoleMessage.Verbose)
                 {
-                    Console.WriteLine($"   -Pending Changee: {PendingChange.AsChia()} {NetworkPrefix}");
-                    Console.WriteLine($"   -Max Spend Amount: {MaxSendAmount.AsChia()} {NetworkPrefix}");
-                    Console.WriteLine($"   -Unspent Coin Count: {UnspentCoinCount}");
-                    Console.WriteLine($"   -Pending Coin Removal Count: {PendingCoinRemovalCount}");
+                    ConsoleMessage.NameValue("   -Pending Changee", $"{PendingChange.AsChia()} {NetworkPrefix}");
+                    ConsoleMessage.NameValue("   -Max Spend Amount", $"{MaxSendAmount.AsChia()} {NetworkPrefix}");
+                    ConsoleMessage.NameValue("   -Unspent Coin Count", $"{UnspentCoinCount}");
+                    ConsoleMessage.NameValue("   -Pending Coin Removal Count", $"{PendingCoinRemovalCount}");
                 }
             }
         }
@@ -88,7 +95,7 @@ namespace rchia.Wallet
             var wallet = new chia.dotnet.Wallet(id, Service);
             await wallet.DeleteUnconfirmedTransactions(cts.Token);
 
-            Console.WriteLine($"Successfully deleted all unconfirmed transactions for wallet id {id}");
+            AnsiConsole.MarkupLine($"Successfully deleted all unconfirmed transactions for wallet id {id}");
         }
 
         public async Task GetAddress(uint id, bool newAddress)
@@ -133,39 +140,36 @@ namespace rchia.Wallet
             }
             else
             {
-                Console.WriteLine("There are no transactions to this address");
+                ConsoleMessage.Warning("There are no transactions to this address");
             }
         }
 
-        private static void PrintTransaction(TransactionRecord tx, string prefix)
+        private void PrintTransaction(TransactionRecord tx, string prefix)
         {
             using var cts = new CancellationTokenSource(30000);
-            Console.WriteLine($"Transaction {tx.Name}");
+            ConsoleMessage.NameValue("Transaction", tx.Name);
             if (tx.Confirmed)
             {
-                Console.WriteLine($"Status: Confirmed");
+                ConsoleMessage.NameValue("Status", "Confirmed");
             }
             else if (tx.IsInMempool)
             {
-                Console.WriteLine($"Status: In mempool");
+                ConsoleMessage.NameValue($"Status", "In mempool");
             }
             else
             {
-                Console.WriteLine($"Status: Pending");
+                ConsoleMessage.NameValue("Status", "Pending");
             }
 
-            Console.WriteLine($"Amount {(tx.Sent > 0 ? "sent" : "received")} {tx.Amount.AsChia()} {prefix}");
+            ConsoleMessage.NameValue($"Amount {(tx.Sent > 0 ? "sent" : "received")}", $"[green]{tx.Amount.AsChia()} {prefix}[/]");
             var bech32 = new Bech32M(prefix);
-            Console.WriteLine($"To address: {bech32.PuzzleHashToAddress(tx.ToPuzzleHash)}");
-            Console.WriteLine($"Created at: {tx.CreatedAtDateTime.ToLocalTime()}");
-            Console.WriteLine("");
+            ConsoleMessage.NameValue("To address", bech32.PuzzleHashToAddress(tx.ToPuzzleHash));
+            ConsoleMessage.NameValue("Created at", tx.CreatedAtDateTime.ToLocalTime());
         }
 
 
         public async Task Send(uint id, string address, decimal amount, decimal fee)
         {
-            Console.WriteLine("Submitting transaction...");
-
             using var cts = new CancellationTokenSource(30000);
             var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
             var wallet = new chia.dotnet.Wallet(id, Service);
@@ -173,7 +177,7 @@ namespace rchia.Wallet
 
             PrintTransaction(tx, NetworkPrefix);
 
-            Console.WriteLine($"Do 'rchia wallet get-transaction -tx {tx.TransactionId}' to get status");
+            ConsoleMessage.Helpful($"Do 'rchia wallet get-transaction -tx {tx.TransactionId}' to get status");
         }
     }
 }

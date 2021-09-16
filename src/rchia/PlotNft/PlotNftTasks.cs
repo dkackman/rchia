@@ -83,7 +83,7 @@ namespace rchia.PlotNft
                 throw new InvalidOperationException($"Pool URLs must be HTTPS on mainnet {poolUri}. Aborting.");
             }
 
-            return $"This operation Will join pool {poolUri} with Plot NFT {Service.Fingerprint}.";
+            return $"This operation Will join pool {poolUri} with Plot NFT {Service.Fingerprint}.\nDo you want to proceed?";
         }
 
         public async Task Join(uint walletId, Uri poolUri)

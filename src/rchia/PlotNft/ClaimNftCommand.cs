@@ -18,12 +18,12 @@ namespace rchia.PlotNft
         {
             return await Execute(async () =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Wallet);
-                var wallet = await LoginToWallet(rpcClient);
-                var tasks = new PlotNftTasks(wallet, this);
-
-                if (Confirm($"Are you sure you want to claim rewards for wallet ID: {Id}?", Force))
+                if (Confirm($"Are you sure you want to claim rewards for wallet ID {Id}?", Force))
                 {
+                    using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Wallet);
+                    var wallet = await LoginToWallet(rpcClient);
+                    var tasks = new PlotNftTasks(wallet, this);
+
                     await tasks.Claim(Id);
                 }
             });

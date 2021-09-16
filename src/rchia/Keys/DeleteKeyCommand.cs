@@ -26,12 +26,12 @@ namespace rchia.Keys
                     throw new InvalidOperationException($"{Fingerprint} is not a valid wallet fingerprint");
                 }
 
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Wallet);
-                var wallet = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var commands = new KeysTasks(wallet, this);
-
-                if (Confirm($"Deleting the key {Fingerprint} CANNOT be undone.", Force))
+                if (Confirm($"Deleting a key CANNOT be undone.\nAre you sure you want to delete key {Fingerprint}?", Force))
                 {
+                    using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Wallet);
+                    var wallet = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
+                    var commands = new KeysTasks(wallet, this);
+
                     Message($"Deleting key {Fingerprint}...");
                     await commands.Delete(Fingerprint);
                 }

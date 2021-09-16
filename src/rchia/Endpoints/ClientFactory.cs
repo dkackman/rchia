@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Spectre.Console;
 using chia.dotnet;
 
 namespace rchia.Endpoints
@@ -26,16 +26,23 @@ namespace rchia.Endpoints
         {
             using var cts = new CancellationTokenSource(30000);
 
-            using var rpcClient = await CreateRpcClient(endpoint);
+            using var rpcClient = await CreateRpcClient(null!, endpoint);
         }
 
         public async Task<IRpcClient> CreateRpcClient(EndpointOptions options, string serviceName)
         {
             var endpoint = GetEndpointInfo(options, serviceName);
 
-            options.Message($"Using endpoint {endpoint.Uri}");
+            return await options.Status($"Connecting to endpoint {endpoint.Uri}...", async ctx => await CreateRpcClient(ctx, endpoint));
+        }
 
-            return await CreateRpcClient(endpoint);
+        private async Task<IRpcClient> CreateRpcClient(StatusContext ctx, EndpointInfo endpoint)
+        {
+            return endpoint.Uri.Scheme == "wss"
+                ? await CreateWebSocketClient(ctx, endpoint)
+                : endpoint.Uri.Scheme == "https"
+                ? new HttpRpcClient(endpoint)
+                : throw new InvalidOperationException($"Unrecognized endpoint Uri scheme {endpoint.Uri.Scheme}");
         }
 
         public async Task<WebSocketRpcClient> CreateWebSocketClient(EndpointOptions options, string serviceName)
@@ -47,15 +54,13 @@ namespace rchia.Endpoints
                 throw new InvalidOperationException($"Expecting a daemon endpoint using the websocket protocol but found {endpoint.Uri}");
             }
 
-            options.Message($"Using endpoint {endpoint.Uri}");
-
-            return await CreateWebSocketClient(endpoint);
+            return await options.Status($"Connecting to websocket {endpoint.Uri}...", async ctx => await CreateWebSocketClient(ctx, endpoint));
         }
 
-        private async Task<WebSocketRpcClient> CreateWebSocketClient(EndpointInfo endpoint)
+        private async Task<WebSocketRpcClient> CreateWebSocketClient(StatusContext ctx, EndpointInfo endpoint)
         {
             using var cts = new CancellationTokenSource(30000);
-
+            
             var rpcClient = new WebSocketRpcClient(endpoint);
             await rpcClient.Connect(cts.Token);
 
@@ -63,15 +68,6 @@ namespace rchia.Endpoints
             await daemon.RegisterService(cts.Token);
 
             return rpcClient;
-        }
-
-        public async Task<IRpcClient> CreateRpcClient(EndpointInfo endpoint)
-        {
-            return endpoint.Uri.Scheme == "wss"
-                ? await CreateWebSocketClient(endpoint)
-                : endpoint.Uri.Scheme == "https"
-                ? new HttpRpcClient(endpoint)
-                : throw new InvalidOperationException($"Unrecognized endpoint Uri scheme {endpoint.Uri.Scheme}");
         }
 
         private static EndpointInfo GetEndpointInfo(EndpointOptions options, string serviceName)

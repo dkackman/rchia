@@ -28,8 +28,6 @@ namespace rchia.Endpoints
                 await ClientFactory.Factory.TestConnection(endpoint.EndpointInfo);
 
                 Console.WriteLine($"Successfully connected to {Id}");
-
-                await Task.CompletedTask;
             });
         }
     }
