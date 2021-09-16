@@ -16,8 +16,6 @@ namespace rchia.PlotNft
 
     internal class PlotNftTasks : ConsoleTask<WalletProxy>
     {
-        private const byte POOL_PROTOCOL_VERSION = 1;
-
         public PlotNftTasks(WalletProxy wallet, IConsoleMessage consoleMessage)
             : base(wallet, consoleMessage)
         {
@@ -108,9 +106,9 @@ namespace rchia.PlotNft
                 throw new InvalidOperationException("Relative lock height too high for this pool, cannot join");
             }
 
-            if (info.ProtocolVersion != POOL_PROTOCOL_VERSION)
+            if (info.ProtocolVersion != PoolInfo.POOL_PROTOCOL_VERSION)
             {
-                throw new InvalidOperationException($"Unsupported version: {info.ProtocolVersion}, should be { POOL_PROTOCOL_VERSION}");
+                throw new InvalidOperationException($"Unsupported version: {info.ProtocolVersion}, should be {PoolInfo.POOL_PROTOCOL_VERSION}");
             }
 
             return info;
@@ -127,7 +125,7 @@ namespace rchia.PlotNft
                 RelativeLockHeight = poolInfo.RelativeLockHeight
             };
 
-            using var cts = new CancellationTokenSource();
+            using var cts = new CancellationTokenSource(30000);
             var (tx, launcherId, p2SingletonHash) = await Service.CreatePoolWallet(poolState, null, null, cts.Token);
             ConsoleMessage.NameValue("Launcher Id", launcherId);
             PrintTransactionSentTo(tx);
@@ -136,7 +134,7 @@ namespace rchia.PlotNft
         // https://testpool.xchpool.org
         public async Task GetLoginLink(string launcherId)
         {
-            using var cts = new CancellationTokenSource(3000000);
+            using var cts = new CancellationTokenSource(30000);
             
             if (Service.RpcClient is not WebSocketRpcClient )
             {
