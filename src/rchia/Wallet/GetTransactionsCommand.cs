@@ -25,7 +25,7 @@ namespace rchia.Wallet
                 var wallet = await LoginToWallet(rpcClient);
                 var tasks = new WalletTasks(wallet, this);
 
-                await tasks.GetTransactions(Id, Start, Count);
+                await DoWork("Retrieving transactions...", async ctx => { await tasks.GetTransactions(Id, Start, Count); });
             });
         }
     }

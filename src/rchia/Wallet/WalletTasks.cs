@@ -105,7 +105,7 @@ namespace rchia.Wallet
             var wallet = new chia.dotnet.Wallet(id, Service);
             var address = await wallet.GetNextAddress(newAddress, cts.Token);
 
-            Console.WriteLine(address);
+            AnsiConsole.MarkupLine($"[yellow]{address}[/]");
         }
 
         public async Task GetTransaction(string txId)
@@ -161,12 +161,12 @@ namespace rchia.Wallet
                 ConsoleMessage.NameValue("Status", "Pending");
             }
 
-            ConsoleMessage.NameValue($"Amount {(tx.Sent > 0 ? "sent" : "received")}", $"[green]{tx.Amount.AsChia()} {prefix}[/]");
+            var (verb, color) = tx.Sent > 0 ? ("sent", "red") : ("received", "green");
+            ConsoleMessage.NameValue($"Amount {verb}", $"[{color}]{tx.Amount.AsChia()} {prefix}[/]");
             var bech32 = new Bech32M(prefix);
             ConsoleMessage.NameValue("To address", bech32.PuzzleHashToAddress(tx.ToPuzzleHash));
             ConsoleMessage.NameValue("Created at", tx.CreatedAtDateTime.ToLocalTime());
         }
-
 
         public async Task Send(uint id, string address, decimal amount, decimal fee)
         {

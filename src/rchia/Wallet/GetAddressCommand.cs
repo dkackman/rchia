@@ -22,7 +22,7 @@ namespace rchia.Wallet
                 var wallet = await LoginToWallet(rpcClient);
                 var tasks = new WalletTasks(wallet, this);
 
-                await tasks.GetAddress(Id, New);
+                await DoWork("Retrieving wallet address...", async ctx => { await tasks.GetAddress(Id, New); });                
             });
         }
     }

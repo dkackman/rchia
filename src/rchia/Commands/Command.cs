@@ -61,6 +61,10 @@ namespace rchia.Commands
         protected async Task DoWork(string msg, Func<StatusContext, Task> work)
         {
             await AnsiConsole.Status().StartAsync(msg, async ctx => await work(ctx));
+            if (Verbose)
+            {
+                Helpful("Done.");
+            }
         }
 
         protected async Task<int> Execute(Func<Task> run)
@@ -84,14 +88,17 @@ namespace rchia.Commands
             AnsiConsole.MarkupLine($"[bold]{name}:[/] {value}");
         }
 
-        public void Helpful(string msg)
+        public void Helpful(string msg, bool important = false)
         {
-            AnsiConsole.MarkupLine($"[dim]{msg}[/]");
+            if (Verbose || important)
+            {
+                AnsiConsole.MarkupLine($"[grey]{msg}[/]");
+            }
         }
 
         public void Warning(string msg)
         {
-            AnsiConsole.MarkupLine($"[red]{msg}[/]");
+            AnsiConsole.MarkupLine($"[yellow]{msg}[/]");
         }
     }
 }

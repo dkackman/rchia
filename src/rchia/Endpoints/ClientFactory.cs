@@ -108,7 +108,7 @@ namespace rchia.Endpoints
 
             if (!options.DefaultEndpoint)
             {
-                options.Message("No endpoint options set. Using default endpoint.");
+                options.Helpful("No endpoint options set. Using default endpoint.");
             }
 
 

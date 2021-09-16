@@ -19,7 +19,7 @@ namespace rchia.Wallet
                 var wallet = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var tasks = new WalletTasks(wallet, this);
 
-                await tasks.GetTransaction(TxId);
+                await DoWork("Retrieving transaction...", async ctx => { await tasks.GetTransaction(TxId); });
             });
         }
     }

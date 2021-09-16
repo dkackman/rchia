@@ -10,7 +10,7 @@ namespace rchia.Commands
 
         void Warning(string msg);
 
-        void Helpful(string msg);
+        void Helpful(string msg, bool important = false);
 
         void Message(string msg, bool important = false);
 
