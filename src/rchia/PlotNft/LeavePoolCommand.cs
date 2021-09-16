@@ -18,13 +18,10 @@ namespace rchia.PlotNft
         {
             return await Execute(async () =>
             {
-                if (Confirm($"Are you sure you want to start self-farming with Plot NFT on wallet id {Id}", Force))
+                if (Confirm($"Are you sure you want to start self-farming with Plot NFT on wallet id {Id}?", Force))
                 {
-                    using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Wallet);
-                    var wallet = await LoginToWallet(rpcClient);
-                    var tasks = new PlotNftTasks(wallet, this);
-
-                    await tasks.LeavePool(Id);
+                    using var tasks = new PlotNftTasks(await Login(), this);
+                    await DoWork("Leaving pool...", async ctx => await tasks.LeavePool(Id));
                 }
             });
         }

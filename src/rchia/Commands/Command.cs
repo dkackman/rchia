@@ -10,6 +10,11 @@ namespace rchia.Commands
         [Option("v", "verbose", Description = "Set output to verbose messages")]
         public bool Verbose { get; set; }
 
+        public void WriteLine(string msg)
+        {
+            AnsiConsole.MarkupLine(msg);
+        }
+
         public void Message(string msg, bool important = false)
         {
             if (important)
@@ -32,7 +37,7 @@ namespace rchia.Commands
             }
             else
             {
-                AnsiConsole.MarkupLine($"{e.GetType().Name}: [red]{e.Message}[/]");
+                AnsiConsole.MarkupLine($"[red]{e.Message}[/]");
             }
         }
 

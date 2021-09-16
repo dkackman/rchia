@@ -22,14 +22,12 @@ namespace rchia.PlotNft
         {
             return await Execute(async () =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Wallet);
-                var wallet = await LoginToWallet(rpcClient);
-                var tasks = new PlotNftTasks(wallet, this);
+                using var tasks = new PlotNftTasks(await Login(), this);
 
                 var msg = await tasks.ValidatePoolingOptions(InitialPoolingState.pool, PoolUrl);
                 if (Confirm(msg, Force))
                 {
-                    await tasks.Join(Id, PoolUrl);
+                    await DoWork("Joining pool...", async ctx => await tasks.Join(Id, PoolUrl));
                 }
             });
         }

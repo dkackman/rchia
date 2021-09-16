@@ -8,6 +8,8 @@ namespace rchia.Commands
     {
         bool Verbose { get; set; }
 
+        void WriteLine(string msg);
+
         void Warning(string msg);
 
         void Helpful(string msg, bool important = false);
