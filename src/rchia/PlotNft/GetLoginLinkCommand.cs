@@ -25,7 +25,7 @@ namespace rchia.PlotNft
                 var wallet = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var tasks = new PlotNftTasks(wallet, this);
 
-                await tasks.GetLoginLink(LauncherId);
+                await DoWork("Getting pool login link...", async ctx => await tasks.GetLoginLink(LauncherId));
             });
         }
     }

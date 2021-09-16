@@ -9,7 +9,7 @@ using Spectre.Console;
 
 namespace rchia.Wallet
 {
-    internal class WalletTasks : ConsoleTask<WalletProxy>, IDisposable
+    internal class WalletTasks : ConsoleTask<WalletProxy>
     {
         public WalletTasks(WalletProxy wallet, IConsoleMessage consoleMessage)
             : base(wallet, consoleMessage)
@@ -178,11 +178,6 @@ namespace rchia.Wallet
             PrintTransaction(tx, NetworkPrefix);
 
             ConsoleMessage.Helpful($"Do 'rchia wallet get-transaction -tx {tx.TransactionId}' to get status");
-        }
-
-        public void Dispose()
-        {
-            Service.RpcClient.Dispose();
         }
     }
 }

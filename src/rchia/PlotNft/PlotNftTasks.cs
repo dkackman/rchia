@@ -83,7 +83,7 @@ namespace rchia.PlotNft
                 throw new InvalidOperationException($"Pool URLs must be HTTPS on mainnet {poolUri}. Aborting.");
             }
 
-            return $"This operation Will join pool {poolUri} with Plot NFT {Service.Fingerprint}.\nDo you want to proceed?";
+            return $"This operation Will join the wallet with fingerprint [bold]{Service.Fingerprint}[/] to [bold]{poolUri}[/].\nDo you want to proceed?";
         }
 
         public async Task Join(uint walletId, Uri poolUri)
@@ -137,6 +137,11 @@ namespace rchia.PlotNft
         public async Task GetLoginLink(string launcherId)
         {
             using var cts = new CancellationTokenSource(30000);
+            
+            if (Service.RpcClient is not WebSocketRpcClient )
+            {
+                throw new InvalidOperationException("This command requires a daemon endpoint");
+            }
 
             var farmer = new FarmerProxy(Service.RpcClient, Service.OriginService);
             var link = await farmer.GetPoolLoginLink(launcherId, cts.Token);
@@ -154,6 +159,11 @@ namespace rchia.PlotNft
         public async Task Show(uint? walletId)
         {
             using var cts = new CancellationTokenSource(30000);
+
+            if (Service.RpcClient is not WebSocketRpcClient)
+            {
+                throw new InvalidOperationException("This command requires a daemon endpoint");
+            }
 
             var allWallets = await Service.GetWallets(cts.Token);
             var poolingWallets = allWallets.Where(w => w.Type == WalletType.POOLING_WALLET);

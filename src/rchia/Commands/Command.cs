@@ -32,7 +32,7 @@ namespace rchia.Commands
             }
             else
             {
-                AnsiConsole.MarkupLine($"{e.GetType().Name}: [red]{e.Message}[/]");
+                AnsiConsole.MarkupLine($"[red]{e.Message}[/]");
             }
         }
 
