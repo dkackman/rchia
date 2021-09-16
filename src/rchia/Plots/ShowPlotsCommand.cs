@@ -13,8 +13,8 @@ namespace rchia.Plots
             return await Execute(async () =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.Harvester);
-                var harvester = new HarvesterProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new HarvesterPlotTasks(harvester, this);
+                var proxy = new HarvesterProxy(rpcClient, ClientFactory.Factory.OriginService);
+                var tasks = new HarvesterPlotTasks(proxy, this);
 
                 await tasks.Show();
             });
