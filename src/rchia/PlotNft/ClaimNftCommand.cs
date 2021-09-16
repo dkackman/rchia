@@ -22,7 +22,7 @@ namespace rchia.PlotNft
                 var wallet = await LoginToWallet(rpcClient);
                 var tasks = new PlotNftTasks(wallet, this);
 
-                if (Confirm($"Will claim rewards for wallet ID: {Id}.", "Are you sure?", Force))
+                if (Confirm($"Are you sure you want to claim rewards for wallet ID: {Id}?", Force))
                 {
                     await tasks.Claim(Id);
                 }

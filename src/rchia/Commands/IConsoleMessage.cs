@@ -10,6 +10,6 @@ namespace rchia.Commands
 
         void Message(Exception? e);
 
-        bool Confirm(string warning, string confirmation, bool force);
+        bool Confirm(string warning, bool force);
     }
 }

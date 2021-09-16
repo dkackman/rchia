@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Spectre.Console;
 
 namespace rchia.Commands
 {
@@ -33,14 +34,11 @@ namespace rchia.Commands
             }
         }
 
-        public bool Confirm(string warning, string confirmation, bool force)
+        public bool Confirm(string warning, bool force)
         {
             if (!force)
             {
-                Console.WriteLine(warning);
-                Console.Write(confirmation + " (y/n): ");
-                var response = Console.ReadLine() ?? string.Empty;
-                if (!response.ToLower().StartsWith('y'))
+                if (!AnsiConsole.Confirm(warning, false))
                 {
                     Message("Cancelled");
                     return false;

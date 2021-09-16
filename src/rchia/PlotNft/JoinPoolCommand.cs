@@ -27,7 +27,7 @@ namespace rchia.PlotNft
                 var tasks = new PlotNftTasks(wallet, this);
 
                 var msg = await tasks.ValidatePoolingOptions(InitialPoolingState.pool, PoolUrl);
-                if (Confirm(msg, "Are you sure?", Force))
+                if (Confirm(msg, Force))
                 {
                     await tasks.Join(Id, PoolUrl);
                 }

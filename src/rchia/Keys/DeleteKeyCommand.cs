@@ -30,7 +30,7 @@ namespace rchia.Keys
                 var wallet = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var commands = new KeysTasks(wallet, this);
 
-                if (Confirm("Deleting a key CANNOT be undone.", $"Are you sure you want to delete this key {Fingerprint}?", Force))
+                if (Confirm($"Deleting the key {Fingerprint} CANNOT be undone.", Force))
                 {
                     Message($"Deleting key {Fingerprint}...");
                     await commands.Delete(Fingerprint);

@@ -22,7 +22,7 @@ namespace rchia.PlotNft
                 var wallet = await LoginToWallet(rpcClient);
                 var tasks = new PlotNftTasks(wallet, this);
 
-                if (Confirm($"Will start self - farming with Plot NFT on wallet id {Id}", "Are you sure?", Force))
+                if (Confirm($"Will start self-farming with Plot NFT on wallet id {Id}", Force))
                 {
                     await tasks.LeavePool(Id);
                 }

@@ -36,7 +36,7 @@ namespace rchia.StartStop
 
                 if (Daemon)
                 {
-                    if (Confirm("The daemon cannot be restared remotely. You will need shell access to the node in order to restart it.", "Are you sure you want to stop the daemon?", Force))
+                    if (Confirm("The daemon cannot be restared remotely. You will need shell access to the node in order to restart it.", Force))
                     {
                         await tasks.StopDeamon();
                     }

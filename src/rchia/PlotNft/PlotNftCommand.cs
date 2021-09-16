@@ -6,7 +6,7 @@ namespace rchia.PlotNft
     internal sealed class PlotNftCommand
     {
         [Command("claim", Description = "Claim rewards from a plot NFT")]
-        public JoinPoolCommand Claim { get; set; } = new();
+        public ClaimNftCommand Claim { get; set; } = new();
 
         [Command("create", Description = "Create a plot NFT")]
         public CreatePlotNftCommand Create { get; set; } = new();
