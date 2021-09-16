@@ -46,13 +46,13 @@ namespace rchia.PlotNft
 
             foreach (var tx in UnconfirmedTransactions)
             {
-                PrintTransactionSentTo(tx, $"[bold]Transaction Id:[/] {tx.Name}");
+                PrintTransactionSentTo(tx);
             }
         }
 
-        private void PrintTransactionSentTo(TransactionRecord tx, string msg = "Transaction submitted to:")
+        private void PrintTransactionSentTo(TransactionRecord tx)
         {
-            ConsoleMessage.WriteLine(msg);
+            ConsoleMessage.NameValue("Transaction", tx.Name);
             foreach (var sentTo in tx.SentTo)
             {
                 ConsoleMessage.NameValue($"Sent to", sentTo.Peer);
@@ -136,7 +136,7 @@ namespace rchia.PlotNft
         // https://testpool.xchpool.org
         public async Task GetLoginLink(string launcherId)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(3000000);
             
             if (Service.RpcClient is not WebSocketRpcClient )
             {

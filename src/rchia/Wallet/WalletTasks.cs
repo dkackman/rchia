@@ -74,7 +74,7 @@ namespace rchia.Wallet
                 var newWallet = new chia.dotnet.Wallet(summary.Id, Service);
                 var (ConfirmedWalletBalance, UnconfirmedWalletBalance, SpendableBalance, PendingChange, MaxSendAmount, UnspentCoinCount, PendingCoinRemovalCount) = await newWallet.GetBalance(cts.Token);
 
-                AnsiConsole.MarkupLine($"Wallet ID [bold]{summary.Id}[/] of type [green]{summary.Type}[/] '{summary.Name}'");
+                ConsoleMessage.WriteLine($"Wallet ID [bold]{summary.Id}[/] of type [green]{summary.Type}[/] '{summary.Name}'");
                 ConsoleMessage.NameValue("   -Total Balance", $"{ConfirmedWalletBalance.AsChia()} {NetworkPrefix}");
                 ConsoleMessage.NameValue("   -Pending Total Balance", $"{UnconfirmedWalletBalance.AsChia()} {NetworkPrefix}");
                 ConsoleMessage.NameValue("   -Spendable", $"{SpendableBalance.AsChia()} {NetworkPrefix}");
@@ -95,7 +95,7 @@ namespace rchia.Wallet
             var wallet = new chia.dotnet.Wallet(id, Service);
             await wallet.DeleteUnconfirmedTransactions(cts.Token);
 
-            AnsiConsole.MarkupLine($"Successfully deleted all unconfirmed transactions for wallet id [bold]{id}[/]");
+            ConsoleMessage.WriteLine($"Successfully deleted all unconfirmed transactions for wallet id [bold]{id}[/]");
         }
 
         public async Task GetAddress(uint id, bool newAddress)
@@ -105,7 +105,7 @@ namespace rchia.Wallet
             var wallet = new chia.dotnet.Wallet(id, Service);
             var address = await wallet.GetNextAddress(newAddress, cts.Token);
 
-            AnsiConsole.MarkupLine($"[yellow]{address}[/]");
+            ConsoleMessage.WriteLine($"[yellow]{address}[/]");
         }
 
         public async Task GetTransaction(string txId)
