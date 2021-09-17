@@ -149,21 +149,21 @@ namespace rchia.Show
 
             if (state.Sync.Synced)
             {
-                ConsoleMessage.NameValue("Current Blockchain Status", "Full Node Synced");
+                ConsoleMessage.NameValue("Current Blockchain Status", "[green]Full Node Synced[/]");
                 ConsoleMessage.NameValue("Peak Hash", peakHash);
             }
             else if (state.Peak is not null && state.Sync.SyncMode)
             {
-                ConsoleMessage.NameValue("Current Blockchain Status", $"Syncing {state.Sync.SyncProgressHeight}/{state.Sync.SyncTipHeight}.");
+                ConsoleMessage.NameValue("Current Blockchain Status", $"[yellow]Syncing[/] {state.Sync.SyncProgressHeight}/{state.Sync.SyncTipHeight}");
                 ConsoleMessage.NameValue("Peak Hash", peakHash.Replace("0x", ""));
             }
             else if (state.Peak is not null)
             {
-                ConsoleMessage.NameValue("Current Blockchain Status", $"Not Synced. Peak height: {state.Peak.Height}");
+                ConsoleMessage.NameValue("Current Blockchain Status", $"[red]Not Synced[/] Peak height: {state.Peak.Height}");
             }
             else
             {
-                ConsoleMessage.WriteLine("Searching for an initial chain");
+                ConsoleMessage.Warning("Searching for an initial chain");
                 ConsoleMessage.MarkupLine("You may be able to expedite with '[grey]rchia show -a host:port[/]' using a known node.");
             }
 
@@ -171,7 +171,6 @@ namespace rchia.Show
             {
                 var time = state.Peak.DateTimestamp.HasValue ? state.Peak.DateTimestamp.Value.ToLocalTime().ToString("U") : "unknown";
                 ConsoleMessage.MarkupLine($"      [wheat1]Time:[/] {time}\t\t[wheat1]Height[/]:\t{state.Peak.Height}");
-
             }
 
             ConsoleMessage.WriteLine("");
