@@ -143,7 +143,7 @@ namespace rchia.Show
 
         public async Task State()
         {
-            using var cts = new CancellationTokenSource(1500000);
+            using var cts = new CancellationTokenSource(30000);
             var state = await Service.GetBlockchainState(cts.Token);
             var peakHash = state.Peak is not null ? state.Peak.HeaderHash : "";
 
