@@ -27,7 +27,7 @@ namespace rchia.Endpoints
                 _ = endpoints.Remove(Id);
                 EndpointLibrary.Save(endpoints, endpointsFilePath);
 
-                Console.WriteLine($"Endpoint {Id} removed");
+                MarkupLine($"Endpoint [bold]{Id}[/] removed");
 
                 await Task.CompletedTask;
             });

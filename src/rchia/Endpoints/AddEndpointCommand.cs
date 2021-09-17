@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using chia.dotnet;
 using rchia.Commands;
 
 namespace rchia.Endpoints
@@ -27,7 +28,7 @@ namespace rchia.Endpoints
             {
                 var config = Settings.GetConfig();
                 var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
-                var endpoints = EndpointLibrary.Open(endpointsFilePath);
+                IDictionary<string, Endpoint> endpoints = EndpointLibrary.Open(endpointsFilePath);
 
                 if (!string.IsNullOrEmpty(Id))
                 {
@@ -51,15 +52,25 @@ namespace rchia.Endpoints
                         throw new InvalidOperationException($"The KeyPath must be provided in position 2");
                     }
 
-                    var endpoint = EndpointTasks.Add(endpoints, Id, Uri, CertPath.FullName, KeyPath.FullName);
+                    var endpoint = new Endpoint()
+                    {
+                        Id = Id,
+                        EndpointInfo = new EndpointInfo()
+                        {
+                            Uri = new Uri(Uri),
+                            CertPath = CertPath.FullName,
+                            KeyPath = KeyPath.FullName
+                        }
+                    };
+
+                    endpoints.Add(endpoint.Id, endpoint);
 
                     EndpointLibrary.Save(endpoints, endpointsFilePath);
 
-                    Console.WriteLine($"Endpoint {endpoint.Id} added");
-                    Console.WriteLine(endpoint);
+                    MarkupLine($"Endpoint [bold]{endpoint.Id}[/] added");
+                    WriteLine(endpoint.ToJson());
 
                     await Task.CompletedTask;
-
                 }
             });
         }

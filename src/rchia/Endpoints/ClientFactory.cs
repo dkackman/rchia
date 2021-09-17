@@ -111,7 +111,6 @@ namespace rchia.Endpoints
                 options.Helpful("No endpoint options set. Using default endpoint.");
             }
 
-
             var endpoint = EndpointLibrary.GetDefault(endpointsFilePath);
             return endpoint.EndpointInfo;
         }

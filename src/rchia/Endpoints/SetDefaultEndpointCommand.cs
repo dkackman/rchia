@@ -30,7 +30,7 @@ namespace rchia.Endpoints
                 }
 
                 EndpointLibrary.Save(endpoints, endpointsFilePath);
-                Console.WriteLine($"Endpoint {Id} is now the default");
+                MarkupLine($"Endpoint [bold]{Id}[/] is now the default");
 
                 await Task.CompletedTask;
             });

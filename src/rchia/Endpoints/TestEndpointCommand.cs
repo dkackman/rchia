@@ -7,7 +7,7 @@ namespace rchia.Endpoints
 {
     internal sealed class TestEndpointCommand : Command
     {
-        [Argument(0, Name = "id", Description = "The id of the endpoint to show")]
+        [Argument(0, Name = "id", Description = "The id of the endpoint to test")]
         public string Id { get; set; } = string.Empty;
 
         [CommandTarget]
@@ -27,7 +27,7 @@ namespace rchia.Endpoints
                 var endpoint = endpoints[Id];
                 await ClientFactory.Factory.TestConnection(endpoint.EndpointInfo);
 
-                Console.WriteLine($"Successfully connected to {Id}");
+                MarkupLine($"Successfully connected to [bold]{Id}[/]");
             });
         }
     }

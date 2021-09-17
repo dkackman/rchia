@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using rchia.Commands;
@@ -17,7 +18,7 @@ namespace rchia.Endpoints
             {
                 var config = Settings.GetConfig();
                 var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
-                var endpoints = EndpointLibrary.Open(endpointsFilePath);
+                IDictionary<string, Endpoint> endpoints = EndpointLibrary.Open(endpointsFilePath);
 
                 if (!endpoints.ContainsKey(Id))
                 {
@@ -25,7 +26,7 @@ namespace rchia.Endpoints
                 }
 
                 var endpoint = endpoints[Id];
-                Console.WriteLine(endpoint);
+                WriteLine(endpoint.ToJson());
 
                 await Task.CompletedTask;
             });

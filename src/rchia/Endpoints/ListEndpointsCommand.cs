@@ -15,7 +15,12 @@ namespace rchia.Endpoints
                 var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
                 var endpoints = EndpointLibrary.Open(endpointsFilePath);
 
-                EndpointTasks.List(endpoints);
+                MarkupLine($"[bold]{endpoints.Count}[/] saved endpoint(s)");
+                foreach (var endpoint in endpoints.Values)
+                {
+                    var isDefault = endpoint.IsDefault ? "[bold](default)[/]" : string.Empty;
+                    MarkupLine($" - {endpoint.Id} {isDefault}");
+                }
 
                 await Task.CompletedTask;
             });
