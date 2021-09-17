@@ -26,7 +26,8 @@ namespace rchia.Farm
             var count = limit == 0 ? list.Count : limit;
             foreach (var sp in list.Take(count))
             {
-                Console.WriteLine($"Hash: {sp.SignagePoint.ChallengeHash} Index: {sp.SignagePoint.SignagePointIndex}");
+                ConsoleMessage.NameValue("Hash", sp.SignagePoint.ChallengeHash);
+                ConsoleMessage.NameValue("Index", sp.SignagePoint.SignagePointIndex);
             }
 
             ConsoleMessage.Message($"Showing {count} of {list.Count} challenges.");
@@ -47,16 +48,16 @@ namespace rchia.Farm
             var wallet_running = await Service.IsServiceRunning(ServiceNames.Wallet, cts.Token);
 
             var status = blockchain_state is null
-                ? "Not available"
+                ? "[red]Not available[/]"
                 : blockchain_state.Sync.SyncMode
-                ? "Syncing"
+                ? "[grey]Syncing[/]"
                 : !blockchain_state.Sync.Synced
-                ? "Not running"
+                ? "[red]Not running[/]"
                 : !farmer_running
-                ? "Not running"
-                : "Farming";
+                ? "[red]Not running[/]"
+                : "[green]Farming[/]";
 
-            Console.WriteLine($"Farming status: {status}");
+            ConsoleMessage.NameValue("Farming status", status);
 
             var wallet_ready = true;
             if (wallet_running)
@@ -65,10 +66,10 @@ namespace rchia.Farm
                 {
                     var (FarmedAmount, FarmerRewardAmount, FeeAmount, LastHeightFarmed, PoolRewardAmount) = await wallet.GetFarmedAmount(cts.Token);
 
-                    Console.WriteLine($"Total chia farmed: {FarmedAmount.AsChia("F1")}");
-                    Console.WriteLine($"User transaction fees: {FeeAmount.AsChia("F1")}");
-                    Console.WriteLine($"Block rewards: {(FarmerRewardAmount + PoolRewardAmount).AsChia("F1")}");
-                    Console.WriteLine($"Last height farmed: {LastHeightFarmed}");
+                    ConsoleMessage.NameValue("Total chia farmed", FarmedAmount.AsChia("F1"));
+                    ConsoleMessage.NameValue("User transaction fees", FeeAmount.AsChia("F1"));
+                    ConsoleMessage.NameValue("Block rewards", (FarmerRewardAmount + PoolRewardAmount).AsChia("F1"));
+                    ConsoleMessage.NameValue("Last height farmed", LastHeightFarmed);
                 }
                 catch
                 {
@@ -86,47 +87,47 @@ namespace rchia.Farm
 
             if (localHarvesters.Any())
             {
-                Console.WriteLine($"Local Harvester{(localHarvesters.Count() > 1 ? 's' : ' ')}");
+                ConsoleMessage.MarkupLine($"[bold]Local Harvester{(localHarvesters.Count() > 1 ? 's' : ' ')}[/]");
                 foreach (var harvester in localHarvesters)
                 {
                     var size = harvester.Plots.Sum(p => (double)p.FileSize);
                     totalplotSize += (ulong)size;
                     totalPlotCount += harvester.Plots.Count;
 
-                    Console.WriteLine($"  {harvester.Connection.Host}: {harvester.Plots.Count} plots of size {size.ToBytesString("N1")}");
+                    ConsoleMessage.MarkupLine($"  [green]{harvester.Connection.Host}[/]: [bold]{harvester.Plots.Count}[/] plots of size [bold]{size.ToBytesString("N1")}[/]");
                 }
             }
 
             if (remoteHarvesters.Any())
             {
-                Console.WriteLine($"Remote Harvester{(remoteHarvesters.Count() > 1 ? 's' : ' ')}");
+                ConsoleMessage.MarkupLine($"[bold]Remote Harvester{(remoteHarvesters.Count() > 1 ? 's' : ' ')}[/]");
                 foreach (var harvester in remoteHarvesters)
                 {
                     var size = harvester.Plots.Sum(p => (double)p.FileSize);
                     totalplotSize += (ulong)size;
                     totalPlotCount += harvester.Plots.Count;
 
-                    Console.WriteLine($"  {harvester.Connection.Host}: {harvester.Plots.Count} plots of size {size.ToBytesString("N1")}");
+                    ConsoleMessage.MarkupLine($"  [green]{harvester.Connection.Host}[/]: [bold]{harvester.Plots.Count}[/] plots of size [bold]{size.ToBytesString("N1")}[/]");
                 }
             }
 
-            Console.WriteLine($"Plot count for all harvesters: {totalPlotCount}");
-            Console.WriteLine($"Total size of plots: {totalplotSize.ToBytesString("N1")}");
+            ConsoleMessage.NameValue("Plot count for all harvesters", totalPlotCount);
+            ConsoleMessage.NameValue("Total size of plots", totalplotSize.ToBytesString("N1"));
 
             if (blockchain_state is not null)
             {
-                Console.WriteLine($"Estimated network space: {blockchain_state.Space}");
+                ConsoleMessage.NameValue("Estimated network space", blockchain_state.Space.ToBytesString());
             }
             else
             {
-                Console.WriteLine("Estimated network space: Unknown");
+                ConsoleMessage.NameValue("Estimated network space", "Unknown");
             }
 
             if (blockchain_state is not null && blockchain_state.Space != BigInteger.Zero)
             {
                 if (totalPlotCount == 0)
                 {
-                    Console.WriteLine("Expected time to win: Never (no plots)");
+                    ConsoleMessage.NameValue("Expected time to win", "Never (no plots)");
                 }
                 else
                 {
@@ -134,22 +135,22 @@ namespace rchia.Farm
                     var blocktime = await fullNode.GetAverageBlockTime(cts.Token);
                     var span = blocktime / proportion;
 
-                    Console.WriteLine($"Expected time to win: {span.FormatTimeSpan()}");
+                    ConsoleMessage.NameValue("Expected time to win", span.FormatTimeSpan());
                     ConsoleMessage.Message($"Farming about {proportion:P} percent of the network");
                 }
             }
 
             if (!wallet_running)
             {
-                Console.WriteLine("For details on farmed rewards and fees you should run 'chia start wallet' and 'chia wallet show'");
+                ConsoleMessage.WriteLine("For details on farmed rewards and fees you should run 'chia start wallet' and 'chia wallet show'");
             }
             else if (!wallet_ready)
             {
-                Console.WriteLine("For details on farmed rewards and fees you should run 'chia wallet show'");
+                ConsoleMessage.WriteLine("For details on farmed rewards and fees you should run 'chia wallet show'");
             }
             else
             {
-                Console.WriteLine("Note: log into your key using 'chia wallet show' to see rewards for each key");
+                ConsoleMessage.WriteLine("Note: log into your key using 'chia wallet show' to see rewards for each key");
             }
         }
     }

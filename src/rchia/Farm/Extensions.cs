@@ -3,7 +3,6 @@ using System.Text;
 
 namespace rchia.Farm
 {
-
     internal static class Extensions
     {
         public static string FormatTimeSpan(this TimeSpan t)
