@@ -40,7 +40,7 @@ namespace rchia.PlotNft
 
             var (State, UnconfirmedTransactions) = await wallet.Status(cts.Token);
 
-            ConsoleMessage.WriteLine(State.ToString());
+            ConsoleMessage.WriteLine(State.ToJson());
 
             foreach (var tx in UnconfirmedTransactions)
             {
@@ -150,7 +150,7 @@ namespace rchia.PlotNft
             }
             else
             {
-                ConsoleMessage.WriteLine($"[link={link}]{link}[/]");
+                ConsoleMessage.MarkupLine($"[link={link}]{link}[/]");
             }
         }
 
@@ -221,7 +221,7 @@ namespace rchia.PlotNft
                 ConsoleMessage.NameValue($"Number of plots", plotCount);
                 ConsoleMessage.NameValue($"Owner public key", State.Current.OwnerPubkey);
 
-                ConsoleMessage.WriteLine($"Pool contract address (use ONLY for plotting - do not send money to this address) {bech32.PuzzleHashToAddress(State.P2SingletonPuzzleHash)}");
+                ConsoleMessage.MarkupLine($"Pool contract address (use ONLY for plotting - do not send money to this address) {bech32.PuzzleHashToAddress(State.P2SingletonPuzzleHash)}");
 
                 if (State.Target is not null)
                 {
@@ -251,11 +251,11 @@ namespace rchia.PlotNft
                         ConsoleMessage.NameValue($"Relative lock height", $"{State.Current.RelativeLockHeight} blocks");
                         try
                         {
-                            ConsoleMessage.WriteLine($"Payout instructions (pool will pay to this address) [green]{bech32.PuzzleHashToAddress(poolstate.PoolConfig.PayoutInstructions)}[/]");
+                            ConsoleMessage.MarkupLine($"Payout instructions (pool will pay to this address) [green]{bech32.PuzzleHashToAddress(poolstate.PoolConfig.PayoutInstructions)}[/]");
                         }
                         catch
                         {
-                            ConsoleMessage.WriteLine($"Payout instructions (pool will pay you with this) {poolstate.PoolConfig.PayoutInstructions}");
+                            ConsoleMessage.MarkupLine($"Payout instructions (pool will pay you with this) {poolstate.PoolConfig.PayoutInstructions}");
                         }
                     }
                 }
@@ -264,7 +264,7 @@ namespace rchia.PlotNft
                     var expected = State.SingletonBlockHeight - State.Current.RelativeLockHeight;
                     if (State.Target is not null)
                     {
-                        ConsoleMessage.WriteLine($"Expected to leave after block height: {expected}");
+                        ConsoleMessage.MarkupLine($"Expected to leave after block height: {expected}");
                     }
                 }
             }

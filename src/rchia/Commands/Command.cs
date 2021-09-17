@@ -10,9 +10,14 @@ namespace rchia.Commands
         [Option("v", "verbose", Description = "Set output to verbose messages")]
         public bool Verbose { get; set; }
 
-        public void WriteLine(string msg)
+        public void MarkupLine(string msg)
         {
             AnsiConsole.MarkupLine(msg);
+        }
+
+        public void WriteLine(string msg)
+        {
+            AnsiConsole.WriteLine(msg);
         }
 
         public void Message(string msg, bool important = false)
