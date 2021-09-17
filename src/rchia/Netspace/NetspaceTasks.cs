@@ -25,7 +25,7 @@ namespace rchia.Netspace
                 var blockchain_state = await Service.GetBlockchainState(cts.Token);
                 if (blockchain_state.Peak is null)
                 {
-                    Console.WriteLine("No blocks in blockchain");
+                    ConsoleMessage.Warning("No blocks in blockchain");
                     return;
                 }
 
@@ -36,32 +36,33 @@ namespace rchia.Netspace
                 var newer_block = await Service.GetBlockRecord(start, cts.Token);
                 if (newer_block is null)
                 {
-                    Console.WriteLine($"Block header hash {start} not found.");
+                    ConsoleMessage.Warning($"Block header hash {start} not found.");
                     return;
                 }
 
                 newer_block_height = newer_block.Height;
             }
 
-            Console.WriteLine($"newer_height      {newer_block_height}");
+            ConsoleMessage.NameValue("Newer Height", newer_block_height);
 
             var newer_block_header = await Service.GetBlockRecordByHeight(newer_block_height);
             var older_block_height = Math.Max(0, newer_block_height - delta);
             var older_block_header = await Service.GetBlockRecordByHeight(older_block_height);
             var network_space_bytes_estimate = await Service.GetNetworkSpace(newer_block_header.HeaderHash, older_block_header.HeaderHash);
 
-            Console.WriteLine("Older Block\n" +
-                $"Block Height:     {older_block_header.Height}\n" +
-                $"Weight:           {older_block_header.Weight}\n" +
-                $"VDF Iterations:   {older_block_header.TotalIters}\n" +
-                $"Header Hash:      0x{older_block_header.HeaderHash}\n");
-            Console.WriteLine("Newer Block\n" +
-                $"Block Height:     {newer_block_header.Height}\n" +
-                $"Weight:           {newer_block_header.Weight}\n" +
-                $"VDF Iterations:   {newer_block_header.TotalIters}\n" +
-                $"Header Hash:      0x{newer_block_header.HeaderHash}\n");
+            ConsoleMessage.MarkupLine("[bold]Older Block[/]");
+            ConsoleMessage.NameValue("  Block Height", older_block_header.Height);
+            ConsoleMessage.NameValue("  Weight", older_block_header.Weight);
+            ConsoleMessage.NameValue("  VDF Iterations", older_block_header.TotalIters);
+            ConsoleMessage.NameValue("  Header Hash", $"0x{ older_block_header.HeaderHash}");
 
-            Console.WriteLine(network_space_bytes_estimate.ToBytesString());
+            ConsoleMessage.MarkupLine("[bold]Newer Block[/]");
+            ConsoleMessage.NameValue("  Block Height", newer_block_header.Height);
+            ConsoleMessage.NameValue("  Weight", newer_block_header.Weight);
+            ConsoleMessage.NameValue("  VDF Iterations", newer_block_header.TotalIters);
+            ConsoleMessage.NameValue("  Header Hash", $"0x{ newer_block_header.HeaderHash}");
+
+            ConsoleMessage.WriteLine(network_space_bytes_estimate.ToBytesString());
         }
     }
 }
