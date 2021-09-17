@@ -16,13 +16,13 @@ namespace rchia.Farm
         public async override Task<int> Run()
         {
             return await Execute(async () =>
-                {
-                    using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Daemon);
-                    var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
-                    var tasks = new FarmTasks(daemon, this);
+            {
+                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Daemon);
+                var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
+                var tasks = new FarmTasks(proxy, this);
 
-                    await tasks.Challenges(Limit);
-                });
+                await DoWork("Retrieving challenges...", async ctx => { await tasks.Challenges(Limit); });
+            });
         }
     }
 }

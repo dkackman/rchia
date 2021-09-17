@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,7 +20,7 @@ namespace rchia.Keys
             using var cts = new CancellationTokenSource(30000);
             var fingerprint = await Service.AddKey(mnemonic, true, cts.Token);
 
-            Console.WriteLine($"Added private key with public key fingerprint {fingerprint}");
+            ConsoleMessage.MarkupLine($"Added private key with public key fingerprint [bold]{fingerprint}[/]");
         }
 
         public async Task Delete(uint fingerprint)
@@ -29,7 +28,7 @@ namespace rchia.Keys
             using var cts = new CancellationTokenSource(30000);
             await Service.DeleteKey(fingerprint, cts.Token);
 
-            Console.WriteLine($"Deleted the key with fingerprint {fingerprint}");
+            ConsoleMessage.MarkupLine($"Deleted the key with fingerprint [bold]{fingerprint}[/]");
         }
 
         public async Task DeleteAll()
@@ -41,12 +40,11 @@ namespace rchia.Keys
         public async Task Generate()
         {
             using var cts = new CancellationTokenSource(30000);
-            Console.WriteLine("Generating private key.");
 
             var mnemonic = await Service.GenerateMnemonic(cts.Token);
             var fingerprint = await Service.AddKey(mnemonic, true, cts.Token);
 
-            Console.WriteLine($"Added private key with public key fingerprint {fingerprint}");
+            ConsoleMessage.MarkupLine($"Added private key with public key fingerprint [bold]{fingerprint}[/]");
         }
 
         public async Task GenerateAndPrint()
@@ -54,14 +52,14 @@ namespace rchia.Keys
             using var cts = new CancellationTokenSource(30000);
             var mnemonic = await Service.GenerateMnemonic(cts.Token);
 
-            Console.WriteLine("Generating private key. Mnemonic (24 secret words):");
-            Console.WriteLine(string.Join(' ', mnemonic));
-            Console.WriteLine("Note that this key has not been added to the keychain. Run chia keys add");
+            ConsoleMessage.WriteLine("Generated private key. Mnemonic (24 secret words):");
+            ConsoleMessage.MarkupLine($"[bold]{string.Join(' ', mnemonic)}[/]");
+            ConsoleMessage.MarkupLine($"Note that this key has not been added to the keychain. Run [grey]rchia keys add {string.Join(' ', mnemonic)}[/] to do so.");
         }
 
         public async Task Show(bool showMnemonicSeed)
         {
-            Console.WriteLine("Showing all public keys derived from your private keys:");
+            ConsoleMessage.Helpful("Showing all public keys derived from your private keys:");
 
             using var cts = new CancellationTokenSource(30000);
             var keys = await Service.GetPublicKeys(cts.Token);
@@ -73,33 +71,32 @@ namespace rchia.Keys
 
                 foreach (var fingerprint in keys)
                 {
-                    Console.WriteLine($"Fingerprint: {fingerprint}");
+                    ConsoleMessage.NameValue("Fingerprint", fingerprint);
                     using var cts1 = new CancellationTokenSource(30000);
                     var (Fingerprint, Sk, Pk, FarmerPk, PoolPk, Seed) = await Service.GetPrivateKey(fingerprint, cts1.Token);
 
-                    Console.WriteLine($"Master public key (m): {Pk}");
-                    Console.WriteLine($"Farmer public key(m/12381/8444/0/0): {FarmerPk}");
-                    Console.WriteLine($"Pool public key (m/12381/8444/1/0): {PoolPk}");
+                    ConsoleMessage.NameValue("Master public key (m)", Pk);
+                    ConsoleMessage.NameValue("Farmer public key(m/12381/8444/0/0)", FarmerPk);
+                    ConsoleMessage.NameValue("Pool public key (m/12381/8444/1/0)", PoolPk);
 
                     // this isn't possible over rpc right now
                     //var address = bech32.PuzzleHashToAddress(HexBytes.FromHex(Sk));
-
-                    // Console.WriteLine($"First wallet address: {address}");
+                    // Console.WriteLine($"First wallet address", address(;
 
                     if (showMnemonicSeed)
                     {
-                        Console.WriteLine($"Master private key (m): {Sk}");
+                        ConsoleMessage.NameValue("Master private key (m)", Sk);
 
                         // this isn't possible over rpc right now
-                        //Console.WriteLine($"First wallet secret key (m/12381/8444/2/0): {Sk}");
+                        //Console.WriteLine($"First wallet secret key (m/12381/8444/2/0)", Sk(;
 
-                        Console.WriteLine($"  Mnemonic seed (24 secret words):\n  {Seed}");
+                        ConsoleMessage.NameValue("  Mnemonic seed (24 secret words)", Seed);
                     }
                 }
             }
             else
             {
-                Console.WriteLine("There are no saved private keys");
+                ConsoleMessage.Warning("There are no saved private keys");
             }
         }
     }

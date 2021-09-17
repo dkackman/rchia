@@ -1,7 +1,5 @@
 ﻿using System.Threading.Tasks;
-using chia.dotnet;
 using rchia.Commands;
-using rchia.Endpoints;
 
 namespace rchia.Wallet
 {

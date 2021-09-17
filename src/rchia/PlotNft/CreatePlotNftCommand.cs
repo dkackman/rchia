@@ -21,7 +21,7 @@ namespace rchia.PlotNft
             return await Execute(async () =>
             {
                 using var tasks = new PlotNftTasks(await Login(), this);
-                
+
                 var msg = await tasks.ValidatePoolingOptions(State, PoolUrl);
                 if (Confirm(msg, Force))
                 {

@@ -135,8 +135,8 @@ namespace rchia.PlotNft
         public async Task GetLoginLink(string launcherId)
         {
             using var cts = new CancellationTokenSource(30000);
-            
-            if (Service.RpcClient is not WebSocketRpcClient )
+
+            if (Service.RpcClient is not WebSocketRpcClient)
             {
                 throw new InvalidOperationException("This command requires a daemon endpoint");
             }

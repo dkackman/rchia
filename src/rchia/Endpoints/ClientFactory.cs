@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Spectre.Console;
 using chia.dotnet;
+using Spectre.Console;
 
 namespace rchia.Endpoints
 {
@@ -60,7 +60,7 @@ namespace rchia.Endpoints
         private async Task<WebSocketRpcClient> CreateWebSocketClient(StatusContext ctx, EndpointInfo endpoint)
         {
             using var cts = new CancellationTokenSource(30000);
-            
+
             var rpcClient = new WebSocketRpcClient(endpoint);
             await rpcClient.Connect(cts.Token);
 

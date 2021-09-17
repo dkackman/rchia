@@ -14,11 +14,11 @@ namespace rchia.Keys
         {
             return await Execute(async () =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Wallet);
-                var wallet = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new KeysTasks(wallet, this);
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.Wallet);
+                var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
+                var tasks = new KeysTasks(proxy, this);
 
-                await tasks.GenerateAndPrint();
+                await DoWork("Generating a new key...", async ctx => { await tasks.GenerateAndPrint(); });
             });
         }
     }

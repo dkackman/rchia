@@ -1,7 +1,5 @@
 ﻿using System.Threading.Tasks;
-using chia.dotnet;
 using rchia.Commands;
-using rchia.Endpoints;
 
 namespace rchia.Wallet
 {
@@ -19,7 +17,7 @@ namespace rchia.Wallet
             return await Execute(async () =>
             {
                 using var tasks = new WalletTasks(await Login(), this);
-                await DoWork("Retrieving wallet address...", async ctx => { await tasks.GetAddress(Id, New); });                
+                await DoWork("Retrieving wallet address...", async ctx => { await tasks.GetAddress(Id, New); });
             });
         }
     }

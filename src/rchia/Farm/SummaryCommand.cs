@@ -15,10 +15,10 @@ namespace rchia.Farm
             return await Execute(async () =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Daemon);
-                var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new FarmTasks(daemon, this);
+                var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
+                var tasks = new FarmTasks(proxy, this);
 
-                await tasks.Summary();
+                await DoWork("Retrieving farm info...", async ctx => { await tasks.Summary(); });
             });
         }
     }
