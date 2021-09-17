@@ -24,7 +24,7 @@ namespace rchia.Commands
         {
             if (important)
             {
-                AnsiConsole.MarkupLine($"[bold]{msg}[/]");
+                AnsiConsole.MarkupLine($"[yellow]{msg}[/]");
             }
             else if (Verbose)
             {
@@ -32,6 +32,24 @@ namespace rchia.Commands
             }
 
             Debug.WriteLine(msg);
+        }
+
+        public void NameValue(string name, object? value)
+        {
+            AnsiConsole.MarkupLine($"[wheat1]{name}:[/] {value}");
+        }
+
+        public void Helpful(string msg, bool important = false)
+        {
+            if (Verbose || important)
+            {
+                AnsiConsole.MarkupLine($"[grey]{msg}[/]");
+            }
+        }
+
+        public void Warning(string msg)
+        {
+            AnsiConsole.MarkupLine($"[yellow]{msg}[/]");
         }
 
         public void Message(Exception e)
@@ -91,24 +109,6 @@ namespace rchia.Commands
 
                 return -1;
             }
-        }
-
-        public void NameValue(string name, object? value)
-        {
-            AnsiConsole.MarkupLine($"[bold]{name}:[/] {value}");
-        }
-
-        public void Helpful(string msg, bool important = false)
-        {
-            if (Verbose || important)
-            {
-                AnsiConsole.MarkupLine($"[grey]{msg}[/]");
-            }
-        }
-
-        public void Warning(string msg)
-        {
-            AnsiConsole.MarkupLine($"[yellow]{msg}[/]");
         }
     }
 }
