@@ -19,7 +19,7 @@ namespace rchia.Plots
                 var proxy = new PlotterProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var tasks = new PlotterTasks(proxy, this);
 
-                await tasks.Log(Id);
+                await DoWork("Retrieivng plot log...", async ctx => { await tasks.Log(Id); });
             });
         }
     }

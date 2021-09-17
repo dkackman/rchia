@@ -27,18 +27,18 @@ namespace rchia.Plots
 
             if (!ConsoleMessage.Verbose)
             {
-                ConsoleMessage.Message("(use '-v/--verbose' to see file names)", true);
+                ConsoleMessage.Helpful("(use '[grey]-v/--verbose[/]' to see file names)", true);
             }
         }
 
         private void ListPlots(IEnumerable<string> plots, string msg)
         {
-            Console.WriteLine($"{plots.Count()} {msg}.");
+            ConsoleMessage.WriteLine($"{plots.Count()} {msg}.");
             if (plots.Any() && ConsoleMessage.Verbose)
             {
                 foreach (var plot in plots)
                 {
-                    Console.WriteLine(plot);
+                    ConsoleMessage.WriteLine(plot);
                 }
             }
         }
@@ -63,16 +63,16 @@ namespace rchia.Plots
 
         public async Task Show()
         {
-            Console.WriteLine("Directories where plots are being searched for:");
-            Console.WriteLine("Note that subdirectories must be added manually");
-            Console.WriteLine("Add with 'chia plots add [dir]' and remove with 'chia plots remove [dir]'");
-            Console.WriteLine("");
+            ConsoleMessage.WriteLine("Directories where plots are being searched for:");
+            ConsoleMessage.WriteLine("Note that subdirectories must be added manually");
+            ConsoleMessage.MarkupLine("Add with '[grey]chia plots add <dir>[/]' and remove with '[grey]chia plots remove <dir>[/]'");
+            ConsoleMessage.WriteLine("");
 
             using var cts = new CancellationTokenSource(30000);
             var directories = await Service.GetPlotDirectories(cts.Token);
             foreach (var path in directories)
             {
-                Console.WriteLine($"{path}");
+                ConsoleMessage.WriteLine($"{path}");
             }
         }
     }

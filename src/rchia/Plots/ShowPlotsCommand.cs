@@ -16,7 +16,7 @@ namespace rchia.Plots
                 var proxy = new HarvesterProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var tasks = new HarvesterPlotTasks(proxy, this);
 
-                await tasks.Show();
+                await DoWork("Retrieving plot info...", async ctx => { await tasks.Show(); });
             });
         }
     }

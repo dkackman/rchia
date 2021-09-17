@@ -54,7 +54,7 @@ namespace rchia.Keys
 
             ConsoleMessage.WriteLine("Generated private key. Mnemonic (24 secret words):");
             ConsoleMessage.MarkupLine($"[bold]{string.Join(' ', mnemonic)}[/]");
-            ConsoleMessage.MarkupLine($"Note that this key has not been added to the keychain. Run [grey]rchia keys add {string.Join(' ', mnemonic)}[/] to do so.");
+            ConsoleMessage.MarkupLine($"Note that this key has not been added to the keychain. Run '[grey]rchia keys add {string.Join(' ', mnemonic)}[/]' to do so.");
         }
 
         public async Task Show(bool showMnemonicSeed)

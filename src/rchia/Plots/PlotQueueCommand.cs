@@ -16,7 +16,7 @@ namespace rchia.Plots
                 var proxy = new PlotterProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var tasks = new PlotterTasks(proxy, this);
 
-                await tasks.Queue();
+                await DoWork("Retrieivng plot queue...", async ctx => { await tasks.Queue(); });
             });
         }
     }

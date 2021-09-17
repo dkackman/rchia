@@ -18,12 +18,10 @@ namespace rchia.Plots
         {
             using var cts = new CancellationTokenSource(30000);
 
-            Console.WriteLine("Queueing plot...");
-
             var q = await Service.RegisterPlotter(cts.Token);
             await Service.StartPlotting(config, cts.Token);
 
-            Console.WriteLine("Plot queued. Run 'rchia plots queue -v' or 'rchia plots log' to check status");
+            ConsoleMessage.MarkupLine("Plot queued. Run '[grey]rchia plots queue -v[/]' or '[grey]rchia plots log[/]' to check status");
         }
 
         public async Task Queue()
@@ -37,12 +35,12 @@ namespace rchia.Plots
 
             foreach (var group in plots)
             {
-                Console.WriteLine($"{group.Count()} {group.Key}");
+                ConsoleMessage.NameValue(group.Key.ToString(), group.Count());
                 if (ConsoleMessage.Verbose)
                 {
                     foreach (var item in group)
                     {
-                        Console.WriteLine($"  {item.Id}");
+                        ConsoleMessage.WriteLine($"  {item.Id}");
                     }
                 }
             }
@@ -51,19 +49,18 @@ namespace rchia.Plots
         public async Task Log(string? plotId)
         {
             using var cts = new CancellationTokenSource(30000);
-
             var q = await Service.RegisterPlotter(cts.Token);
 
             if (string.IsNullOrEmpty(plotId))
             {
                 var running = q.Where(p => p.PlotState == PlotState.RUNNING);
                 var count = running.Count();
-                Console.Write($"There {(count == 1 ? "is" : "are")} {count} running plot job{(count == 1 ? "" : "s")}");
+                ConsoleMessage.WriteLine($"There {(count == 1 ? "is" : "are")} {count} running plot job{(count == 1 ? "" : "s")}");
                 foreach (var plot in running)
                 {
-                    Console.WriteLine($"Log for plot {plot.Id}:");
-                    Console.WriteLine(plot.Log);
-                    Console.WriteLine("");
+                    ConsoleMessage.WriteLine($"Log for plot {plot.Id}:");
+                    ConsoleMessage.WriteLine(plot.Log);
+                    ConsoleMessage.WriteLine("");
                 }
             }
             else
@@ -74,8 +71,8 @@ namespace rchia.Plots
                     throw new InvalidOperationException($"No plot with an id of {plotId} was found");
                 }
 
-                Console.WriteLine(plot.Log);
-                Console.WriteLine("");
+                ConsoleMessage.WriteLine(plot.Log);
+                ConsoleMessage.WriteLine("");
             }
         }
     }

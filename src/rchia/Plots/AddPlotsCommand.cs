@@ -19,7 +19,7 @@ namespace rchia.Plots
                 var harvester = new HarvesterProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var tasks = new HarvesterPlotTasks(harvester, this);
 
-                await tasks.Add(FinalDir);
+                await DoWork("Adding plot directory...", async ctx => { await tasks.Add(FinalDir); });
             });
         }
     }
