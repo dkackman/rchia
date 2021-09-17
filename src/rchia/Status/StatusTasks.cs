@@ -37,7 +37,7 @@ namespace rchia.Status
                 using var cts = new CancellationTokenSource(5000);
 
                 var isRunning = await Service.IsServiceRunning(service, cts.Token);
-                var status = isRunning ? "running" : "not running";
+                var status = isRunning ? "[green]running[/]" : "[grey]not running[/]";
                 ConsoleMessage.NameValue(service, status);
             }
         }

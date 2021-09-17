@@ -9,6 +9,12 @@ Remote management CLI for [chia nodes](https://github.com/Chia-Network/chia-bloc
 
 A cross platform (Linux, Windows, MacOS) command line utility that mirrors the `chia` CLI, but uses RPC rather than running locally on the node. This allows management of any number of nodes from a central location, as long as [their RPC interface is exposed on the network](https://github.com/dkackman/rchia/wiki/Exposing-a-Node-on-the-Network).
 
+## Getting Started
+
+- [Exposing a node on the network](https://github.com/dkackman/rchia/wiki/Exposing-a-Node-on-the-Network)
+- [Specifying an endpoint on the command line](https://github.com/dkackman/rchia/wiki/Specifiying-RPC-Endpoints)
+- [Saving up endpoint definitions](https://github.com/dkackman/rchia/wiki/Managing-Saved-Enpoints)
+
 ## Build and Run
 
 Install [the .net5 sdk](https://dotnet.microsoft.com/download)
