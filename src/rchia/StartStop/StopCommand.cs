@@ -30,24 +30,23 @@ namespace rchia.StartStop
                     throw new InvalidOperationException($"Unrecognized service group {ServiceGroup}. It must be one of\n  {string.Join("|", ServiceGroups.Groups.Keys)}.");
                 }
 
+                if (Daemon)
+                {
+                    if (!Confirm("The daemon cannot be restared remotely. You will need shell access to the node in order to restart it.\nAre you sure you want to stop the daemon?", Force))
+                    {
+                        throw new Exception("No services were stopped.");
+                    }
+                }
+
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Daemon);
                 var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var tasks = new StartStopTasks(proxy, this);
 
+                await DoWork("Stopping services...", async ctx => { await tasks.Stop(ServiceGroup); });
                 if (Daemon)
                 {
-                    if (Confirm("The daemon cannot be restared remotely. You will need shell access to the node in order to restart it.\nAre you sure you want to stop the daemon?", Force))
-                    {
-                        await tasks.StopDeamon();
-                    }
-                    else
-                    {
-                        Console.WriteLine("No services were stopped.");
-                        return;
-                    }
+                    await DoWork("Stopping the daemon...", async ctx => { await tasks.StopDeamon(); });
                 }
-
-                await tasks.Stop(ServiceGroup);
             });
         }
     }

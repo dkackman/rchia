@@ -46,31 +46,37 @@ namespace rchia.Show
 
                 if (State)
                 {
-                    await tasks.State();
+                    await DoWork("Retrieving node info...", async ctx => { await tasks.State(); });
+
                 }
                 else if (Exit)
                 {
-                    await tasks.Exit();
+                    await DoWork("Shutting down the node...", async ctx => { await tasks.Exit(); });
+
                 }
                 else if (Connections)
                 {
-                    await tasks.Connections();
+                    await DoWork("Retrieving connections...", async ctx => { await tasks.Connections(); });
+
                 }
                 else if (!string.IsNullOrEmpty(AddConnection))
                 {
-                    await tasks.AddConnection(AddConnection);
+                    await DoWork("Adding connection...", async ctx => { await tasks.AddConnection(AddConnection); });
+
                 }
                 else if (!string.IsNullOrEmpty(RemoveConnection))
                 {
-                    await tasks.RemoveConnection(RemoveConnection);
+                    await DoWork("Removing connections...", async ctx => { await tasks.RemoveConnection(RemoveConnection); });
+
                 }
                 else if (!string.IsNullOrEmpty(BlockByHeaderHash))
                 {
-                    await tasks.BlockByHeaderHash(BlockByHeaderHash);
+                    await DoWork("Retrieving block header...", async ctx => { await tasks.BlockByHeaderHash(BlockByHeaderHash); });
+
                 }
                 else if (BlockHeaderHashByHeight.HasValue)
                 {
-                    await tasks.BlockHeaderHashByHeight(BlockHeaderHashByHeight.Value);
+                    await DoWork("Retrieving block header...", async ctx => { await tasks.BlockHeaderHashByHeight(BlockHeaderHashByHeight.Value); });
                 }
                 else
                 {

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Bech32;
 using rchia.Commands;
+using Spectre.Console;
 
 namespace rchia.Show
 {
@@ -21,7 +22,7 @@ namespace rchia.Show
             using var cts = new CancellationTokenSource(30000);
 
             var cutoff = DateTime.UtcNow - new TimeSpan(age, 0, 0);
-            Console.WriteLine($"Pruning connections that haven't sent a message since {cutoff.ToLocalTime()}");
+            ConsoleMessage.MarkupLine($"Pruning connections that haven't sent a message since [bold]{cutoff.ToLocalTime()}[/]");
 
             var connections = await Service.GetConnections(cts.Token);
             var n = 0;
@@ -30,80 +31,70 @@ namespace rchia.Show
             {
                 using var cts1 = new CancellationTokenSource(10000);
                 await Service.CloseConnection(connection.NodeId, cts1.Token);
-                Console.WriteLine($"Closed connection at {connection.PeerHost}:{connection.PeerServerPort} that last updated {connection.LastMessageDateTime.ToLocalTime()}");
+                ConsoleMessage.MarkupLine($"Closed connection at [bold]{connection.PeerHost}:{connection.PeerServerPort}[/] that last updated [bold]{connection.LastMessageDateTime.ToLocalTime()}[/]");
                 n++;
             }
 
-            Console.WriteLine($"Pruned {n} connections");
+            ConsoleMessage.MarkupLine($"Pruned [bold]{n}[/] connection{(n == 1 ? string.Empty : "s")}");
         }
 
         public async Task AddConnection(string hostUri)
         {
-            ConsoleMessage.Message($"Adding {hostUri}...");
-
             using var cts = new CancellationTokenSource(30000);
-            var uri = new Uri("https://" + hostUri); // need to add a scheme so uri can be parsed
+            var uri = hostUri.StartsWith("http") ? new Uri(hostUri) : new Uri("https://" + hostUri); // need to add a scheme so uri can be parsed
             await Service.OpenConnection(uri.Host, uri.Port, cts.Token);
-
-            ConsoleMessage.Message($"Successfully added {hostUri}.");
         }
 
         public async Task BlockHeaderHashByHeight(uint height)
         {
-            ConsoleMessage.Message($"Retrieving header hash at {height}...");
             using var cts = new CancellationTokenSource(30000);
             var block = await Service.GetBlockRecordByHeight(height, cts.Token);
-            Console.WriteLine(block.HeaderHash);
         }
 
         public async Task BlockByHeaderHash(string headerHash)
         {
-            ConsoleMessage.Message($"Retrieving block {headerHash}...");
-
             using var cts = new CancellationTokenSource(30000);
             var full_block = await Service.GetBlock(headerHash, cts.Token);
             var block = await Service.GetBlockRecord(headerHash, cts.Token);
             var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
             var previous = await Service.GetBlockRecord(block.PrevHash, cts.Token);
 
-            ConsoleMessage.Message("Done.");
-
-            Console.WriteLine($"Block Height           {block.Height}");
-            Console.WriteLine($"Header Hash            {block.HeaderHash}");
+            ConsoleMessage.NameValue("Block Height", block.Height);
+            ConsoleMessage.NameValue("Header Hash", block.HeaderHash);
 
             var timestamp = block.DateTimestamp.HasValue ? block.DateTimestamp.Value.ToLocalTime().ToString() : "Not a transaction block";
-            Console.WriteLine($"Timestamp              {timestamp}");
-            Console.WriteLine($"Weight                 {block.Weight}");
-            Console.WriteLine($"Previous Block         {block.PrevHash}");
+            ConsoleMessage.NameValue("Timestamp", timestamp);
+            ConsoleMessage.NameValue("Weight", block.Weight);
+            ConsoleMessage.NameValue("Previous Block", block.PrevHash);
 
             var difficulty = previous is not null ? block.Weight - previous.Weight : block.Weight;
-            Console.WriteLine($"Difficulty             {difficulty}");
-            Console.WriteLine($"Sub-slot iters         {block.SubSlotIters}");
-            Console.WriteLine($"Cost                   {full_block.TransactionsInfo?.Cost}");
-            Console.WriteLine($"Total VDF Iterations   {block.TotalIters}");
-            Console.WriteLine($"Is a Transaction Block {full_block.RewardChainBlock.IsTransactionBlock}");
-            Console.WriteLine($"Deficit                {block.Deficit}");
-            Console.WriteLine($"PoSpace 'k' Size       {full_block.RewardChainBlock.ProofOfSpace.Size}");
-            Console.WriteLine($"Plot Public Key        {full_block.RewardChainBlock.ProofOfSpace.PlotPublicKey}");
+            ConsoleMessage.NameValue("Difficulty", difficulty);
+            ConsoleMessage.NameValue("Sub-slot iters", block.SubSlotIters);
+            ConsoleMessage.NameValue("Cost", full_block.TransactionsInfo?.Cost);
+            ConsoleMessage.NameValue("Total VDF Iterations", block.TotalIters);
+            ConsoleMessage.NameValue("Is a Transaction Block", full_block.RewardChainBlock.IsTransactionBlock);
+            ConsoleMessage.NameValue("Deficit", block.Deficit);
+            ConsoleMessage.NameValue("PoSpace 'k' Size", full_block.RewardChainBlock.ProofOfSpace.Size);
+            ConsoleMessage.NameValue("Plot Public Key", full_block.RewardChainBlock.ProofOfSpace.PlotPublicKey);
 
             var poolPk = full_block.RewardChainBlock.ProofOfSpace.PublicPoolKey;
             poolPk = string.IsNullOrEmpty(poolPk) ? "Pay to pool puzzle hash" : poolPk;
-            Console.WriteLine($"Pool Public Key        {poolPk}");
-            Console.WriteLine($"Tx Filter Hash         {full_block.RewardChainBlock.ProofOfSpace.PlotPublicKey}");
-            Console.WriteLine($"Plot Public Key        {full_block.RewardChainBlock.ProofOfSpace.PlotPublicKey}");
+            ConsoleMessage.NameValue("Pool Public Key", poolPk);
+            ConsoleMessage.NameValue("Tx Filter Hash", full_block.RewardChainBlock.ProofOfSpace.PlotPublicKey);
+            ConsoleMessage.NameValue("Plot Public Key", full_block.RewardChainBlock.ProofOfSpace.PlotPublicKey);
 
             var txFilterHash = full_block.FoliageTransactionBlock is not null ? full_block.FoliageTransactionBlock.FilterHash : "Not a transaction block";
-            Console.WriteLine($"Tx Filter Hash         {txFilterHash}");
+            ConsoleMessage.NameValue("Tx Filter Hash", txFilterHash);
 
             var bech32 = new Bech32M(NetworkPrefix);
             var farmerAddress = bech32.PuzzleHashToAddress(block.FarmerPuzzleHash);
             var poolAddress = bech32.PuzzleHashToAddress(block.PoolPuzzleHash);
 
-            Console.WriteLine($"Farmer Address         {farmerAddress}");
-            Console.WriteLine($"Pool Address           {poolAddress}");
+            ConsoleMessage.NameValue("Farmer Address", farmerAddress);
+            ConsoleMessage.NameValue("Pool Address", poolAddress);
 
             var fees = block.Fees.HasValue ? block.Fees.Value.ToString() : "Not a transaction block";
-            Console.WriteLine($"Fees Amount            {fees}");
+            ConsoleMessage.NameValue("Fees Amount", fees);
         }
 
         public async Task Connections()
@@ -111,55 +102,44 @@ namespace rchia.Show
             using var cts = new CancellationTokenSource(30000);
             var connections = await Service.GetConnections(cts.Token);
 
-            Console.WriteLine("Connections:");
-            var padding = ConsoleMessage.Verbose ? "                                                             " : "        ";
-            Console.WriteLine($"Type      IP                   Ports       NodeID{padding}Last Connect       MiB Up|Dwn");
+            ConsoleMessage.MarkupLine("[bold]Connections[/]");
+            var table = new Table();
+            table.AddColumn("Type");
+            table.AddColumn("IP");
+            table.AddColumn("Ports");
+            table.AddColumn("NodeID");
+            table.AddColumn("Last Connect");
+            table.AddColumn("Up");
+            table.AddColumn("Down");
+            table.AddColumn("Height");
+            table.AddColumn("Hash");
 
             foreach (var c in connections)
             {
-                Console.Write($"{c.Type,-9} {c.PeerHost,-15}      {c.PeerPort,5}/{c.PeerServerPort,-5} ");
-
                 var id = ConsoleMessage.Verbose ? c.NodeId : c.NodeId.Substring(2, 10) + "...";
-                Console.Write($"{id} ");
-                Console.Write($"{c.LastMessageDateTime.ToLocalTime():MMM dd HH:mm:ss}   ");
+                var up = c.BytesRead.HasValue ? c.BytesRead.Value : 0;
+                var down = c.BytesWritten.HasValue ? c.BytesWritten.Value : 0;
+                var ports = $"{c.PeerPort}/{c.PeerServerPort}";
+                var height = c.PeakHeight.HasValue ? c.PeakHeight.Value.ToString() : "na";
+                var hash = string.IsNullOrEmpty(c.PeakHash) ? "no info" : ConsoleMessage.Verbose ? c.PeakHash : c.PeakHash.Substring(2, 10) + "...";
 
-                var down = c.BytesRead / (1024 * 1024);
-                var up = c.BytesWritten / (1024 * 1024);
-                Console.Write($"{up,7:N1}|{down,-7:N1}");
-
-                if (c.Type == NodeType.FULL_NODE)
-                {
-                    Console.WriteLine("");
-                    var height = c.PeakHeight.HasValue ? c.PeakHeight : 0;
-                    var hash = string.IsNullOrEmpty(c.PeakHash) ? "no info" :
-                        ConsoleMessage.Verbose ? c.PeakHash : c.PeakHash.Substring(2, 10) + "...";
-
-                    Console.Write("                               ");
-                    Console.Write($"-SB Height: {height,8}    -Hash: {hash}");
-                }
-
-                Console.WriteLine("");
+                table.AddRow(c.Type.ToString(), c.PeerHost, ports, id, $"{c.LastMessageDateTime.ToLocalTime():MMM dd HH:mm}", up.ToBytesString("N1"), down.ToBytesString("N1"), height, hash);
             }
+
+            AnsiConsole.Render(table);
         }
 
         public async Task Exit()
         {
-            ConsoleMessage.Message("Stopping the full node...");
-
             using var cts = new CancellationTokenSource(30000);
             await Service.StopNode(cts.Token);
         }
 
         public async Task RemoveConnection(string nodeId)
         {
-            ConsoleMessage.Message($"Removing {nodeId}...");
-
             using var cts = new CancellationTokenSource(30000);
             await Service.CloseConnection(nodeId, cts.Token);
-
-            ConsoleMessage.Message($"Removed {nodeId}.");
         }
-
 
         public async Task State()
         {
@@ -169,39 +149,40 @@ namespace rchia.Show
 
             if (state.Sync.Synced)
             {
-                Console.WriteLine("Current Blockchain Status: Full Node Synced");
-                Console.WriteLine($"Peak: Hash:{peakHash}");
+                ConsoleMessage.NameValue("Current Blockchain Status", "Full Node Synced");
+                ConsoleMessage.NameValue("Peak Hash", peakHash);
             }
             else if (state.Peak is not null && state.Sync.SyncMode)
             {
-                Console.WriteLine($"Current Blockchain Status: Syncing {state.Sync.SyncProgressHeight}/{state.Sync.SyncTipHeight}.");
-                Console.WriteLine($"Peak: Hash: {peakHash.Replace("0x", "")}");
+                ConsoleMessage.NameValue("Current Blockchain Status", $"Syncing {state.Sync.SyncProgressHeight}/{state.Sync.SyncTipHeight}.");
+                ConsoleMessage.NameValue("Peak Hash", peakHash.Replace("0x", ""));
             }
             else if (state.Peak is not null)
             {
-                Console.WriteLine($"Current Blockchain Status: Not Synced. Peak height: {state.Peak.Height}");
+                ConsoleMessage.NameValue("Current Blockchain Status", $"Not Synced. Peak height: {state.Peak.Height}");
             }
             else
             {
-                Console.WriteLine("Searching for an initial chain");
-                Console.WriteLine("You may be able to expedite with 'chia show -a host:port' using a known node.");
+                ConsoleMessage.WriteLine("Searching for an initial chain");
+                ConsoleMessage.MarkupLine("You may be able to expedite with '[grey]rchia show -a host:port[/]' using a known node.");
             }
 
             if (state.Peak is not null)
             {
                 var time = state.Peak.DateTimestamp.HasValue ? state.Peak.DateTimestamp.Value.ToLocalTime().ToString("U") : "unknown";
-                Console.WriteLine($"      Time: {time}\t\tHeight:\t{state.Peak.Height}");
+                ConsoleMessage.MarkupLine($"      [bold]Time:[/] {time}\t\t[bold]Height[/]:\t{state.Peak.Height}");
+
             }
 
-            Console.WriteLine("");
-            Console.WriteLine($"Estimated network space: {state.Space.ToBytesString()}");
-            Console.WriteLine($"Current difficulty: {state.Difficulty}");
-            Console.WriteLine($"Current VDF sub_slot_iters: {state.SubSlotIters}");
+            ConsoleMessage.WriteLine("");
+            ConsoleMessage.NameValue("Estimated network space", state.Space.ToBytesString());
+            ConsoleMessage.NameValue("Current difficulty", state.Difficulty);
+            ConsoleMessage.NameValue("Current VDF sub_slot_iters", state.SubSlotIters);
 
             var totalIters = state.Peak is not null ? state.Peak.TotalIters : 0;
-            Console.WriteLine($"Total iterations since the start of the blockchain: {totalIters}");
-            Console.WriteLine("");
-            Console.WriteLine("  Height: | Hash:");
+            ConsoleMessage.NameValue("Total iterations since the start of the blockchain", totalIters);
+            ConsoleMessage.WriteLine("");
+            ConsoleMessage.MarkupLine("   [bold]Height | Hash[/]");
 
             if (state.Peak is not null)
             {
@@ -217,10 +198,9 @@ namespace rchia.Show
 
                 foreach (var b in blocks)
                 {
-                    Console.WriteLine($"   {b.Height} | {b.HeaderHash.Replace("0x", "")}");
+                    ConsoleMessage.MarkupLine($"   {b.Height} | {b.HeaderHash.Replace("0x", "")}");
                 }
             }
-
         }
     }
 }

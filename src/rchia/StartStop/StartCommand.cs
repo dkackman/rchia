@@ -26,19 +26,12 @@ namespace rchia.StartStop
                 var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var tasks = new StartStopTasks(daemon, this);
 
-                if (ServiceGroup is not null)
+                if (ServiceGroup is null || !ServiceGroups.Groups.ContainsKey(ServiceGroup))
                 {
-                    if (!ServiceGroups.Groups.ContainsKey(ServiceGroup))
-                    {
-                        throw new InvalidOperationException($"Unrecognized service group {ServiceGroup}. It must be one of\n  {string.Join('|', ServiceGroups.Groups.Keys)}.");
-                    }
+                    throw new InvalidOperationException($"Unrecognized service group {ServiceGroup}. It must be one of\n  {string.Join('|', ServiceGroups.Groups.Keys)}.");
+                }
 
-                    await tasks.Start(ServiceGroup, Restart);
-                }
-                else
-                {
-                    throw new InvalidOperationException("Unrecognized command");
-                }
+                await DoWork("Starting services...", async ctx => { await tasks.Start(ServiceGroup, Restart); });
             });
         }
     }

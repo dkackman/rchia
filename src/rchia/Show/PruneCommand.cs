@@ -27,7 +27,7 @@ namespace rchia.Show
                 var fullNode = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var tasks = new ShowTasks(fullNode, this);
 
-                await tasks.Prune(Age);
+                await DoWork("Pruning stale connections...", async ctx => { await tasks.Prune(Age); });
             });
         }
     }

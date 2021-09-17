@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -19,13 +18,11 @@ namespace rchia.Status
         {
             using var cts = new CancellationTokenSource(30000);
 
-            Console.WriteLine("Pinging the daemon...");
-
             var stopWatch = Stopwatch.StartNew();
             await Service.Ping();
             stopWatch.Stop();
 
-            Console.WriteLine($"Ping response received after {stopWatch.ElapsedMilliseconds / 1000.0:N2} seconds");
+            ConsoleMessage.MarkupLine($"Ping response received after [bold]{stopWatch.ElapsedMilliseconds / 1000.0:N2}[/] seconds");
         }
 
         public async Task Services()
@@ -41,7 +38,7 @@ namespace rchia.Status
 
                 var isRunning = await Service.IsServiceRunning(service, cts.Token);
                 var status = isRunning ? "running" : "not running";
-                Console.WriteLine($"{service,-25}: {status}");
+                ConsoleMessage.NameValue(service, status);
             }
         }
     }

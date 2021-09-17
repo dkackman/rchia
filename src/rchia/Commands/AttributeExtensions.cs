@@ -39,6 +39,7 @@ namespace rchia.Commands
                 {
                     aliases.Add($"-{attr.ShortName}");
                 }
+
                 if (!string.IsNullOrEmpty(attr.LongName))
                 {
                     aliases.Add($"--{attr.LongName}");
@@ -49,10 +50,12 @@ namespace rchia.Commands
                     ArgumentHelpName = attr.ArgumentHelpName ?? property.Name,
                     IsRequired = attr.IsRequired
                 };
+
                 if (attr.Default is not null)
                 {
                     option.SetDefaultValue(attr.Default);
                 }
+
                 command.AddOption(option);
             }
 
@@ -63,10 +66,13 @@ namespace rchia.Commands
                 {
                     ArgumentType = property.PropertyType,
                 };
+
                 if (attr.Default is not null)
                 {
                     argument.SetDefaultValue(attr.Default);
                 }
+
+                argument.Description = attr.Description;
                 command.AddArgument(argument);
             }
 
@@ -81,6 +87,7 @@ namespace rchia.Commands
             {
                 command.Handler = CommandHandler.Create(target);
             }
+
             parent.AddCommand(command);
         }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 using chia.dotnet;
@@ -23,17 +22,18 @@ namespace rchia.StartStop
 
                 if (isRunnnig && !restart)
                 {
-                    Console.WriteLine($"{service} is already running. Use -r to restart it...");
+                    ConsoleMessage.MarkupLine($"[bold]{service}[/] is already running. Use -r to restart it...");
                 }
                 else
                 {
                     if (isRunnnig && restart)
                     {
-                        Console.WriteLine($"Stopping {service}...");
+                        ConsoleMessage.MarkupLine($"Stopping [bold]{service}[/]...");
                         using var cts2 = new CancellationTokenSource(30000);
                         await Service.StopService(service, cts2.Token);
                     }
-                    Console.WriteLine($"Starting {service}...");
+
+                    ConsoleMessage.MarkupLine($"Starting [bold]{service}[/]...");
                     using var cts3 = new CancellationTokenSource(30000);
                     await Service.StartService(service, cts3.Token);
                 }
@@ -49,13 +49,13 @@ namespace rchia.StartStop
 
                 if (isRunnnig)
                 {
-                    Console.WriteLine($"Stopping {service}...");
+                    ConsoleMessage.MarkupLine($"Stopping [bold]{service}[/]...");
                     using var cts3 = new CancellationTokenSource(30000);
                     await Service.StopService(service, cts3.Token);
                 }
                 else
                 {
-                    Console.WriteLine($"{service} is not running...");
+                    ConsoleMessage.MarkupLine($"[bold]{service}[/] is not running...");
                 }
             }
         }

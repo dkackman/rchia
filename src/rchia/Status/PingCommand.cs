@@ -18,7 +18,7 @@ namespace rchia.Status
                 var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var tasks = new StatusTasks(daemon, this);
 
-                await tasks.Ping();
+                await DoWork("Pinging the daemon...", async ctx => { await tasks.Ping(); });
             });
         }
     }
