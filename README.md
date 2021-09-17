@@ -12,8 +12,8 @@ A cross platform (Linux, Windows, MacOS) command line utility that mirrors the `
 ## Getting Started
 
 - [Exposing a node on the network](https://github.com/dkackman/rchia/wiki/Exposing-a-Node-on-the-Network)
-- [Setting up endpoints](https://github.com/dkackman/rchia/wiki/Managing-Saved-Enpoints)
 - [Specifying an endpoint on the command line](https://github.com/dkackman/rchia/wiki/Specifiying-RPC-Endpoints)
+- [Saving up endpoint definitions](https://github.com/dkackman/rchia/wiki/Managing-Saved-Enpoints)
 
 ## Build and Run
 
