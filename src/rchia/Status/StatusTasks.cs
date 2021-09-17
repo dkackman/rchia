@@ -22,7 +22,7 @@ namespace rchia.Status
             await Service.Ping();
             stopWatch.Stop();
 
-            ConsoleMessage.MarkupLine($"Ping response received after [bold]{stopWatch.ElapsedMilliseconds / 1000.0:N2}[/] seconds");
+            ConsoleMessage.MarkupLine($"Ping response received after [wheat1]{stopWatch.ElapsedMilliseconds / 1000.0:N2}[/] seconds");
         }
 
         public async Task Services()

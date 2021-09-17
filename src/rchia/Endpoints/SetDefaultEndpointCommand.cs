@@ -30,7 +30,7 @@ namespace rchia.Endpoints
                 }
 
                 EndpointLibrary.Save(endpoints, endpointsFilePath);
-                MarkupLine($"Endpoint [bold]{Id}[/] is now the default");
+                MarkupLine($"Endpoint [wheat1]{Id}[/] is now the default");
 
                 await Task.CompletedTask;
             });

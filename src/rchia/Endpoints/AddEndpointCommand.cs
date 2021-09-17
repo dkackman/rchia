@@ -67,7 +67,7 @@ namespace rchia.Endpoints
 
                     EndpointLibrary.Save(endpoints, endpointsFilePath);
 
-                    MarkupLine($"Endpoint [bold]{endpoint.Id}[/] added");
+                    MarkupLine($"Endpoint [wheat1]{endpoint.Id}[/] added");
                     WriteLine(endpoint.ToJson());
 
                     await Task.CompletedTask;

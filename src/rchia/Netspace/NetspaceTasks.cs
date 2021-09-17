@@ -50,13 +50,13 @@ namespace rchia.Netspace
             var older_block_header = await Service.GetBlockRecordByHeight(older_block_height);
             var network_space_bytes_estimate = await Service.GetNetworkSpace(newer_block_header.HeaderHash, older_block_header.HeaderHash);
 
-            ConsoleMessage.MarkupLine("[bold]Older Block[/]");
+            ConsoleMessage.MarkupLine("[wheat1]Older Block[/]");
             ConsoleMessage.NameValue("  Block Height", older_block_header.Height);
             ConsoleMessage.NameValue("  Weight", older_block_header.Weight);
             ConsoleMessage.NameValue("  VDF Iterations", older_block_header.TotalIters);
             ConsoleMessage.NameValue("  Header Hash", $"0x{ older_block_header.HeaderHash}");
 
-            ConsoleMessage.MarkupLine("[bold]Newer Block[/]");
+            ConsoleMessage.MarkupLine("[wheat1]Newer Block[/]");
             ConsoleMessage.NameValue("  Block Height", newer_block_header.Height);
             ConsoleMessage.NameValue("  Weight", newer_block_header.Weight);
             ConsoleMessage.NameValue("  VDF Iterations", newer_block_header.TotalIters);

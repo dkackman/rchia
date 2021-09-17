@@ -81,7 +81,7 @@ namespace rchia.PlotNft
                 throw new InvalidOperationException($"Pool URLs must be HTTPS on mainnet {poolUri}. Aborting.");
             }
 
-            return $"This operation Will join the wallet with fingerprint [bold]{Service.Fingerprint}[/] to [bold]{poolUri}[/].\nDo you want to proceed?";
+            return $"This operation Will join the wallet with fingerprint [wheat1]{Service.Fingerprint}[/] to [wheat1]{poolUri}[/].\nDo you want to proceed?";
         }
 
         public async Task Join(uint walletId, Uri poolUri)

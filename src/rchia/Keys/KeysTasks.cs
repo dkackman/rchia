@@ -20,7 +20,7 @@ namespace rchia.Keys
             using var cts = new CancellationTokenSource(30000);
             var fingerprint = await Service.AddKey(mnemonic, true, cts.Token);
 
-            ConsoleMessage.MarkupLine($"Added private key with public key fingerprint [bold]{fingerprint}[/]");
+            ConsoleMessage.MarkupLine($"Added private key with public key fingerprint [wheat1]{fingerprint}[/]");
         }
 
         public async Task Delete(uint fingerprint)
@@ -28,7 +28,7 @@ namespace rchia.Keys
             using var cts = new CancellationTokenSource(30000);
             await Service.DeleteKey(fingerprint, cts.Token);
 
-            ConsoleMessage.MarkupLine($"Deleted the key with fingerprint [bold]{fingerprint}[/]");
+            ConsoleMessage.MarkupLine($"Deleted the key with fingerprint [wheat1]{fingerprint}[/]");
         }
 
         public async Task DeleteAll()
@@ -44,7 +44,7 @@ namespace rchia.Keys
             var mnemonic = await Service.GenerateMnemonic(cts.Token);
             var fingerprint = await Service.AddKey(mnemonic, true, cts.Token);
 
-            ConsoleMessage.MarkupLine($"Added private key with public key fingerprint [bold]{fingerprint}[/]");
+            ConsoleMessage.MarkupLine($"Added private key with public key fingerprint [wheat1]{fingerprint}[/]");
         }
 
         public async Task GenerateAndPrint()
@@ -53,7 +53,7 @@ namespace rchia.Keys
             var mnemonic = await Service.GenerateMnemonic(cts.Token);
 
             ConsoleMessage.WriteLine("Generated private key. Mnemonic (24 secret words):");
-            ConsoleMessage.MarkupLine($"[bold]{string.Join(' ', mnemonic)}[/]");
+            ConsoleMessage.MarkupLine($"[wheat1]{string.Join(' ', mnemonic)}[/]");
             ConsoleMessage.MarkupLine($"Note that this key has not been added to the keychain. Run '[grey]rchia keys add {string.Join(' ', mnemonic)}[/]' to do so.");
         }
 

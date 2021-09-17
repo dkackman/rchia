@@ -19,7 +19,7 @@ namespace rchia.Keys
                 var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var tasks = new KeysTasks(proxy, this);
 
-                if (Confirm($"Deleting all of your keys [bold]CANNOT[/] be undone.\nAre you sure you want to delete all keys from [red]{rpcClient.Endpoint.Uri}[/]?", Force))
+                if (Confirm($"Deleting all of your keys [wheat1]CANNOT[/] be undone.\nAre you sure you want to delete all keys from [red]{rpcClient.Endpoint.Uri}[/]?", Force))
                 {
                     await DoWork("Deleting all keys...", async ctx => { await tasks.DeleteAll(); });
                 }

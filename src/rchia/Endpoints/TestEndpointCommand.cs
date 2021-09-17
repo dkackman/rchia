@@ -27,7 +27,7 @@ namespace rchia.Endpoints
                 var endpoint = endpoints[Id];
                 await ClientFactory.Factory.TestConnection(endpoint.EndpointInfo);
 
-                MarkupLine($"Successfully connected to [bold]{Id}[/]");
+                MarkupLine($"Successfully connected to [wheat1]{Id}[/]");
             });
         }
     }

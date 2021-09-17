@@ -87,27 +87,27 @@ namespace rchia.Farm
 
             if (localHarvesters.Any())
             {
-                ConsoleMessage.MarkupLine($"[bold]Local Harvester{(localHarvesters.Count() > 1 ? 's' : ' ')}[/]");
+                ConsoleMessage.MarkupLine($"[wheat1]Local Harvester{(localHarvesters.Count() > 1 ? 's' : ' ')}[/]");
                 foreach (var harvester in localHarvesters)
                 {
                     var size = harvester.Plots.Sum(p => (double)p.FileSize);
                     totalplotSize += (ulong)size;
                     totalPlotCount += harvester.Plots.Count;
 
-                    ConsoleMessage.MarkupLine($"  [green]{harvester.Connection.Host}[/]: [bold]{harvester.Plots.Count}[/] plots of size [bold]{size.ToBytesString("N1")}[/]");
+                    ConsoleMessage.MarkupLine($"  [green]{harvester.Connection.Host}[/]: [wheat1]{harvester.Plots.Count}[/] plots of size [wheat1]{size.ToBytesString("N1")}[/]");
                 }
             }
 
             if (remoteHarvesters.Any())
             {
-                ConsoleMessage.MarkupLine($"[bold]Remote Harvester{(remoteHarvesters.Count() > 1 ? 's' : ' ')}[/]");
+                ConsoleMessage.MarkupLine($"[wheat1]Remote Harvester{(remoteHarvesters.Count() > 1 ? 's' : ' ')}[/]");
                 foreach (var harvester in remoteHarvesters)
                 {
                     var size = harvester.Plots.Sum(p => (double)p.FileSize);
                     totalplotSize += (ulong)size;
                     totalPlotCount += harvester.Plots.Count;
 
-                    ConsoleMessage.MarkupLine($"  [green]{harvester.Connection.Host}[/]: [bold]{harvester.Plots.Count}[/] plots of size [bold]{size.ToBytesString("N1")}[/]");
+                    ConsoleMessage.MarkupLine($"  [green]{harvester.Connection.Host}[/]: [wheat1]{harvester.Plots.Count}[/] plots of size [wheat1]{size.ToBytesString("N1")}[/]");
                 }
             }
 

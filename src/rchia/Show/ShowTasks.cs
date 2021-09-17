@@ -22,7 +22,7 @@ namespace rchia.Show
             using var cts = new CancellationTokenSource(30000);
 
             var cutoff = DateTime.UtcNow - new TimeSpan(age, 0, 0);
-            ConsoleMessage.MarkupLine($"Pruning connections that haven't sent a message since [bold]{cutoff.ToLocalTime()}[/]");
+            ConsoleMessage.MarkupLine($"Pruning connections that haven't sent a message since [wheat1]{cutoff.ToLocalTime()}[/]");
 
             var connections = await Service.GetConnections(cts.Token);
             var n = 0;
@@ -31,11 +31,11 @@ namespace rchia.Show
             {
                 using var cts1 = new CancellationTokenSource(10000);
                 await Service.CloseConnection(connection.NodeId, cts1.Token);
-                ConsoleMessage.MarkupLine($"Closed connection at [bold]{connection.PeerHost}:{connection.PeerServerPort}[/] that last updated [bold]{connection.LastMessageDateTime.ToLocalTime()}[/]");
+                ConsoleMessage.MarkupLine($"Closed connection at [wheat1]{connection.PeerHost}:{connection.PeerServerPort}[/] that last updated [wheat1]{connection.LastMessageDateTime.ToLocalTime()}[/]");
                 n++;
             }
 
-            ConsoleMessage.MarkupLine($"Pruned [bold]{n}[/] connection{(n == 1 ? string.Empty : "s")}");
+            ConsoleMessage.MarkupLine($"Pruned [wheat1]{n}[/] connection{(n == 1 ? string.Empty : "s")}");
         }
 
         public async Task AddConnection(string hostUri)
@@ -102,7 +102,7 @@ namespace rchia.Show
             using var cts = new CancellationTokenSource(30000);
             var connections = await Service.GetConnections(cts.Token);
 
-            ConsoleMessage.MarkupLine("[bold]Connections[/]");
+            ConsoleMessage.MarkupLine("[wheat1]Connections[/]");
             var table = new Table();
             table.AddColumn("Type");
             table.AddColumn("IP");
@@ -170,7 +170,7 @@ namespace rchia.Show
             if (state.Peak is not null)
             {
                 var time = state.Peak.DateTimestamp.HasValue ? state.Peak.DateTimestamp.Value.ToLocalTime().ToString("U") : "unknown";
-                ConsoleMessage.MarkupLine($"      [bold]Time:[/] {time}\t\t[bold]Height[/]:\t{state.Peak.Height}");
+                ConsoleMessage.MarkupLine($"      [wheat1]Time:[/] {time}\t\t[wheat1]Height[/]:\t{state.Peak.Height}");
 
             }
 
@@ -182,7 +182,7 @@ namespace rchia.Show
             var totalIters = state.Peak is not null ? state.Peak.TotalIters : 0;
             ConsoleMessage.NameValue("Total iterations since the start of the blockchain", totalIters);
             ConsoleMessage.WriteLine("");
-            ConsoleMessage.MarkupLine("   [bold]Height | Hash[/]");
+            ConsoleMessage.MarkupLine("   [wheat1]Height | Hash[/]");
 
             if (state.Peak is not null)
             {

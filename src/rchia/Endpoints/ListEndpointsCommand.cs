@@ -15,10 +15,10 @@ namespace rchia.Endpoints
                 var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
                 var endpoints = EndpointLibrary.Open(endpointsFilePath);
 
-                MarkupLine($"[bold]{endpoints.Count}[/] saved endpoint(s)");
+                MarkupLine($"[wheat1]{endpoints.Count}[/] saved endpoint(s)");
                 foreach (var endpoint in endpoints.Values)
                 {
-                    var isDefault = endpoint.IsDefault ? "[bold](default)[/]" : string.Empty;
+                    var isDefault = endpoint.IsDefault ? "[wheat1](default)[/]" : string.Empty;
                     MarkupLine($" - {endpoint.Id} {isDefault}");
                 }
 

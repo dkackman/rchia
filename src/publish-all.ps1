@@ -1,6 +1,6 @@
-$version = "0.5.0-alpha.2"
-Remove-Item '.\publish' -Recurse
+$version = "0.5.0-beta.1"
 
+Remove-Item '.\publish' -Recurse
 
 # stand alone
 dotnet publish ./rchia/rchia.csproj --configuration Release --framework net5.0 --output publish/standalone/win-x64 --self-contained True --runtime win-x64 --verbosity Normal /property:PublishTrimmed=True /property:PublishSingleFile=True /property:IncludeNativeLibrariesForSelfExtract=True /property:DebugType=None /property:DebugSymbols=False
@@ -32,4 +32,4 @@ Compress-Archive -CompressionLevel Optimal -Path publish/files/linux-x64/* -Dest
 Compress-Archive -CompressionLevel Optimal -Path publish/files/osx.11.0-x64/* -DestinationPath publish/rchia-$version-files-osx.11.0-x64.zip
 
 #nuget
-Copy-Item ./rchia/bin/release/rchia.$version.nupkg -Destination ./publish                                                                                
+Copy-Item ./rchia/bin/release/rchia.$version.nupkg -Destination ./publish

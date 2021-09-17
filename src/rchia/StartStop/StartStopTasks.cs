@@ -22,18 +22,18 @@ namespace rchia.StartStop
 
                 if (isRunnnig && !restart)
                 {
-                    ConsoleMessage.MarkupLine($"[bold]{service}[/] is already running. Use -r to restart it...");
+                    ConsoleMessage.MarkupLine($"[wheat1]{service}[/] is already running. Use -r to restart it...");
                 }
                 else
                 {
                     if (isRunnnig && restart)
                     {
-                        ConsoleMessage.MarkupLine($"Stopping [bold]{service}[/]...");
+                        ConsoleMessage.MarkupLine($"Stopping [wheat1]{service}[/]...");
                         using var cts2 = new CancellationTokenSource(30000);
                         await Service.StopService(service, cts2.Token);
                     }
 
-                    ConsoleMessage.MarkupLine($"Starting [bold]{service}[/]...");
+                    ConsoleMessage.MarkupLine($"Starting [wheat1]{service}[/]...");
                     using var cts3 = new CancellationTokenSource(30000);
                     await Service.StartService(service, cts3.Token);
                 }
@@ -49,13 +49,13 @@ namespace rchia.StartStop
 
                 if (isRunnnig)
                 {
-                    ConsoleMessage.MarkupLine($"Stopping [bold]{service}[/]...");
+                    ConsoleMessage.MarkupLine($"Stopping [wheat1]{service}[/]...");
                     using var cts3 = new CancellationTokenSource(30000);
                     await Service.StopService(service, cts3.Token);
                 }
                 else
                 {
-                    ConsoleMessage.MarkupLine($"[bold]{service}[/] is not running...");
+                    ConsoleMessage.MarkupLine($"[wheat1]{service}[/] is not running...");
                 }
             }
         }
