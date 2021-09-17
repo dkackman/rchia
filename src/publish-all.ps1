@@ -30,3 +30,6 @@ dotnet publish ./rchia/rchia.csproj --configuration Release --framework net5.0 -
 Compress-Archive -CompressionLevel Optimal -Path publish/files/win-x64/* -DestinationPath publish/rchia-$version-files-win-x64.zip
 Compress-Archive -CompressionLevel Optimal -Path publish/files/linux-x64/* -DestinationPath publish/rchia-$version-files-linux-x64.zip
 Compress-Archive -CompressionLevel Optimal -Path publish/files/osx.11.0-x64/* -DestinationPath publish/rchia-$version-files-osx.11.0-x64.zip
+
+#nuget
+Copy-Item ./rchia/bin/release/rchia.$version.nupkg -Destination ./publish                                                                                
