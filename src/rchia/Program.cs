@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
-using rchia.Endpoints;
 using Spectre.Console.Cli;
+
+using rchia.Endpoints;
+using rchia.Farm;
 
 namespace rchia
 {
@@ -28,6 +30,12 @@ namespace rchia
                     endpoints.AddCommand<ShowEndpointCommand>("show");
                     endpoints.AddCommand<SetDefaultEndpointCommand>("set-default");
                     endpoints.AddCommand<TestEndpointCommand>("test");
+                });
+                config.AddBranch("farm", farm =>
+                {
+                    farm.SetDescription("Manage your farm. Requires a daemon endpoint.");
+                    farm.AddCommand<ChallengesCommand>("challenges");
+                    farm.AddCommand<SummaryCommand>("summary");
                 });
             });
 

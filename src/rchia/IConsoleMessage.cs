@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Spectre.Console;
 
-namespace rchia.Commands
+namespace rchia
 {
     internal interface IConsoleMessage
     {
@@ -24,6 +24,6 @@ namespace rchia.Commands
 
         bool Confirm(string warning, bool force);
 
-        Task<T> Status<T>(string msg, Func<StatusContext, Task<T>> func);
+       // Task<T> Status<T>(string msg, Func<StatusContext, Task<T>> func);
     }
 }

@@ -1,27 +1,31 @@
 ﻿using System.Threading.Tasks;
+using System.ComponentModel;
 
 using chia.dotnet;
-
-using rchia.Commands;
+using Spectre.Console.Cli;
 
 namespace rchia.Farm
 {
-    internal sealed class ChallengesCommand : EndpointOptions
+    [Description("Show the latest challenges")]
+    internal sealed class ChallengesCommand : AsyncCommand<ChallengesCommand.ChallengesSettings>
     {
-        [Argument(0, Name = "limit", Default = 20, Description = "Limit the number of challenges shown. Use 0 to disable the limit")]
-        public int Limit { get; set; } = 20;
-
-        [CommandTarget]
-        public async override Task<int> Run()
+        public sealed class ChallengesSettings : EndpointSettings
         {
-            return await Execute(async () =>
-            {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Daemon);
-                var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new FarmTasks(proxy, this);
+            [Description("Limit the number of challenges shown. Use 0 to disable the limit")]
+            [CommandArgument(0, "[limit]")]
+            [DefaultValue(20)]
+            public int Limit { get; set; } = 20;
+        }
 
-                await DoWork("Retrieving challenges...", async ctx => { await tasks.Challenges(Limit); });
-            });
+        public async override Task<int> ExecuteAsync(CommandContext context, ChallengesSettings settings)
+        {
+            using var rpcClient = await ClientFactory2.Factory.CreateWebSocketClient(settings, ServiceNames.Daemon);
+            var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
+            var tasks = new FarmTasks(proxy, settings);
+
+            await tasks.Challenges(settings.Limit);
+
+            return 0;
         }
     }
 }

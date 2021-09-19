@@ -1,24 +1,23 @@
 ﻿using System.Threading.Tasks;
+using System.ComponentModel;
 
 using chia.dotnet;
-
-using rchia.Commands;
+using Spectre.Console.Cli;
 
 namespace rchia.Farm
 {
-    internal sealed class SummaryCommand : EndpointOptions
+    [Description("Summary of farming information")]
+    internal sealed class SummaryCommand : AsyncCommand<EndpointSettings>
     {
-        [CommandTarget]
-        public async override Task<int> Run()
+        public async override Task<int> ExecuteAsync(CommandContext context, EndpointSettings settings)
         {
-            return await Execute(async () =>
-            {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Daemon);
-                var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new FarmTasks(proxy, this);
+            using var rpcClient = await ClientFactory2.Factory.CreateWebSocketClient(settings, ServiceNames.Daemon);
+            var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
+            var tasks = new FarmTasks(proxy, settings);
 
-                await DoWork("Retrieving farm info...", async ctx => { await tasks.Summary(); });
-            });
+            await tasks.Summary();
+
+            return 0;
         }
     }
 }
