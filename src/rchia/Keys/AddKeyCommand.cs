@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
-using rchia.Endpoints;
 
 namespace rchia.Keys
 {

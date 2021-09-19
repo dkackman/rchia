@@ -4,10 +4,19 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace rchia.Endpoints
+namespace rchia
 {
     public class EndpointLibrary
     {
+        internal static EndpointLibrary OpenLibrary()
+        {
+            var config = Settings.GetConfig();
+            var library = new EndpointLibrary(config.endpointfile ?? Settings.DefaultEndpointsFilePath);
+            library.Open();
+
+            return library;
+        }
+
         private readonly string _endpointsFilePath;
 
         public EndpointLibrary(string endpointsFilePath)

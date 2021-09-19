@@ -3,7 +3,6 @@
 using chia.dotnet;
 
 using rchia.Commands;
-using rchia.Endpoints;
 
 namespace rchia.Netspace
 {

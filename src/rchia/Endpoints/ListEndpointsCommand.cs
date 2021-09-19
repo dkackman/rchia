@@ -1,27 +1,25 @@
-﻿using System.Threading.Tasks;
-
-using rchia.Commands;
+﻿using System.ComponentModel;
+using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace rchia.Endpoints
 {
+    [Description("Lists the ids of saved endpoint")]
     internal sealed class ListEndpointsCommand : Command
     {
-        [CommandTarget]
-        public async override Task<int> Run()
+        public override int Execute(CommandContext context)
         {
-            return await Execute(async () =>
+            var library = EndpointLibrary.OpenLibrary();
+
+            foreach (var endpoint in library.Endpoints.Values)
             {
-                var library = EndpointsCommand.OpenLibrary();
+                var isDefault = endpoint.IsDefault ? "[wheat1](default)[/]" : string.Empty;
+                AnsiConsole.MarkupLine($" - {endpoint.Id} {isDefault}");
+            }
 
-                foreach (var endpoint in library.Endpoints.Values)
-                {
-                    var isDefault = endpoint.IsDefault ? "[wheat1](default)[/]" : string.Empty;
-                    MarkupLine($" - {endpoint.Id} {isDefault}");
-                }
+            AnsiConsole.MarkupLine($"[wheat1]{library.Endpoints.Count}[/] saved endpoint{(library.Endpoints.Count == 1 ? string.Empty : "s")}");
 
-                MarkupLine($"[wheat1]{library.Endpoints.Count}[/] saved endpoint{(library.Endpoints.Count == 1 ? string.Empty : "s")}");
-                await Task.CompletedTask;
-            });
+            return 0;
         }
     }
 }

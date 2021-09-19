@@ -1,37 +1,24 @@
-﻿using System;
-using System.Threading.Tasks;
-
-using rchia.Commands;
+﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace rchia.Endpoints
 {
-    internal sealed class SetDefaultEndpointCommand : Command
+    [Description("Sets the endpoint to be the default for --default-endpoint")]
+    internal sealed class SetDefaultEndpointCommand : Command<EndpointIdCommandSettings>
     {
-        [Argument(0, Name = "id", Description = "The id of the endpoint to show")]
-        public string Id { get; set; } = string.Empty;
-
-        [CommandTarget]
-        public async override Task<int> Run()
+        public override int Execute([NotNull] CommandContext context, [NotNull] EndpointIdCommandSettings settings)
         {
-            return await Execute(async () =>
+            foreach (var endpoint in settings.Library.Endpoints.Values)
             {
-                var library = EndpointsCommand.OpenLibrary();
+                endpoint.IsDefault = endpoint.Id == settings.Id;
+            }
 
-                if (!library.Endpoints.ContainsKey(Id))
-                {
-                    throw new InvalidOperationException($"There is no saved endpoint with an id of {Id}.");
-                }
+            settings.Library.Save();
+            AnsiConsole.MarkupLine($"Endpoint [wheat1]{settings.Id}[/] is now the default");
 
-                foreach (var endpoint in library.Endpoints.Values)
-                {
-                    endpoint.IsDefault = endpoint.Id == Id;
-                }
-
-                library.Save();
-                MarkupLine($"Endpoint [wheat1]{Id}[/] is now the default");
-
-                await Task.CompletedTask;
-            });
+            return 0;
         }
     }
 }

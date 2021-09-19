@@ -1,74 +1,63 @@
 ﻿using System;
-using System.IO;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using chia.dotnet;
-using rchia.Commands;
+using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace rchia.Endpoints
 {
-    internal sealed class AddEndpointCommand : Command
+    [Description("Adds a saved endpoint")]
+    internal sealed class AddEndpointCommand : Command<AddEndpointCommand.AddEndpointSettings>
     {
-        [Argument(0, Name = "id", Description = "The id of the endpoint being added")]
-        public string Id { get; set; } = string.Empty;
-
-        [Argument(1, Name = "uri", Description = "The Uri of the endpoint being added")]
-        public string Uri { get; set; } = string.Empty;
-
-        [Argument(2, Name = "cert-path", Description = "The full path to the .crt file to use for authentication")]
-        public FileInfo? CertPath { get; set; }
-
-        [Argument(3, Name = "key-path", Description = "The full path to the .key file to use for authentication")]
-        public FileInfo? KeyPath { get; set; }
-
-        [CommandTarget]
-        public async override Task<int> Run()
+        public class AddEndpointSettings : EndpointIdCommandSettings
         {
-            return await Execute(async () =>
+            [Description("The Uri of the endpoint being added")]
+            [CommandArgument(1, "<uri>")]
+            public string Uri { get; set; } = string.Empty;
+
+            [Description("The full path to the .crt file to use for authentication")]
+            [CommandArgument(2, "<cert-path>")]
+
+            public string CertPath { get; init; } = string.Empty;
+
+            [Description("The full path to the .key file to use for authentication")]
+            [CommandArgument(3, "<key-path>")]
+            public string KeyPath { get; init; } = string.Empty;
+
+            public override ValidationResult Validate()
             {
-                var library = EndpointsCommand.OpenLibrary();
+                Library = EndpointLibrary.OpenLibrary();
 
-                if (!string.IsNullOrEmpty(Id))
+                if (Library.Endpoints.ContainsKey(Id))
                 {
-                    if (library.Endpoints.ContainsKey(Id))
-                    {
-                        throw new InvalidOperationException($"An endpoint with an id of {Id} already exists.");
-                    }
-
-                    if (string.IsNullOrEmpty(Uri))
-                    {
-                        throw new InvalidOperationException($"The Uri must be provided in position 0");
-                    }
-
-                    if (CertPath is null)
-                    {
-                        throw new InvalidOperationException($"The CertPath must be provided in position 1");
-                    }
-
-                    if (KeyPath is null)
-                    {
-                        throw new InvalidOperationException($"The KeyPath must be provided in position 2");
-                    }
-
-                    var endpoint = new Endpoint()
-                    {
-                        Id = Id,
-                        EndpointInfo = new EndpointInfo()
-                        {
-                            Uri = new Uri(Uri),
-                            CertPath = CertPath.FullName,
-                            KeyPath = KeyPath.FullName
-                        }
-                    };
-
-                    library.Endpoints.Add(endpoint.Id, endpoint);
-                    library.Save();
-
-                    MarkupLine($"Endpoint [wheat1]{endpoint.Id}[/] added");
-                    WriteLine(endpoint.ToJson());
-
-                    await Task.CompletedTask;
+                    return ValidationResult.Error($"An endpoint with an id of {Id} already exists.");
                 }
-            });
+
+                return ValidationResult.Success();
+            }
+        }
+
+        public override int Execute([NotNull] CommandContext context, [NotNull] AddEndpointSettings settings)
+        {
+            var endpoint = new Endpoint()
+            {
+                Id = settings.Id,
+                EndpointInfo = new EndpointInfo()
+                {
+                    Uri = new Uri(settings.Uri),
+                    CertPath = settings.CertPath,
+                    KeyPath = settings.KeyPath
+                }
+            };
+
+            settings.Library.Endpoints.Add(endpoint.Id, endpoint);
+            settings.Library.Save();
+
+            AnsiConsole.MarkupLine($"Endpoint [wheat1]{endpoint.Id}[/] added");
+            AnsiConsole.WriteLine(endpoint.ToJson());
+
+            return 0;
         }
     }
 }

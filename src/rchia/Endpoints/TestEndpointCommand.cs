@@ -1,32 +1,21 @@
-﻿using System;
+﻿using System.ComponentModel;
 using System.Threading.Tasks;
-
-using rchia.Commands;
+using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace rchia.Endpoints
 {
-    internal sealed class TestEndpointCommand : Command
+    [Description("Tests the configuration of a saved endpoint")]
+    internal sealed class TestEndpointCommand : AsyncCommand<EndpointIdCommandSettings>
     {
-        [Argument(0, Name = "id", Description = "The id of the endpoint to test")]
-        public string Id { get; set; } = string.Empty;
-
-        [CommandTarget]
-        public async override Task<int> Run()
+        public async override Task<int> ExecuteAsync(CommandContext context, EndpointIdCommandSettings settings)
         {
-            return await Execute(async () =>
-            {
-                var library = EndpointsCommand.OpenLibrary();
+            var endpoint = settings.Library.Endpoints[settings.Id];
+            await ClientFactory.Factory.TestConnection(endpoint.EndpointInfo);
 
-                if (!library.Endpoints.ContainsKey(Id))
-                {
-                    throw new InvalidCastException($"There is no saved endpoint with an id of {Id}.");
-                }
+            AnsiConsole.MarkupLine($"Successfully connected to [wheat1]{settings.Id}[/]");
 
-                var endpoint = library.Endpoints[Id];
-                await ClientFactory.Factory.TestConnection(endpoint.EndpointInfo);
-
-                MarkupLine($"Successfully connected to [wheat1]{Id}[/]");
-            });
+            return 0;
         }
     }
 }
