@@ -117,8 +117,8 @@ namespace rchia.Show
             foreach (var c in connections)
             {
                 var id = ConsoleMessage.Verbose ? c.NodeId : c.NodeId.Substring(2, 10) + "...";
-                var up = c.BytesRead.HasValue ? c.BytesRead.Value : 0;
-                var down = c.BytesWritten.HasValue ? c.BytesWritten.Value : 0;
+                var up = c.BytesRead ?? 0;
+                var down = c.BytesWritten ?? 0;
                 var ports = $"{c.PeerPort}/{c.PeerServerPort}";
                 var height = c.PeakHeight.HasValue ? c.PeakHeight.Value.ToString() : "na";
                 var hash = string.IsNullOrEmpty(c.PeakHash) ? "no info" : ConsoleMessage.Verbose ? c.PeakHash : c.PeakHash.Substring(2, 10) + "...";

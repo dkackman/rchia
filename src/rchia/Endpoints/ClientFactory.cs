@@ -26,7 +26,7 @@ namespace rchia.Endpoints
         {
             using var cts = new CancellationTokenSource(30000);
 
-            using var rpcClient = await CreateRpcClient(null!, endpoint);
+            using var rpcClient = await CreateRpcClient(null, endpoint);
         }
 
         public async Task<IRpcClient> CreateRpcClient(EndpointOptions options, string serviceName)
@@ -36,7 +36,7 @@ namespace rchia.Endpoints
             return await options.Status($"Connecting to endpoint {endpoint.Uri}...", async ctx => await CreateRpcClient(ctx, endpoint));
         }
 
-        private async Task<IRpcClient> CreateRpcClient(StatusContext ctx, EndpointInfo endpoint)
+        private async Task<IRpcClient> CreateRpcClient(StatusContext? ctx, EndpointInfo endpoint)
         {
             return endpoint.Uri.Scheme == "wss"
                 ? await CreateWebSocketClient(ctx, endpoint)
@@ -57,7 +57,7 @@ namespace rchia.Endpoints
             return await options.Status($"Connecting to websocket {endpoint.Uri}...", async ctx => await CreateWebSocketClient(ctx, endpoint));
         }
 
-        private async Task<WebSocketRpcClient> CreateWebSocketClient(StatusContext ctx, EndpointInfo endpoint)
+        private async Task<WebSocketRpcClient> CreateWebSocketClient(StatusContext? ctx, EndpointInfo endpoint)
         {
             using var cts = new CancellationTokenSource(30000);
 

@@ -34,9 +34,9 @@ namespace rchia.Wallet
                 var wallets = await Service.GetWallets(cts1.Token);
 
                 var table = new Table();
-                table.AddColumn("Id");
-                table.AddColumn("Name");
-                table.AddColumn("Type");
+                table.AddColumn("[gold3_1]Id[/]");
+                table.AddColumn("[gold3_1]Name[/]");
+                table.AddColumn("[gold3_1]Type[/]");
 
                 foreach (var wallet in wallets)
                 {
@@ -136,7 +136,7 @@ namespace rchia.Wallet
                     PrintTransaction(tx, NetworkPrefix);
                 }
                 var c = transactions.Count();
-                ConsoleMessage.Message($"{c} transaction{(c > 0 ? "s" : string.Empty)}");
+                ConsoleMessage.Message($"{c} transaction{(c == 1 ? string.Empty : "s")}");
             }
             else
             {
