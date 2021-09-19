@@ -43,7 +43,7 @@ namespace rchia.Commands
         {
             if (Verbose || important)
             {
-                AnsiConsole.MarkupLine($"[grey]{msg}[/]");
+                AnsiConsole.MarkupLine($"[{(important ? "lime" : "grey")}]{msg}[/]");
             }
         }
 
