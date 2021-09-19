@@ -15,21 +15,19 @@ namespace rchia.Endpoints
         {
             return await Execute(async () =>
             {
-                var config = Settings.GetConfig();
-                var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
-                var endpoints = EndpointLibrary.Open(endpointsFilePath);
+                var library = EndpointsCommand.OpenLibrary();
 
-                if (!endpoints.ContainsKey(Id))
+                if (!library.Endpoints.ContainsKey(Id))
                 {
                     throw new InvalidOperationException($"There is no saved endpoint with an id of {Id}.");
                 }
 
-                foreach (var endpoint in endpoints.Values)
+                foreach (var endpoint in library.Endpoints.Values)
                 {
                     endpoint.IsDefault = endpoint.Id == Id;
                 }
 
-                EndpointLibrary.Save(endpoints, endpointsFilePath);
+                library.Save();
                 MarkupLine($"Endpoint [wheat1]{Id}[/] is now the default");
 
                 await Task.CompletedTask;

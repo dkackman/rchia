@@ -6,47 +6,52 @@ using Newtonsoft.Json;
 
 namespace rchia.Endpoints
 {
-    public static class EndpointLibrary
+    public class EndpointLibrary
     {
+        private readonly string _endpointsFilePath;
 
-        public static Endpoint GetDefault(string endpointsFilePath)
+        public EndpointLibrary(string endpointsFilePath)
         {
-            var endpoints = Open(endpointsFilePath);
-            var endpoint = endpoints.FirstOrDefault(kvp => kvp.Value.IsDefault);
+            _endpointsFilePath = endpointsFilePath;
+        }
+
+        public Endpoint GetDefault()
+        {
+            var endpoint = Endpoints.FirstOrDefault(kvp => kvp.Value.IsDefault);
 
             return endpoint.Value ?? throw new InvalidOperationException("No default endpoint is set. Try './rchia endpoints --set-default NAME'");
         }
 
-        public static IDictionary<string, Endpoint> Open(string filepath)
+        public IDictionary<string, Endpoint> Endpoints { get; private set; } = new Dictionary<string, Endpoint>();
+
+        public void Open()
         {
-            if (File.Exists(filepath))
+            if (File.Exists(_endpointsFilePath))
             {
                 try
                 {
-                    using var reader = new StreamReader(filepath);
+                    using var reader = new StreamReader(_endpointsFilePath);
                     var json = reader.ReadToEnd();
                     var library = JsonConvert.DeserializeObject<IDictionary<string, Endpoint>>(json);
 
-                    return library ?? new Dictionary<string, Endpoint>();
+                    Endpoints = library ?? new Dictionary<string, Endpoint>();
                 }
                 catch (Exception e)
                 {
-                    throw new Exception($"The file {filepath} might be corrupt.", e);
+                    throw new Exception($"The file {_endpointsFilePath} might be corrupt.", e);
                 }
             }
-
-            return new Dictionary<string, Endpoint>();
         }
 
-        public static void Save(IDictionary<string, Endpoint> endpoints, string filepath)
+        public void Save()
         {
-            if (endpoints.Count == 1)
+            if (Endpoints.Count == 1)
             {
-                endpoints.Values.First().IsDefault = true;
+                Endpoints.Values.First().IsDefault = true;
             }
 
-            var json = JsonConvert.SerializeObject(endpoints, Formatting.Indented);
-            using var writer = new StreamWriter(filepath);
+            var json = JsonConvert.SerializeObject(Endpoints, Formatting.Indented);
+            using var writer = new StreamWriter(_endpointsFilePath);
             writer.WriteLine(json);
         }
     }

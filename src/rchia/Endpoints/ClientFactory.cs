@@ -26,20 +26,20 @@ namespace rchia.Endpoints
         {
             using var cts = new CancellationTokenSource(30000);
 
-            using var rpcClient = await CreateRpcClient(null, endpoint);
+            using var rpcClient = await CreateRpcClient(endpoint);
         }
 
         public async Task<IRpcClient> CreateRpcClient(EndpointOptions options, string serviceName)
         {
             var endpoint = GetEndpointInfo(options, serviceName);
 
-            return await options.Status($"Connecting to endpoint {endpoint.Uri}...", async ctx => await CreateRpcClient(ctx, endpoint));
+            return await options.Status($"Connecting to endpoint {endpoint.Uri}...", async ctx => await CreateRpcClient(endpoint));
         }
 
-        private async Task<IRpcClient> CreateRpcClient(StatusContext? ctx, EndpointInfo endpoint)
+        private async Task<IRpcClient> CreateRpcClient(EndpointInfo endpoint)
         {
             return endpoint.Uri.Scheme == "wss"
-                ? await CreateWebSocketClient(ctx, endpoint)
+                ? await CreateWebSocketClient( endpoint)
                 : endpoint.Uri.Scheme == "https"
                 ? new HttpRpcClient(endpoint)
                 : throw new InvalidOperationException($"Unrecognized endpoint Uri scheme {endpoint.Uri.Scheme}");
@@ -54,10 +54,10 @@ namespace rchia.Endpoints
                 throw new InvalidOperationException($"Expecting a daemon endpoint using the websocket protocol but found {endpoint.Uri}");
             }
 
-            return await options.Status($"Connecting to websocket {endpoint.Uri}...", async ctx => await CreateWebSocketClient(ctx, endpoint));
+            return await options.Status($"Connecting to websocket {endpoint.Uri}...", async ctx => await CreateWebSocketClient(endpoint));
         }
 
-        private async Task<WebSocketRpcClient> CreateWebSocketClient(StatusContext? ctx, EndpointInfo endpoint)
+        private async Task<WebSocketRpcClient> CreateWebSocketClient(EndpointInfo endpoint)
         {
             using var cts = new CancellationTokenSource(30000);
 
@@ -72,16 +72,13 @@ namespace rchia.Endpoints
 
         private static EndpointInfo GetEndpointInfo(EndpointOptions options, string serviceName)
         {
-            var config = Settings.GetConfig();
-            var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
+            var library = EndpointsCommand.OpenLibrary();
 
             if (!string.IsNullOrEmpty(options.Endpoint))
             {
-                var endpoints = EndpointLibrary.Open(endpointsFilePath);
-
-                return !endpoints.ContainsKey(options.Endpoint)
+                return !library.Endpoints.ContainsKey(options.Endpoint)
                     ? throw new InvalidOperationException($"There is no saved endpoint {options.Endpoint}")
-                    : endpoints[options.Endpoint].EndpointInfo;
+                    : library.Endpoints[options.Endpoint].EndpointInfo;
             }
 
             if (options.DefaultConfig)
@@ -111,7 +108,7 @@ namespace rchia.Endpoints
                 options.Helpful("No endpoint options set. Using default endpoint.");
             }
 
-            var endpoint = EndpointLibrary.GetDefault(endpointsFilePath);
+            var endpoint = library.GetDefault();
             return endpoint.EndpointInfo;
         }
     }

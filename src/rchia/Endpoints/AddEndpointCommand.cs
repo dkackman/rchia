@@ -26,13 +26,11 @@ namespace rchia.Endpoints
         {
             return await Execute(async () =>
             {
-                var config = Settings.GetConfig();
-                var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
-                IDictionary<string, Endpoint> endpoints = EndpointLibrary.Open(endpointsFilePath);
+                var library = EndpointsCommand.OpenLibrary();
 
                 if (!string.IsNullOrEmpty(Id))
                 {
-                    if (endpoints.ContainsKey(Id))
+                    if (library.Endpoints.ContainsKey(Id))
                     {
                         throw new InvalidOperationException($"An endpoint with an id of {Id} already exists.");
                     }
@@ -63,9 +61,8 @@ namespace rchia.Endpoints
                         }
                     };
 
-                    endpoints.Add(endpoint.Id, endpoint);
-
-                    EndpointLibrary.Save(endpoints, endpointsFilePath);
+                    library.Endpoints.Add(endpoint.Id, endpoint);
+                    library.Save();
 
                     MarkupLine($"Endpoint [wheat1]{endpoint.Id}[/] added");
                     WriteLine(endpoint.ToJson());

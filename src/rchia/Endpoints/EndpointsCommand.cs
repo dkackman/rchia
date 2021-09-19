@@ -3,7 +3,7 @@
 namespace rchia.Endpoints
 {
     [Command("endpoints", Description = "Manage saved endpoints.")]
-    internal sealed class EndpointCommand
+    internal sealed class EndpointsCommand
     {
         [Command("add", Description = "Saves a new endpoint")]
         public AddEndpointCommand Add { get; set; } = new();
@@ -22,5 +22,14 @@ namespace rchia.Endpoints
 
         [Command("test", Description = "Test the connection to a saved endpoint")]
         public TestEndpointCommand Test { get; set; } = new();
+
+        internal static EndpointLibrary OpenLibrary()
+        {
+            var config = Settings.GetConfig();
+            var library = new EndpointLibrary(config.endpointfile ?? Settings.DefaultEndpointsFilePath);
+            library.Open();
+
+            return library;
+        }
     }
 }

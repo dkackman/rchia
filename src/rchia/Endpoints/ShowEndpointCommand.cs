@@ -16,16 +16,14 @@ namespace rchia.Endpoints
         {
             return await Execute(async () =>
             {
-                var config = Settings.GetConfig();
-                var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
-                IDictionary<string, Endpoint> endpoints = EndpointLibrary.Open(endpointsFilePath);
+                var library = EndpointsCommand.OpenLibrary();
 
-                if (!endpoints.ContainsKey(Id))
+                if (!library.Endpoints.ContainsKey(Id))
                 {
                     throw new InvalidOperationException($"There is no saved endpoint with an id of {Id}.");
                 }
 
-                var endpoint = endpoints[Id];
+                var endpoint = library.Endpoints[Id];
                 WriteLine(endpoint.ToJson());
 
                 await Task.CompletedTask;

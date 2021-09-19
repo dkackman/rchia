@@ -15,17 +15,15 @@ namespace rchia.Endpoints
         {
             return await Execute(async () =>
             {
-                var config = Settings.GetConfig();
-                var endpointsFilePath = config.endpointfile ?? Settings.DefaultEndpointsFilePath;
-                var endpoints = EndpointLibrary.Open(endpointsFilePath);
+                var library = EndpointsCommand.OpenLibrary();
 
-                if (!endpoints.ContainsKey(Id))
+                if (!library.Endpoints.ContainsKey(Id))
                 {
                     throw new InvalidOperationException($"There is no saved endpoint with an id of {Id}.");
                 }
 
-                _ = endpoints.Remove(Id);
-                EndpointLibrary.Save(endpoints, endpointsFilePath);
+                _ = library.Endpoints.Remove(Id);
+                library.Save();
 
                 MarkupLine($"Endpoint [wheat1]{Id}[/] removed");
 
