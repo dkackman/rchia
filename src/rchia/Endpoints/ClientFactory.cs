@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
-using Spectre.Console;
 
 namespace rchia.Endpoints
 {
@@ -39,7 +38,7 @@ namespace rchia.Endpoints
         private async Task<IRpcClient> CreateRpcClient(EndpointInfo endpoint)
         {
             return endpoint.Uri.Scheme == "wss"
-                ? await CreateWebSocketClient( endpoint)
+                ? await CreateWebSocketClient(endpoint)
                 : endpoint.Uri.Scheme == "https"
                 ? new HttpRpcClient(endpoint)
                 : throw new InvalidOperationException($"Unrecognized endpoint Uri scheme {endpoint.Uri.Scheme}");
