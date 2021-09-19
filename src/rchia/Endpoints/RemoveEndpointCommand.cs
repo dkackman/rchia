@@ -15,7 +15,7 @@ namespace rchia.Endpoints
         {
             return await Execute(async () =>
             {
-                var library = EndpointsCommand.OpenLibrary();
+                var library = EndpointLibrary.OpenLibrary();
 
                 if (!library.Endpoints.ContainsKey(Id))
                 {

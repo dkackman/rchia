@@ -22,14 +22,5 @@ namespace rchia.Endpoints
 
         [Command("test", Description = "Test the connection to a saved endpoint")]
         public TestEndpointCommand Test { get; set; } = new();
-
-        internal static EndpointLibrary OpenLibrary()
-        {
-            var config = Settings.GetConfig();
-            var library = new EndpointLibrary(config.endpointfile ?? Settings.DefaultEndpointsFilePath);
-            library.Open();
-
-            return library;
-        }
     }
 }

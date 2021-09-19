@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
 
-namespace rchia.Endpoints
+namespace rchia
 {
     internal class ClientFactory
     {
@@ -71,7 +71,7 @@ namespace rchia.Endpoints
 
         private static EndpointInfo GetEndpointInfo(EndpointOptions options, string serviceName)
         {
-            var library = EndpointsCommand.OpenLibrary();
+            var library = EndpointLibrary.OpenLibrary();
 
             if (!string.IsNullOrEmpty(options.Endpoint))
             {

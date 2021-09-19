@@ -11,7 +11,7 @@ namespace rchia.Endpoints
         {
             return await Execute(async () =>
             {
-                var library = EndpointsCommand.OpenLibrary();
+                var library = EndpointLibrary.OpenLibrary();
 
                 foreach (var endpoint in library.Endpoints.Values)
                 {

@@ -4,10 +4,19 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace rchia.Endpoints
+namespace rchia
 {
     public class EndpointLibrary
     {
+        internal static EndpointLibrary OpenLibrary()
+        {
+            var config = Settings.GetConfig();
+            var library = new EndpointLibrary(config.endpointfile ?? Settings.DefaultEndpointsFilePath);
+            library.Open();
+
+            return library;
+        }
+
         private readonly string _endpointsFilePath;
 
         public EndpointLibrary(string endpointsFilePath)
@@ -19,7 +28,7 @@ namespace rchia.Endpoints
         {
             var endpoint = Endpoints.FirstOrDefault(kvp => kvp.Value.IsDefault);
 
-            return endpoint.Value ?? throw new InvalidOperationException("No default endpoint is set. Try './rchia endpoints --set-default NAME'");
+            return endpoint.Value ?? throw new InvalidOperationException("No default endpoint is set. Try './rchia endpoints --set-default ID'");
         }
 
         public IDictionary<string, Endpoint> Endpoints { get; private set; } = new Dictionary<string, Endpoint>();

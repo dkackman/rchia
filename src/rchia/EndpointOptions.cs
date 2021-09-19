@@ -2,7 +2,7 @@
 
 using rchia.Commands;
 
-namespace rchia.Endpoints
+namespace rchia
 {
     public abstract class EndpointOptions : Command
     {
