@@ -18,7 +18,7 @@ namespace rchia.PlotNft
             {
                 if (Confirm($"Are you sure you want to start self-farming with Plot NFT on wallet id {Id}?", Force))
                 {
-                    using var tasks = new PlotNftTasks(await Login(), this);
+                    using var tasks = new PlotNftTasks(await Login(), this, TimeoutMilliseconds);
                     await DoWork("Leaving pool...", async ctx => await tasks.LeavePool(Id));
                 }
             });

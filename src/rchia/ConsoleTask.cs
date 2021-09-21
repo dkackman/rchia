@@ -7,7 +7,7 @@ namespace rchia
     public abstract class ConsoleTask<T> : IDisposable
         where T : ServiceProxy
     {
-        protected ConsoleTask(T service, IConsoleMessage consoleMessage, int timeoutSeconds = 30)
+        protected ConsoleTask(T service, IConsoleMessage consoleMessage, int timeoutSeconds)
         {
             Service = service;
             ConsoleMessage = consoleMessage;

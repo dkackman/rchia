@@ -58,7 +58,7 @@ namespace rchia.Plots
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Plotter, TimeoutMilliseconds);
                 var proxy = new PlotterProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new PlotterTasks(proxy, this);
+                var tasks = new PlotterTasks(proxy, this, TimeoutMilliseconds);
 
                 await DoWork("Adding request to the plot queue...", async ctx => { await tasks.CreatePlots(CreateConfig()); });
             });

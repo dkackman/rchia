@@ -22,7 +22,7 @@ namespace rchia.PlotNft
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Wallet, TimeoutMilliseconds);
                 var wallet = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new PlotNftTasks(wallet, this);
+                var tasks = new PlotNftTasks(wallet, this, TimeoutMilliseconds);
 
                 await DoWork("Getting pool login link...", async ctx => await tasks.GetLoginLink(LauncherId));
             });

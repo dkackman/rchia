@@ -36,6 +36,8 @@ namespace rchia
 
         internal int TimeoutMilliseconds => Timeout * 1000;
 
+        // these next three methods use reflectoin to find the right constructor. errors won't be caught a compile time
+        // should realy be replaced with paramterless constictors and property initialization
         internal protected async Task<T> CreateTasksWithDaemon<T>(string serviceName) where T : ConsoleTask<DaemonProxy>
         {
             var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, serviceName, TimeoutMilliseconds);

@@ -10,7 +10,7 @@ namespace rchia.Wallet
         {
             return await Execute(async () =>
             {
-                using var tasks = new WalletTasks(await Login(), this);
+                using var tasks = new WalletTasks(await Login(), this, TimeoutMilliseconds);
                 await DoWork("Retrieving wallet info...", async ctx => { await tasks.Show(); });
             });
         }

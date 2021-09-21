@@ -11,8 +11,8 @@ namespace rchia.Wallet
 {
     internal class WalletTasks : ConsoleTask<WalletProxy>
     {
-        public WalletTasks(WalletProxy wallet, IConsoleMessage consoleMessage)
-            : base(wallet, consoleMessage)
+        public WalletTasks(WalletProxy wallet, IConsoleMessage consoleMessage, int timeoutSeconds)
+            : base(wallet, consoleMessage, timeoutSeconds)
         {
         }
 

@@ -9,8 +9,8 @@ namespace rchia.Plots
 {
     internal class PlotterTasks : ConsoleTask<PlotterProxy>
     {
-        public PlotterTasks(PlotterProxy proxy, IConsoleMessage consoleMessage)
-            : base(proxy, consoleMessage)
+        public PlotterTasks(PlotterProxy proxy, IConsoleMessage consoleMessage, int timeoutSeconds)
+            : base(proxy, consoleMessage, timeoutSeconds)
         {
         }
 

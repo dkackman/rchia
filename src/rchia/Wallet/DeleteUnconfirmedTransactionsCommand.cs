@@ -13,7 +13,7 @@ namespace rchia.Wallet
         {
             return await Execute(async () =>
             {
-                using var tasks = new WalletTasks(await Login(), this);
+                using var tasks = new WalletTasks(await Login(), this, TimeoutMilliseconds);
                 await DoWork("Deleting unconfirmed transactions...", async ctx => { await tasks.DeleteUnconfirmedTransactions(Id); });
             });
         }

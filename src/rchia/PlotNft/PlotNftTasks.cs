@@ -16,8 +16,8 @@ namespace rchia.PlotNft
 
     internal class PlotNftTasks : ConsoleTask<WalletProxy>
     {
-        public PlotNftTasks(WalletProxy wallet, IConsoleMessage consoleMessage)
-            : base(wallet, consoleMessage)
+        public PlotNftTasks(WalletProxy wallet, IConsoleMessage consoleMessage, int timeoutMilliseconds)
+            : base(wallet, consoleMessage, timeoutMilliseconds)
         {
         }
 

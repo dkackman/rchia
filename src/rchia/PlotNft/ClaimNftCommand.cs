@@ -18,7 +18,7 @@ namespace rchia.PlotNft
             {
                 if (Confirm($"Are you sure you want to claim rewards for wallet ID {Id}?", Force))
                 {
-                    using var tasks = new PlotNftTasks(await Login(), this);
+                    using var tasks = new PlotNftTasks(await Login(), this, TimeoutMilliseconds);
                     await DoWork("Claiming pool rewards...", async ctx => await tasks.Claim(Id));
                 }
             });
