@@ -35,7 +35,7 @@ namespace rchia.Status
             foreach (var name in fields.Where(f => f.Name != "Daemon"))
             {
                 var service = name.GetValue(serviceNames)?.ToString() ?? string.Empty;
-                using var cts = new CancellationTokenSource(5000);
+                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
                 var isRunning = await Service.IsServiceRunning(service, cts.Token);
                 var status = isRunning ? "[green]running[/]" : "[grey]not running[/]";

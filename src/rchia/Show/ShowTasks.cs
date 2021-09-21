@@ -29,7 +29,7 @@ namespace rchia.Show
             // only prune other full nodes, not famers, harvesters, and wallets etc
             foreach (var connection in connections.Where(c => c.Type == NodeType.FULL_NODE && c.LastMessageDateTime < cutoff))
             {
-                using var cts1 = new CancellationTokenSource(10000);
+                using var cts1 = new CancellationTokenSource(TimeoutMilliseconds);
                 await Service.CloseConnection(connection.NodeId, cts1.Token);
                 ConsoleMessage.MarkupLine($"Closed connection at [wheat1]{connection.PeerHost}:{connection.PeerServerPort}[/] that last updated [wheat1]{connection.LastMessageDateTime.ToLocalTime()}[/]");
                 n++;
