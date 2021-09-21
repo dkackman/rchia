@@ -23,6 +23,7 @@ namespace rchia
         public void Dispose()
         {
             Service.RpcClient.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

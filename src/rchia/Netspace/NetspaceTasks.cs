@@ -53,13 +53,13 @@ namespace rchia.Netspace
                 ConsoleMessage.MarkupLine("[wheat1]Older Block[/]");
                 ConsoleMessage.NameValue("  Block Height", older_block_header.Height);
                 ConsoleMessage.NameValue("  Weight", older_block_header.Weight);
-                ConsoleMessage.NameValue("  VDF Iterations", older_block_header.TotalIters);
+                ConsoleMessage.NameValue("  VDF Iterations", older_block_header.TotalIters.ToString("N0"));
                 ConsoleMessage.NameValue("  Header Hash", $"0x{ older_block_header.HeaderHash}");
 
                 ConsoleMessage.MarkupLine("[wheat1]Newer Block[/]");
                 ConsoleMessage.NameValue("  Block Height", newer_block_header.Height);
                 ConsoleMessage.NameValue("  Weight", newer_block_header.Weight);
-                ConsoleMessage.NameValue("  VDF Iterations", newer_block_header.TotalIters);
+                ConsoleMessage.NameValue("  VDF Iterations", newer_block_header.TotalIters.ToString("N0"));
                 ConsoleMessage.NameValue("  Header Hash", $"0x{ newer_block_header.HeaderHash}");
             }
 
