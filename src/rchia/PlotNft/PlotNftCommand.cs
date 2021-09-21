@@ -6,24 +6,24 @@ namespace rchia.PlotNft
     internal sealed class PlotNftCommand
     {
         [Command("claim", Description = "Claim rewards from a plot NFT")]
-        public ClaimNftCommand Claim { get; set; } = new();
+        public ClaimNftCommand Claim { get; init; } = new();
 
         [Command("create", Description = "Create a plot NFT")]
-        public CreatePlotNftCommand Create { get; set; } = new();
+        public CreatePlotNftCommand Create { get; init; } = new();
 
         [Command("get-login-link", Description = "Create a login link for a pool. To get the launcher id, use 'plotnft show'.")]
-        public GetLoginLinkCommand GetLoginLink { get; set; } = new();
+        public GetLoginLinkCommand GetLoginLink { get; init; } = new();
 
         [Command("inspect", Description = "Get Detailed plotnft information as JSON")]
-        public InspectNftCommand Inspect { get; set; } = new();
+        public InspectNftCommand Inspect { get; init; } = new();
 
         [Command("join", Description = "Join a plot NFT to a Pool")]
-        public JoinPoolCommand Join { get; set; } = new();
+        public JoinPoolCommand Join { get; init; } = new();
 
         [Command("leave", Description = "Leave a pool and return to self-farming")]
-        public LeavePoolCommand Leave { get; set; } = new();
+        public LeavePoolCommand Leave { get; init; } = new();
 
         [Command("show", Description = "Show plotnft information")]
-        public ShowPlotNftCommand Show { get; set; } = new();
+        public ShowPlotNftCommand Show { get; init; } = new();
     }
 }

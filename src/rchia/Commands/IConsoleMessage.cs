@@ -6,7 +6,7 @@ namespace rchia.Commands
 {
     internal interface IConsoleMessage
     {
-        bool Verbose { get; set; }
+        bool Verbose { get; init; }
 
         void MarkupLine(string msg);
 

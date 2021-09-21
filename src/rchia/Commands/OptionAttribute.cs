@@ -20,12 +20,12 @@ namespace rchia.Commands
 
         public string? ShortName { get; }
 
-        public string? Description { get; set; }
+        public string? Description { get; init; }
 
-        public string? ArgumentHelpName { get; set; }
+        public string? ArgumentHelpName { get; init; }
 
-        public bool IsRequired { get; set; }
+        public bool IsRequired { get; init; }
 
-        public object? Default { get; set; }
+        public object? Default { get; init; }
     }
 }

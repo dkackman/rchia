@@ -1,14 +1,13 @@
 ﻿using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
-using rchia.Endpoints;
 
 namespace rchia.PlotNft
 {
     internal sealed class ShowPlotNftCommand : WalletCommand
     {
         [Option("i", "id", Default = 1, Description = "Id of the user wallet to use")]
-        public uint Id { get; set; } = 1;
+        public uint Id { get; init; } = 1;
 
         [CommandTarget]
         public async override Task<int> Run()

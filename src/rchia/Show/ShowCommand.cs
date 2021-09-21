@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using chia.dotnet;
 
 using rchia.Commands;
-using rchia.Endpoints;
 
 namespace rchia.Show
 {
@@ -12,28 +11,28 @@ namespace rchia.Show
     internal sealed class ShowCommand : EndpointOptions
     {
         [Option("a", "add-connection", ArgumentHelpName = "URI", Description = "Connect to another Full Node by ip:port")]
-        public string? AddConnection { get; set; }
+        public string? AddConnection { get; init; }
 
         [Option("b", "block-by-header-hash", ArgumentHelpName = "HASH", Description = "Look up a block by block header hash")]
-        public string? BlockByHeaderHash { get; set; }
+        public string? BlockByHeaderHash { get; init; }
 
         [Option("bh", "block-header-hash-by-height", ArgumentHelpName = "HEIGHT", Description = "Look up a block header hash by block height")]
-        public uint? BlockHeaderHashByHeight { get; set; }
+        public uint? BlockHeaderHashByHeight { get; init; }
 
         [Option("c", "connections", Description = "List nodes connected to this Full Node")]
-        public bool Connections { get; set; }
+        public bool Connections { get; init; }
 
         [Option("e", "exit-node", Description = "Shut down the running Full Node")]
-        public bool Exit { get; set; }
+        public bool Exit { get; init; }
 
         [Option("r", "remove-connection", ArgumentHelpName = "NODE ID", Description = "Remove a Node by the full or first 8 characters of NodeID")]
-        public string? RemoveConnection { get; set; }
+        public string? RemoveConnection { get; init; }
 
         [Option("s", "state", Description = "Show the current state of the blockchain")]
-        public bool State { get; set; }
+        public bool State { get; init; }
 
         [Command("prune", Description = "Prune stale connections")]
-        public PruneCommand Prune { get; set; } = new();
+        public PruneCommand Prune { get; init; } = new();
 
         [CommandTarget]
         public async override Task<int> Run()

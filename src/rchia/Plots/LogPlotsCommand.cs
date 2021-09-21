@@ -1,14 +1,13 @@
 ﻿using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
-using rchia.Endpoints;
 
 namespace rchia.Plots
 {
     internal sealed class LogPlotsCommand : EndpointOptions
     {
         [Option("i", "id", Description = "The id of the plot log. Omit to see logs for all running plots.")]
-        public string? Id { get; set; }
+        public string? Id { get; init; }
 
         [CommandTarget]
         public async override Task<int> Run()

@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using chia.dotnet;
 
 using rchia.Commands;
-using rchia.Endpoints;
 
 namespace rchia.StartStop
 {
@@ -12,10 +11,10 @@ namespace rchia.StartStop
     internal sealed class StartCommand : EndpointOptions
     {
         [Argument(0, Name = "service-group", Description = "[all|node|harvester|farmer|farmer-no-wallet|farmer-only|timelord|\ntimelord-only|timelord-launcher-only|wallet|wallet-only|introducer|simulator]")]
-        public string? ServiceGroup { get; set; }
+        public string? ServiceGroup { get; init; }
 
         [Option("r", "restart", Description = "Restart the specified service(s)")]
-        public bool Restart { get; set; }
+        public bool Restart { get; init; }
 
         [CommandTarget]
         public async override Task<int> Run()

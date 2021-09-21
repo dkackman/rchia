@@ -2,14 +2,13 @@
 using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
-using rchia.Endpoints;
 
 namespace rchia.PlotNft
 {
     internal sealed class GetLoginLinkCommand : EndpointOptions
     {
         [Option("l", "launcher-id", IsRequired = true, Description = "Launcher ID of the plotnft")]
-        public string LauncherId { get; set; } = string.Empty;
+        public string LauncherId { get; init; } = string.Empty;
 
         [CommandTarget]
         public async override Task<int> Run()

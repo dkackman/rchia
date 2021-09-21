@@ -7,19 +7,19 @@ namespace rchia.Wallet
     internal sealed class SendTransactionCommand : WalletCommand
     {
         [Option("a", "amount", IsRequired = true, Description = "How much chia to send, in XCH")]
-        public decimal Amount { get; set; }
+        public decimal Amount { get; init; }
 
         [Option("m", "fee", Default = 0, Description = "Set the fees for the transaction, in XCH")]
-        public decimal Fee { get; set; }
+        public decimal Fee { get; init; }
 
         [Option("t", "address", IsRequired = true, Description = "Address to send the XCH")]
-        public string Address { get; set; } = string.Empty;
+        public string Address { get; init; } = string.Empty;
 
         [Option("i", "id", Default = 1, Description = "Id of the user wallet to use")]
-        public uint Id { get; set; } = 1;
+        public uint Id { get; init; } = 1;
 
         [Option("f", "force", Default = false, Description = "If Fee > Amount, send the transaction anyway")]
-        public bool Force { get; set; }
+        public bool Force { get; init; }
 
         [CommandTarget]
         public async override Task<int> Run()

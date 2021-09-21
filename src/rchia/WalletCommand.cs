@@ -2,14 +2,13 @@
 using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
-using rchia.Endpoints;
 
 namespace rchia
 {
     internal abstract class WalletCommand : EndpointOptions
     {
         [Option("fp", "fingerprint", Description = "Set the fingerprint to specify which wallet to use - the first fingerprint will be used if not set")]
-        public uint? Fingerprint { get; set; }
+        public uint? Fingerprint { get; init; }
 
         protected async Task<WalletProxy> Login()
         {

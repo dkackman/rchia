@@ -1,56 +1,55 @@
 ﻿using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
-using rchia.Endpoints;
 
 namespace rchia.Plots
 {
     internal sealed class CreatePlotsCommand : EndpointOptions
     {
         [Option("k", "size", Default = KValues.K32, Description = "Plot szie")]
-        public KValues Size { get; set; } = KValues.K32;
+        public KValues Size { get; init; } = KValues.K32;
 
         [Option("o", "override-k", Default = false, Description = "Force size smaller than 32")]
-        public bool OverrideK { get; set; }
+        public bool OverrideK { get; init; }
 
         [Option("n", "num", Default = 1, Description = "Number of plots or challenges")]
-        public int Num { get; set; } = 1;
+        public int Num { get; init; } = 1;
 
         [Option("b", "buffer", Default = 3389, Description = "Megabytes for sort/plot buffer")]
-        public int Buffer { get; set; } = 3389;
+        public int Buffer { get; init; } = 3389;
 
         [Option("r", "num-threads", Default = 2, Description = "Number of threads to use")]
-        public int NumThreads { get; set; } = 2;
+        public int NumThreads { get; init; } = 2;
 
         [Option("u", "buckets", Default = 128, Description = "Number of buckets")]
-        public int Buckets { get; set; } = 128;
+        public int Buckets { get; init; } = 128;
 
         [Option("a", "alt-fingerprint", Description = "Enter the alternative fingerprint of the key you want to use")]
-        public uint? AltFingerprint { get; set; }
+        public uint? AltFingerprint { get; init; }
 
         [Option("c", "pool-contract-address", Description = "Address of where the pool reward will be sent to.Only used if\nalt_fingerprint and pool public key are not set")]
-        public string? PoolContractAddress { get; set; }
+        public string? PoolContractAddress { get; init; }
 
         [Option("f", "farmer-public-key", Description = "Hex farmer public key")]
-        public string? FarmerPublicKey { get; set; }
+        public string? FarmerPublicKey { get; init; }
 
         [Option("p", "pool-public-key", Description = "Hex public key of pool")]
-        public string? PoolPublicKey { get; set; }
+        public string? PoolPublicKey { get; init; }
 
         [Option("d", "final-dir", Default = ".", Description = "Final directory for plots (relative or absolute)")]
-        public string FinalDir { get; set; } = ".";
+        public string FinalDir { get; init; } = ".";
 
         [Option("t", "tmp-dir", Default = ".", Description = "Temporary directory for plotting files")]
-        public string TmpDir { get; set; } = ".";
+        public string TmpDir { get; init; } = ".";
 
         [Option("2", "tmp2-dir", Description = "Second temporary directory for plotting files")]
-        public string? Tmp2Dir { get; set; }
+        public string? Tmp2Dir { get; init; }
 
         [Option("e", "nobitfield", Default = false, Description = "Disable bitfield")]
-        public bool NoBitField { get; set; }
+        public bool NoBitField { get; init; }
 
         [Option("x", "exclude-final-dir", Default = false, Description = "Skips adding [final dir] to harvester for farming")]
-        public bool ExcludeFinalDir { get; set; }
+        public bool ExcludeFinalDir { get; init; }
 
         [CommandTarget]
         public async override Task<int> Run()

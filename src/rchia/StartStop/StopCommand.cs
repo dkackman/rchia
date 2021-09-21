@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using chia.dotnet;
 
 using rchia.Commands;
-using rchia.Endpoints;
 
 namespace rchia.StartStop
 {
@@ -12,13 +11,13 @@ namespace rchia.StartStop
     internal sealed class StopCommand : EndpointOptions
     {
         [Argument(0, Name = "service-group", Description = "[all|node|harvester|farmer|farmer-no-wallet|farmer-only|timelord|\ntimelord-only|timelord-launcher-only|wallet|wallet-only|introducer|simulator]")]
-        public string? ServiceGroup { get; set; }
+        public string? ServiceGroup { get; init; }
 
         [Option("d", "daemon", Description = "Stop the daemon service as well\nThe daemon cannot be restarted remotely")]
-        public bool Daemon { get; set; }
+        public bool Daemon { get; init; }
 
         [Option("f", "force", Default = false, Description = "If specified in conjunstion with '-d', shut down the daemon without prompting")]
-        public bool Force { get; set; }
+        public bool Force { get; init; }
 
         [CommandTarget]
         public async override Task<int> Run()

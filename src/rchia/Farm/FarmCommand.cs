@@ -6,9 +6,9 @@ namespace rchia.Farm
     internal sealed class FarmCommand
     {
         [Command("challenges", Description = "Show the latest challenges")]
-        public ChallengesCommand Challenges { get; set; } = new();
+        public ChallengesCommand Challenges { get; init; } = new();
 
         [Command("summary", Description = "Summary of farming information")]
-        public SummaryCommand Summary { get; set; } = new();
+        public SummaryCommand Summary { get; init; } = new();
     }
 }

@@ -6,10 +6,10 @@ namespace rchia.PlotNft
     internal sealed class ClaimNftCommand : WalletCommand
     {
         [Option("f", "force", Default = false, Description = "Do not prompt before claiming rewards")]
-        public bool Force { get; set; }
+        public bool Force { get; init; }
 
         [Option("i", "id", Default = 1, Description = "Id of the user wallet to use")]
-        public uint Id { get; set; } = 1;
+        public uint Id { get; init; } = 1;
 
         [CommandTarget]
         public async override Task<int> Run()

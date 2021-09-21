@@ -8,7 +8,7 @@ namespace rchia.Endpoints
     internal sealed class RemoveEndpointCommand : Command
     {
         [Argument(0, Name = "id", Description = "The id of the endpoint to remove")]
-        public string Id { get; set; } = string.Empty;
+        public string Id { get; init; } = string.Empty;
 
         [CommandTarget]
         public async override Task<int> Run()

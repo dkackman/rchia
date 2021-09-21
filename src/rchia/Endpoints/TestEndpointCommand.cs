@@ -8,7 +8,7 @@ namespace rchia.Endpoints
     internal sealed class TestEndpointCommand : Command
     {
         [Argument(0, Name = "id", Description = "The id of the endpoint to test")]
-        public string Id { get; set; } = string.Empty;
+        public string Id { get; init; } = string.Empty;
 
         [CommandTarget]
         public async override Task<int> Run()

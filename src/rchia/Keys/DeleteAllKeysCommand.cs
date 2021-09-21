@@ -1,14 +1,13 @@
 ﻿using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
-using rchia.Endpoints;
 
 namespace rchia.Keys
 {
     internal sealed class DeleteAllKeys : EndpointOptions
     {
         [Option("f", "force", Default = false, Description = "Delete all keys without prompting for confirmation")]
-        public bool Force { get; set; }
+        public bool Force { get; init; }
 
         [CommandTarget]
         public async override Task<int> Run()

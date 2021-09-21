@@ -6,7 +6,7 @@ namespace rchia.Wallet
     internal sealed class GetTransactionCommand : WalletCommand
     {
         [Option("tx", "tx-id", IsRequired = true, Description = "Transaction id to search for")]
-        public string TxId { get; set; } = string.Empty;
+        public string TxId { get; init; } = string.Empty;
 
         [CommandTarget]
         public async override Task<int> Run()

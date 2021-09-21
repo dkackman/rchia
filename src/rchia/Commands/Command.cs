@@ -8,7 +8,7 @@ namespace rchia.Commands
     public abstract class Command : IConsoleMessage
     {
         [Option("v", "verbose", Description = "Set output to verbose messages")]
-        public bool Verbose { get; set; }
+        public bool Verbose { get; init; }
 
         public void MarkupLine(string msg)
         {

@@ -6,21 +6,21 @@ namespace rchia.Keys
     internal sealed class KeysCommand
     {
         [Command("add", Description = "Add a private key by mnemonic")]
-        public AddKeyCommand Add { get; set; } = new();
+        public AddKeyCommand Add { get; init; } = new();
 
         [Command("delete", Description = "Delete a key by its pk fingerprint in hex form")]
-        public DeleteKeyCommand Delete { get; set; } = new();
+        public DeleteKeyCommand Delete { get; init; } = new();
 
         [Command("generate-and-print", Description = "Generates but does NOT add to keychain")]
-        public GenerateAndPrintKeyCommand GenerateAndPrint { get; set; } = new();
+        public GenerateAndPrintKeyCommand GenerateAndPrint { get; init; } = new();
 
         [Command("generate", Description = "Generates and adds a key to keychain")]
-        public GenerateKeyCommand Generate { get; set; } = new();
+        public GenerateKeyCommand Generate { get; init; } = new();
 
         [Command("show", Description = "Displays all the keys in keychain")]
-        public ShowKeysCommand Show { get; set; } = new();
+        public ShowKeysCommand Show { get; init; } = new();
 
         [Command("delete-all", Description = "Delete all private keys in keychain")]
-        public DeleteAllKeys DeleteAll { get; set; } = new();
+        public DeleteAllKeys DeleteAll { get; init; } = new();
     }
 }

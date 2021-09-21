@@ -5,17 +5,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
-using rchia.Endpoints;
 
 namespace rchia.Keys
 {
     internal sealed class AddKeyCommand : EndpointOptions
     {
         [Argument(0, Name = "mnemonic", Description = "The 24 word mnemonic key phrase")]
-        public List<string> Mnemonic { get; set; } = new List<string>();
+        public List<string> Mnemonic { get; init; } = new List<string>();
 
         [Option("f", "filename", Description = "A filename containing the secret key mnemonic to add")]
-        public FileInfo? Filename { get; set; }
+        public FileInfo? Filename { get; init; }
 
         [CommandTarget]
         public async override Task<int> Run()

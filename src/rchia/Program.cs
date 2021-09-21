@@ -4,7 +4,6 @@ using System.CommandLine.Parsing;
 using System.Reflection;
 using System.Threading.Tasks;
 using rchia.Commands;
-using rchia.Endpoints;
 
 namespace rchia
 {

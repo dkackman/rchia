@@ -20,8 +20,8 @@ namespace rchia.Commands
             set => name = value ?? throw new ArgumentNullException(nameof(value));
         }
 
-        public string? Description { get; set; }
+        public string? Description { get; init; }
 
-        public object? Default { get; set; }
+        public object? Default { get; init; }
     }
 }

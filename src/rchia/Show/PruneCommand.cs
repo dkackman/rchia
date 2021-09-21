@@ -4,14 +4,13 @@ using System.Threading.Tasks;
 using chia.dotnet;
 
 using rchia.Commands;
-using rchia.Endpoints;
 
 namespace rchia.Show
 {
     internal sealed class PruneCommand : EndpointOptions
     {
         [Option("a", "age", Default = 12, Description = "Prune nodes that haven't sent data in this number of hours")]
-        public int Age { get; set; } = 12;
+        public int Age { get; init; } = 12;
 
         [CommandTarget]
         public async override Task<int> Run()

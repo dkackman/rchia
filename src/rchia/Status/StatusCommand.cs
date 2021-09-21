@@ -6,9 +6,9 @@ namespace rchia.Status
     internal sealed class StatusCommand
     {
         [Command("services", Description = "Show which services are running on the node")]
-        public ServicesCommand Services { get; set; } = new();
+        public ServicesCommand Services { get; init; } = new();
 
         [Command("ping", Description = "Pings the daemon")]
-        public PingCommand Ping { get; set; } = new();
+        public PingCommand Ping { get; init; } = new();
     }
 }
