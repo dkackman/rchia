@@ -104,15 +104,15 @@ namespace rchia.Show
 
             ConsoleMessage.MarkupLine("[wheat1]Connections[/]");
             var table = new Table();
-            table.AddColumn("Type");
-            table.AddColumn("IP");
-            table.AddColumn("Ports");
-            table.AddColumn("NodeID");
-            table.AddColumn("Last Connect");
-            table.AddColumn("Up");
-            table.AddColumn("Down");
-            table.AddColumn("Height");
-            table.AddColumn("Hash");
+            table.AddColumn("[orange3]Type[/]");
+            table.AddColumn("[orange3]IP[/]");
+            table.AddColumn("[orange3]Ports[/]");
+            table.AddColumn("[orange3]NodeID[/]");
+            table.AddColumn("[orange3]Last Connect[/]");
+            table.AddColumn("[orange3]Up[/]");
+            table.AddColumn("[orange3]Down[/]");
+            table.AddColumn("[orange3]Height[/]");
+            table.AddColumn("[orange3]Hash[/]");
 
             foreach (var c in connections)
             {
@@ -170,7 +170,8 @@ namespace rchia.Show
             if (state.Peak is not null)
             {
                 var time = state.Peak.DateTimestamp.HasValue ? state.Peak.DateTimestamp.Value.ToLocalTime().ToString("U") : "unknown";
-                ConsoleMessage.MarkupLine($"      [wheat1]Time:[/] {time}\t\t[wheat1]Height[/]:\t{state.Peak.Height}");
+                ConsoleMessage.NameValue("Time", time);
+                ConsoleMessage.NameValue("Peak Height", state.Peak.Height);
             }
 
             ConsoleMessage.WriteLine("");
@@ -180,8 +181,6 @@ namespace rchia.Show
 
             var totalIters = state.Peak is not null ? state.Peak.TotalIters : 0;
             ConsoleMessage.NameValue("Total iterations since the start of the blockchain", totalIters);
-            ConsoleMessage.WriteLine("");
-            ConsoleMessage.MarkupLine("   [wheat1]Height | Hash[/]");
 
             if (state.Peak is not null)
             {
@@ -195,10 +194,15 @@ namespace rchia.Show
                     block = await Service.GetBlockRecord(block.PrevHash, cts.Token);
                 }
 
+                var table = new Table();
+                table.AddColumn("[orange3]Height[/]");
+                table.AddColumn("[orange3]Hash[/]");
+
                 foreach (var b in blocks)
                 {
-                    ConsoleMessage.MarkupLine($"   {b.Height} | {b.HeaderHash.Replace("0x", "")}");
+                    table.AddRow(b.Height.ToString(), b.HeaderHash.Replace("0x", ""));
                 }
+                AnsiConsole.Render(table);
             }
         }
     }

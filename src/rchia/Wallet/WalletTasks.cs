@@ -34,9 +34,9 @@ namespace rchia.Wallet
                 var wallets = await Service.GetWallets(cts1.Token);
 
                 var table = new Table();
-                table.AddColumn("[gold3_1]Id[/]");
-                table.AddColumn("[gold3_1]Name[/]");
-                table.AddColumn("[gold3_1]Type[/]");
+                table.AddColumn("[orange3]Id[/]");
+                table.AddColumn("[orange3]Name[/]");
+                table.AddColumn("[orange3]Type[/]");
 
                 foreach (var wallet in wallets)
                 {
