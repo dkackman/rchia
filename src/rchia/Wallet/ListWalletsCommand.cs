@@ -11,7 +11,7 @@ namespace rchia.Wallet
         {
             return await Execute(async () =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.Wallet);
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.Wallet, TimeoutMilliseconds);
                 var wallet = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var tasks = new WalletTasks(wallet, this);
 

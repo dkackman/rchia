@@ -36,11 +36,9 @@ namespace rchia.Keys
                     throw new InvalidOperationException("Exactly 24 words are required in the mnenomic passphrase");
                 }
 
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Wallet);
-                var wallet = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var commands = new KeysTasks(wallet, this);
+                using var tasks = await CreateTasks<KeysTasks, WalletProxy>(ServiceNames.Wallet);
 
-                await commands.Add(Mnemonic);
+                await tasks.Add(Mnemonic);
             });
         }
     }

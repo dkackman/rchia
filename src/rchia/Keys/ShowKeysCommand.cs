@@ -16,9 +16,7 @@ namespace rchia.Keys
         {
             return await Execute(async () =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.Wallet);
-                var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new KeysTasks(proxy, this);
+                using var tasks = await CreateTasks<KeysTasks, WalletProxy>(ServiceNames.Wallet);
 
                 await DoWork("Retrieving keys...", async ctx => { await tasks.Show(ShowMnemonicSeed); });
             });

@@ -23,7 +23,7 @@ namespace rchia.PlotNft
 
         public async Task Claim(uint walletId)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var wallet = new PoolWallet(walletId, Service);
             await wallet.Validate(cts.Token);
 
@@ -34,7 +34,7 @@ namespace rchia.PlotNft
 
         public async Task Inspect(uint walletId)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var wallet = new PoolWallet(walletId, Service);
             await wallet.Validate(cts.Token);
 
@@ -61,7 +61,7 @@ namespace rchia.PlotNft
 
         public async Task LeavePool(uint walletId)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var wallet = new PoolWallet(walletId, Service);
             await wallet.Validate(cts.Token);
 
@@ -72,7 +72,7 @@ namespace rchia.PlotNft
 
         public async Task<string> ValidatePoolingOptions(InitialPoolingState state, Uri? poolUri)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
             var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
 
@@ -86,7 +86,7 @@ namespace rchia.PlotNft
 
         public async Task Join(uint walletId, Uri poolUri)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var wallet = new PoolWallet(walletId, Service);
             await wallet.Validate(cts.Token);
 
@@ -96,9 +96,9 @@ namespace rchia.PlotNft
             PrintTransactionSentTo(tx);
         }
 
-        private async static Task<PoolInfo> GetPoolInfo(Uri uri)
+        private async Task<PoolInfo> GetPoolInfo(Uri uri)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var info = await WalletProxy.GetPoolInfo(uri, cts.Token);
 
             if (info.RelativeLockHeight > 1000)
@@ -125,7 +125,7 @@ namespace rchia.PlotNft
                 RelativeLockHeight = poolInfo.RelativeLockHeight
             };
 
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var (tx, launcherId, p2SingletonHash) = await Service.CreatePoolWallet(poolState, null, null, cts.Token);
             ConsoleMessage.NameValue("Launcher Id", launcherId);
             PrintTransactionSentTo(tx);
@@ -134,7 +134,7 @@ namespace rchia.PlotNft
         // https://testpool.xchpool.org
         public async Task GetLoginLink(string launcherId)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
             if (Service.RpcClient is not WebSocketRpcClient)
             {
@@ -156,7 +156,7 @@ namespace rchia.PlotNft
 
         public async Task Show(uint? walletId)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
             if (Service.RpcClient is not WebSocketRpcClient)
             {
@@ -194,7 +194,7 @@ namespace rchia.PlotNft
             {
                 ConsoleMessage.NameValue($"Wallet", w.Id);
                 var poolwallet = new PoolWallet(w.Id, Service);
-                using var cts1 = new CancellationTokenSource(30000);
+                using var cts1 = new CancellationTokenSource(TimeoutMilliseconds);
                 var (State, UnconfirmedTransactions) = await poolwallet.Status(cts1.Token);
 
                 if (State.Current.State == PoolSingletonState.LEAVING_POOL)

@@ -10,13 +10,14 @@ namespace rchia.Status
 {
     internal class StatusTasks : ConsoleTask<DaemonProxy>
     {
-        public StatusTasks(DaemonProxy daemon, IConsoleMessage consoleMessage)
-            : base(daemon, consoleMessage)
+        public StatusTasks(DaemonProxy daemon, IConsoleMessage consoleMessage, int timeoutSeconds)
+            : base(daemon, consoleMessage, timeoutSeconds)
         {
         }
+
         public async Task Ping()
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
             var stopWatch = Stopwatch.StartNew();
             await Service.Ping();

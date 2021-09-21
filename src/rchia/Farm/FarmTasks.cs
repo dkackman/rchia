@@ -5,31 +5,37 @@ using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
+using Spectre.Console;
 
 namespace rchia.Farm
 {
     internal class FarmTasks : ConsoleTask<DaemonProxy>
     {
-        public FarmTasks(DaemonProxy daemon, IConsoleMessage consoleMessage)
-            : base(daemon, consoleMessage)
+        public FarmTasks(DaemonProxy daemon, IConsoleMessage consoleMessage, int timeoutSeconds)
+            : base(daemon, consoleMessage, timeoutSeconds)
         {
         }
 
         public async Task Challenges(int limit)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
             var farmer = new FarmerProxy(Service.RpcClient, Service.OriginService);
             var signagePoints = await farmer.GetSignagePoints(cts.Token);
 
             var list = signagePoints.Reverse().ToList(); // convert to list to avoid multiple iteration
             var count = limit == 0 ? list.Count : limit;
+
+            var table = new Table();
+            table.AddColumn("[orange3]Index[/]");
+            table.AddColumn("[orange3]Hash[/]");
+
             foreach (var sp in list.Take(count))
             {
-                ConsoleMessage.NameValue("Hash", sp.SignagePoint.ChallengeHash);
-                ConsoleMessage.NameValue("Index", sp.SignagePoint.SignagePointIndex);
+                table.AddRow(sp.SignagePoint.SignagePointIndex.ToString(), sp.SignagePoint.ChallengeHash);
             }
 
+            AnsiConsole.Render(table);
             ConsoleMessage.Message($"Showing {count} of {list.Count} challenges.");
         }
 
@@ -39,7 +45,7 @@ namespace rchia.Farm
             var fullNode = new FullNodeProxy(Service.RpcClient, Service.OriginService);
             var wallet = new WalletProxy(Service.RpcClient, Service.OriginService);
 
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
             var all_harvesters = await farmer.GetHarvesters(cts.Token);
             var blockchain_state = await fullNode.GetBlockchainState(cts.Token);
@@ -142,15 +148,15 @@ namespace rchia.Farm
 
             if (!wallet_running)
             {
-                ConsoleMessage.WriteLine("For details on farmed rewards and fees you should run 'chia start wallet' and 'chia wallet show'");
+                ConsoleMessage.Helpful("For details on farmed rewards and fees you should run [grey]rchia start wallet[/] and [grey]rchia wallet show[/]", true);
             }
             else if (!wallet_ready)
             {
-                ConsoleMessage.WriteLine("For details on farmed rewards and fees you should run 'chia wallet show'");
+                ConsoleMessage.Helpful("For details on farmed rewards and fees you should run [grey]rchia wallet show[/]", true);
             }
             else
             {
-                ConsoleMessage.WriteLine("Note: log into your key using 'chia wallet show' to see rewards for each key");
+                ConsoleMessage.Helpful("Note: log into your key using [grey]rchia wallet show[/] to see rewards for each key", true);
             }
         }
     }

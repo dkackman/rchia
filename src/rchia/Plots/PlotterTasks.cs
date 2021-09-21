@@ -16,17 +16,17 @@ namespace rchia.Plots
 
         public async Task CreatePlots(PlotterConfig config)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
             var q = await Service.RegisterPlotter(cts.Token);
             await Service.StartPlotting(config, cts.Token);
 
-            ConsoleMessage.MarkupLine("Plot queued. Run '[grey]rchia plots queue -v[/]' or '[grey]rchia plots log[/]' to check status");
+            ConsoleMessage.Helpful("Plot queued. Run [grey]rchia plots queue -v[/] or [grey]rchia plots log[/] to check status", true);
         }
 
         public async Task Queue()
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
             var q = await Service.RegisterPlotter(cts.Token);
             var plots = from p in q
@@ -48,7 +48,7 @@ namespace rchia.Plots
 
         public async Task Log(string? plotId)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var q = await Service.RegisterPlotter(cts.Token);
 
             if (string.IsNullOrEmpty(plotId))

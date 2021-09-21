@@ -13,9 +13,7 @@ namespace rchia.Status
         {
             return await Execute(async () =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Daemon);
-                var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new StatusTasks(daemon, this);
+                using var tasks = await CreateTasksWithDaemon<StatusTasks>(ServiceNames.Daemon);
 
                 await DoWork("Pinging the daemon...", async ctx => { await tasks.Ping(); });
             });

@@ -21,30 +21,30 @@ namespace rchia
 
         public string OriginService { get; init; } // this is needed for any daemon wss endpoints
 
-        public async Task TestConnection(EndpointInfo endpoint)
+        public async Task TestConnection(EndpointInfo endpoint, int timeoutMilliseconds)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(timeoutMilliseconds);
 
-            using var rpcClient = await CreateRpcClient(endpoint);
+            using var rpcClient = await CreateRpcClient(endpoint, timeoutMilliseconds);
         }
 
-        public async Task<IRpcClient> CreateRpcClient(EndpointOptions options, string serviceName)
+        public async Task<IRpcClient> CreateRpcClient(EndpointOptions options, string serviceName, int timeoutMilliseconds)
         {
             var endpoint = GetEndpointInfo(options, serviceName);
 
-            return await options.Status($"Connecting to endpoint {endpoint.Uri}...", async ctx => await CreateRpcClient(endpoint));
+            return await options.Status($"Connecting to endpoint {endpoint.Uri}...", async ctx => await CreateRpcClient(endpoint, timeoutMilliseconds));
         }
 
-        private async Task<IRpcClient> CreateRpcClient(EndpointInfo endpoint)
+        private async Task<IRpcClient> CreateRpcClient(EndpointInfo endpoint, int timeoutMilliseconds)
         {
             return endpoint.Uri.Scheme == "wss"
-                ? await CreateWebSocketClient(endpoint)
+                ? await CreateWebSocketClient(endpoint, timeoutMilliseconds)
                 : endpoint.Uri.Scheme == "https"
                 ? new HttpRpcClient(endpoint)
                 : throw new InvalidOperationException($"Unrecognized endpoint Uri scheme {endpoint.Uri.Scheme}");
         }
 
-        public async Task<WebSocketRpcClient> CreateWebSocketClient(EndpointOptions options, string serviceName)
+        public async Task<WebSocketRpcClient> CreateWebSocketClient(EndpointOptions options, string serviceName, int timeoutMilliseconds)
         {
             var endpoint = GetEndpointInfo(options, serviceName);
 
@@ -53,12 +53,12 @@ namespace rchia
                 throw new InvalidOperationException($"Expecting a daemon endpoint using the websocket protocol but found {endpoint.Uri}");
             }
 
-            return await options.Status($"Connecting to websocket {endpoint.Uri}...", async ctx => await CreateWebSocketClient(endpoint));
+            return await options.Status($"Connecting to websocket {endpoint.Uri}...", async ctx => await CreateWebSocketClient(endpoint, timeoutMilliseconds));
         }
 
-        private async Task<WebSocketRpcClient> CreateWebSocketClient(EndpointInfo endpoint)
+        private async Task<WebSocketRpcClient> CreateWebSocketClient(EndpointInfo endpoint, int timeoutMilliseconds)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(timeoutMilliseconds);
 
             var rpcClient = new WebSocketRpcClient(endpoint);
             await rpcClient.Connect(cts.Token);

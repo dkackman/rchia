@@ -22,9 +22,7 @@ namespace rchia.Show
 
             return await Execute(async () =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.FullNode);
-                var fullNode = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new ShowTasks(fullNode, this);
+                using var tasks = await CreateTasks<ShowTasks, FullNodeProxy>(ServiceNames.FullNode);
 
                 await DoWork("Pruning stale connections...", async ctx => { await tasks.Prune(Age); });
             });

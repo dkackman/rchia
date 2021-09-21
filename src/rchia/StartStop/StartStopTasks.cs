@@ -8,8 +8,8 @@ namespace rchia.StartStop
 {
     internal sealed class StartStopTasks : ConsoleTask<DaemonProxy>
     {
-        public StartStopTasks(DaemonProxy daemon, IConsoleMessage consoleMessage)
-            : base(daemon, consoleMessage)
+        public StartStopTasks(DaemonProxy daemon, IConsoleMessage consoleMessage, int timeoutSeconds)
+            : base(daemon, consoleMessage, timeoutSeconds)
         {
         }
 
@@ -17,7 +17,7 @@ namespace rchia.StartStop
         {
             foreach (var service in ServiceGroups.Groups[groupName])
             {
-                using var cts = new CancellationTokenSource(30000);
+                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 var isRunnnig = await Service.IsServiceRunning(service, cts.Token);
 
                 if (isRunnnig && !restart)
@@ -29,12 +29,12 @@ namespace rchia.StartStop
                     if (isRunnnig && restart)
                     {
                         ConsoleMessage.MarkupLine($"Stopping [wheat1]{service}[/]...");
-                        using var cts2 = new CancellationTokenSource(30000);
+                        using var cts2 = new CancellationTokenSource(TimeoutMilliseconds);
                         await Service.StopService(service, cts2.Token);
                     }
 
                     ConsoleMessage.MarkupLine($"Starting [wheat1]{service}[/]...");
-                    using var cts3 = new CancellationTokenSource(30000);
+                    using var cts3 = new CancellationTokenSource(TimeoutMilliseconds);
                     await Service.StartService(service, cts3.Token);
                 }
             }
@@ -44,13 +44,13 @@ namespace rchia.StartStop
         {
             foreach (var service in ServiceGroups.Groups[groupName])
             {
-                using var cts = new CancellationTokenSource(30000);
+                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 var isRunnnig = await Service.IsServiceRunning(service, cts.Token);
 
                 if (isRunnnig)
                 {
                     ConsoleMessage.MarkupLine($"Stopping [wheat1]{service}[/]...");
-                    using var cts3 = new CancellationTokenSource(30000);
+                    using var cts3 = new CancellationTokenSource(TimeoutMilliseconds);
                     await Service.StopService(service, cts3.Token);
                 }
                 else
@@ -62,7 +62,7 @@ namespace rchia.StartStop
 
         public async Task StopDeamon()
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             await Service.Exit(cts.Token);
         }
     }

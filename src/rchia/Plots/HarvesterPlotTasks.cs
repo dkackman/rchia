@@ -9,14 +9,14 @@ namespace rchia.Plots
 {
     internal class HarvesterPlotTasks : ConsoleTask<HarvesterProxy>
     {
-        public HarvesterPlotTasks(HarvesterProxy proxy, IConsoleMessage consoleMessage)
-            : base(proxy, consoleMessage)
+        public HarvesterPlotTasks(HarvesterProxy proxy, IConsoleMessage consoleMessage, int timeoutSeconds)
+            : base(proxy, consoleMessage, timeoutSeconds)
         {
         }
 
         public async Task List()
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
             var plots = await Service.GetPlots(cts.Token);
 
@@ -26,7 +26,7 @@ namespace rchia.Plots
 
             if (!ConsoleMessage.Verbose)
             {
-                ConsoleMessage.Helpful("(use '[grey]-v/--verbose[/]' to see file names)", true);
+                ConsoleMessage.Helpful("(use [grey]-v/--verbose[/] to see file names)", true);
             }
         }
 
@@ -44,19 +44,19 @@ namespace rchia.Plots
 
         public async Task Remove(string dirname)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             await Service.RemovePlotDirectory(dirname, cts.Token);
         }
 
         public async Task Refresh()
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             await Service.RefreshPlots(cts.Token);
         }
 
         public async Task Add(string dirname)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             await Service.AddPlotDirectory(dirname, cts.Token);
         }
 
@@ -67,7 +67,7 @@ namespace rchia.Plots
             ConsoleMessage.MarkupLine("Add with '[grey]chia plots add <dir>[/]' and remove with '[grey]chia plots remove <dir>[/]'");
             ConsoleMessage.WriteLine("");
 
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var directories = await Service.GetPlotDirectories(cts.Token);
             foreach (var path in directories)
             {

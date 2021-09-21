@@ -37,9 +37,7 @@ namespace rchia.StartStop
                     }
                 }
 
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Daemon);
-                var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new StartStopTasks(proxy, this);
+                using var tasks = await CreateTasksWithDaemon<StartStopTasks>(ServiceNames.Daemon);
 
                 await DoWork("Stopping services...", async ctx => { await tasks.Stop(ServiceGroup); });
                 if (Daemon)

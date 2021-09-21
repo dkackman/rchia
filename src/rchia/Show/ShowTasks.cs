@@ -12,14 +12,14 @@ namespace rchia.Show
 {
     internal class ShowTasks : ConsoleTask<FullNodeProxy>
     {
-        public ShowTasks(FullNodeProxy fullNode, IConsoleMessage consoleMessage)
-            : base(fullNode, consoleMessage)
+        public ShowTasks(FullNodeProxy fullNode, IConsoleMessage consoleMessage, int timeoutMiliseconds)
+            : base(fullNode, consoleMessage, timeoutMiliseconds)
         {
         }
 
         public async Task Prune(int age)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
             var cutoff = DateTime.UtcNow - new TimeSpan(age, 0, 0);
             ConsoleMessage.MarkupLine($"Pruning connections that haven't sent a message since [wheat1]{cutoff.ToLocalTime()}[/]");
@@ -40,20 +40,20 @@ namespace rchia.Show
 
         public async Task AddConnection(string hostUri)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var uri = hostUri.StartsWith("http") ? new Uri(hostUri) : new Uri("https://" + hostUri); // need to add a scheme so uri can be parsed
             await Service.OpenConnection(uri.Host, uri.Port, cts.Token);
         }
 
         public async Task BlockHeaderHashByHeight(uint height)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var block = await Service.GetBlockRecordByHeight(height, cts.Token);
         }
 
         public async Task BlockByHeaderHash(string headerHash)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var full_block = await Service.GetBlock(headerHash, cts.Token);
             var block = await Service.GetBlockRecord(headerHash, cts.Token);
             var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
@@ -69,9 +69,9 @@ namespace rchia.Show
 
             var difficulty = previous is not null ? block.Weight - previous.Weight : block.Weight;
             ConsoleMessage.NameValue("Difficulty", difficulty);
-            ConsoleMessage.NameValue("Sub-slot iters", block.SubSlotIters);
+            ConsoleMessage.NameValue("Sub-slot iters", block.SubSlotIters.ToString("N0"));
             ConsoleMessage.NameValue("Cost", full_block.TransactionsInfo?.Cost);
-            ConsoleMessage.NameValue("Total VDF Iterations", block.TotalIters);
+            ConsoleMessage.NameValue("Total VDF Iterations", block.TotalIters.ToString("N0"));
             ConsoleMessage.NameValue("Is a Transaction Block", full_block.RewardChainBlock.IsTransactionBlock);
             ConsoleMessage.NameValue("Deficit", block.Deficit);
             ConsoleMessage.NameValue("PoSpace 'k' Size", full_block.RewardChainBlock.ProofOfSpace.Size);
@@ -99,7 +99,7 @@ namespace rchia.Show
 
         public async Task Connections()
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var connections = await Service.GetConnections(cts.Token);
 
             ConsoleMessage.MarkupLine("[wheat1]Connections[/]");
@@ -131,19 +131,19 @@ namespace rchia.Show
 
         public async Task Exit()
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             await Service.StopNode(cts.Token);
         }
 
         public async Task RemoveConnection(string nodeId)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             await Service.CloseConnection(nodeId, cts.Token);
         }
 
         public async Task State()
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var state = await Service.GetBlockchainState(cts.Token);
             var peakHash = state.Peak is not null ? state.Peak.HeaderHash : "";
 
@@ -177,10 +177,10 @@ namespace rchia.Show
             ConsoleMessage.WriteLine("");
             ConsoleMessage.NameValue("Estimated network space", state.Space.ToBytesString());
             ConsoleMessage.NameValue("Current difficulty", state.Difficulty);
-            ConsoleMessage.NameValue("Current VDF sub_slot_iters", state.SubSlotIters);
+            ConsoleMessage.NameValue("Current VDF sub_slot_iters", state.SubSlotIters.ToString("N0"));
 
             var totalIters = state.Peak is not null ? state.Peak.TotalIters : 0;
-            ConsoleMessage.NameValue("Total iterations since the start of the blockchain", totalIters);
+            ConsoleMessage.NameValue("Total iterations since the start of the blockchain", totalIters.ToString("N0"));
 
             if (state.Peak is not null)
             {
@@ -189,7 +189,7 @@ namespace rchia.Show
                 var block = await Service.GetBlockRecord(state.Peak.HeaderHash, cts.Token);
                 while (block is not null && blocks.Count < 10 && block.Height > 0)
                 {
-                    using var cts1 = new CancellationTokenSource(30000);
+                    using var cts1 = new CancellationTokenSource(TimeoutMilliseconds);
                     blocks.Add(block);
                     block = await Service.GetBlockRecord(block.PrevHash, cts.Token);
                 }

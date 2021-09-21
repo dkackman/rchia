@@ -20,7 +20,7 @@ namespace rchia.Keys
                     throw new InvalidOperationException($"{Fingerprint} is not a valid wallet fingerprint");
                 }
 
-                using var tasks = new KeysTasks(await Login(), this);
+                using var tasks = new KeysTasks(await Login(), this, TimeoutMilliseconds);
 
                 if (Confirm($"Deleting a key CANNOT be undone.\nAre you sure you want to delete key {Fingerprint} from [red]{tasks.Service.RpcClient.Endpoint.Uri}[/]?", Force))
                 {

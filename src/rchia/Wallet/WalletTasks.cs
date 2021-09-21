@@ -18,7 +18,7 @@ namespace rchia.Wallet
 
         public async Task List()
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var keys = await Service.GetPublicKeys(cts.Token);
             if (!keys.Any())
             {
@@ -29,7 +29,7 @@ namespace rchia.Wallet
             {
                 ConsoleMessage.NameValue("Fingerprint", fingerprint);
 
-                using var cts1 = new CancellationTokenSource(30000);
+                using var cts1 = new CancellationTokenSource(TimeoutMilliseconds);
                 _ = Service.LogIn(fingerprint, false, cts1.Token);
                 var wallets = await Service.GetWallets(cts1.Token);
 
@@ -49,7 +49,7 @@ namespace rchia.Wallet
 
         public async Task Show()
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
             var (GenesisInitialized, Synced, Syncing) = await Service.GetSyncStatus(cts.Token);
             var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
@@ -90,7 +90,7 @@ namespace rchia.Wallet
 
         public async Task DeleteUnconfirmedTransactions(uint id)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
             var wallet = new chia.dotnet.Wallet(id, Service);
             await wallet.DeleteUnconfirmedTransactions(cts.Token);
@@ -100,7 +100,7 @@ namespace rchia.Wallet
 
         public async Task GetAddress(uint id, bool newAddress)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
             var wallet = new chia.dotnet.Wallet(id, Service);
             var address = await wallet.GetNextAddress(newAddress, cts.Token);
@@ -110,7 +110,7 @@ namespace rchia.Wallet
 
         public async Task GetTransaction(string txId)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var tx = await Service.GetTransaction(txId, cts.Token);
             var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
             PrintTransaction(tx, NetworkPrefix);
@@ -118,7 +118,7 @@ namespace rchia.Wallet
 
         public async Task GetTransactions(uint id, uint start, uint? count)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
             var wallet = new chia.dotnet.Wallet(id, Service);
             var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
@@ -146,7 +146,7 @@ namespace rchia.Wallet
 
         private void PrintTransaction(TransactionRecord tx, string prefix)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             ConsoleMessage.NameValue("Transaction", tx.Name);
             if (tx.Confirmed)
             {
@@ -170,7 +170,7 @@ namespace rchia.Wallet
 
         public async Task Send(uint id, string address, decimal amount, decimal fee)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
             var wallet = new chia.dotnet.Wallet(id, Service);
             var tx = await wallet.SendTransaction(address, amount.ToMojo(), fee.ToMojo(), cts.Token);

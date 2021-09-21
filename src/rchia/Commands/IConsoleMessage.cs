@@ -4,7 +4,7 @@ using Spectre.Console;
 
 namespace rchia.Commands
 {
-    internal interface IConsoleMessage
+    public interface IConsoleMessage
     {
         bool Verbose { get; init; }
 

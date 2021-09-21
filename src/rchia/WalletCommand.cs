@@ -12,13 +12,8 @@ namespace rchia
 
         protected async Task<WalletProxy> Login()
         {
-            var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.Wallet);
-            return await LoginToWallet(rpcClient);
-        }
-
-        protected async Task<WalletProxy> LoginToWallet(IRpcClient rpcClient)
-        {
-            using var cts = new CancellationTokenSource(30000);
+            var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.Wallet, TimeoutMilliseconds);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var walletProxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
             if (Fingerprint.HasValue)
             {

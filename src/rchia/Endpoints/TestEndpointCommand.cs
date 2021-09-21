@@ -10,6 +10,9 @@ namespace rchia.Endpoints
         [Argument(0, Name = "id", Description = "The id of the endpoint to test")]
         public string Id { get; init; } = string.Empty;
 
+        [Option("to", "timeout", Default = 30, ArgumentHelpName = "TIMEOUT", Description = "Timeout in seconds")]
+        public int Timeout { get; init; } = 30;
+
         [CommandTarget]
         public async override Task<int> Run()
         {
@@ -23,7 +26,7 @@ namespace rchia.Endpoints
                 }
 
                 var endpoint = library.Endpoints[Id];
-                await ClientFactory.Factory.TestConnection(endpoint.EndpointInfo);
+                await ClientFactory.Factory.TestConnection(endpoint.EndpointInfo, (int)(Timeout * 1000));
 
                 MarkupLine($"Successfully connected to [wheat1]{Id}[/]");
             });

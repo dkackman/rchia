@@ -22,9 +22,7 @@ namespace rchia.Netspace
         {
             return await Execute(async () =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.FullNode);
-                var fullNode = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new NetspaceTasks(fullNode, this);
+                using var tasks = await CreateTasks<NetspaceTasks, FullNodeProxy>(ServiceNames.FullNode);
 
                 await tasks.Netspace(Start, DeltaBlockHeight);
             });

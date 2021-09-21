@@ -10,14 +10,14 @@ namespace rchia.Netspace
 {
     internal sealed class NetspaceTasks : ConsoleTask<FullNodeProxy>
     {
-        public NetspaceTasks(FullNodeProxy fullNodeProxy, IConsoleMessage consoleMessage)
-            : base(fullNodeProxy, consoleMessage)
+        public NetspaceTasks(FullNodeProxy fullNodeProxy, IConsoleMessage consoleMessage, int timeoutSeconds)
+            : base(fullNodeProxy, consoleMessage, timeoutSeconds)
         {
         }
 
         public async Task Netspace(string? start, uint delta)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
             uint newer_block_height = 0;
             if (string.IsNullOrEmpty(start))
@@ -43,24 +43,25 @@ namespace rchia.Netspace
                 newer_block_height = newer_block.Height;
             }
 
-            ConsoleMessage.NameValue("Newer Height", newer_block_height);
-
             var newer_block_header = await Service.GetBlockRecordByHeight(newer_block_height);
             var older_block_height = Math.Max(0, newer_block_height - delta);
             var older_block_header = await Service.GetBlockRecordByHeight(older_block_height);
             var network_space_bytes_estimate = await Service.GetNetworkSpace(newer_block_header.HeaderHash, older_block_header.HeaderHash);
 
-            ConsoleMessage.MarkupLine("[wheat1]Older Block[/]");
-            ConsoleMessage.NameValue("  Block Height", older_block_header.Height);
-            ConsoleMessage.NameValue("  Weight", older_block_header.Weight);
-            ConsoleMessage.NameValue("  VDF Iterations", older_block_header.TotalIters);
-            ConsoleMessage.NameValue("  Header Hash", $"0x{ older_block_header.HeaderHash}");
+            if (ConsoleMessage.Verbose)
+            {
+                ConsoleMessage.MarkupLine("[wheat1]Older Block[/]");
+                ConsoleMessage.NameValue("  Block Height", older_block_header.Height);
+                ConsoleMessage.NameValue("  Weight", older_block_header.Weight);
+                ConsoleMessage.NameValue("  VDF Iterations", older_block_header.TotalIters);
+                ConsoleMessage.NameValue("  Header Hash", $"0x{ older_block_header.HeaderHash}");
 
-            ConsoleMessage.MarkupLine("[wheat1]Newer Block[/]");
-            ConsoleMessage.NameValue("  Block Height", newer_block_header.Height);
-            ConsoleMessage.NameValue("  Weight", newer_block_header.Weight);
-            ConsoleMessage.NameValue("  VDF Iterations", newer_block_header.TotalIters);
-            ConsoleMessage.NameValue("  Header Hash", $"0x{ newer_block_header.HeaderHash}");
+                ConsoleMessage.MarkupLine("[wheat1]Newer Block[/]");
+                ConsoleMessage.NameValue("  Block Height", newer_block_header.Height);
+                ConsoleMessage.NameValue("  Weight", newer_block_header.Weight);
+                ConsoleMessage.NameValue("  VDF Iterations", newer_block_header.TotalIters);
+                ConsoleMessage.NameValue("  Header Hash", $"0x{ newer_block_header.HeaderHash}");
+            }
 
             ConsoleMessage.WriteLine(network_space_bytes_estimate.ToBytesString());
         }

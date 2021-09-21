@@ -10,14 +10,14 @@ namespace rchia.Keys
 {
     internal class KeysTasks : ConsoleTask<WalletProxy>
     {
-        public KeysTasks(WalletProxy wallet, IConsoleMessage consoleMessage)
-            : base(wallet, consoleMessage)
+        public KeysTasks(WalletProxy wallet, IConsoleMessage consoleMessage, int timeoutMilliseconds)
+            : base(wallet, consoleMessage, timeoutMilliseconds)
         {
         }
 
         public async Task Add(IEnumerable<string> mnemonic)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var fingerprint = await Service.AddKey(mnemonic, true, cts.Token);
 
             ConsoleMessage.MarkupLine($"Added private key with public key fingerprint [wheat1]{fingerprint}[/]");
@@ -25,7 +25,7 @@ namespace rchia.Keys
 
         public async Task Delete(uint fingerprint)
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             await Service.DeleteKey(fingerprint, cts.Token);
 
             ConsoleMessage.MarkupLine($"Deleted the key with fingerprint [wheat1]{fingerprint}[/]");
@@ -33,13 +33,13 @@ namespace rchia.Keys
 
         public async Task DeleteAll()
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             await Service.DeleteAllKeys(cts.Token);
         }
 
         public async Task Generate()
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
             var mnemonic = await Service.GenerateMnemonic(cts.Token);
             var fingerprint = await Service.AddKey(mnemonic, true, cts.Token);
@@ -49,7 +49,7 @@ namespace rchia.Keys
 
         public async Task GenerateAndPrint()
         {
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var mnemonic = await Service.GenerateMnemonic(cts.Token);
 
             ConsoleMessage.WriteLine("Generated private key. Mnemonic (24 secret words):");
@@ -61,7 +61,7 @@ namespace rchia.Keys
         {
             ConsoleMessage.Helpful("Showing all public keys derived from your private keys:");
 
-            using var cts = new CancellationTokenSource(30000);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var keys = await Service.GetPublicKeys(cts.Token);
 
             if (keys.Any())
@@ -72,7 +72,7 @@ namespace rchia.Keys
                 foreach (var fingerprint in keys)
                 {
                     ConsoleMessage.NameValue("Fingerprint", fingerprint);
-                    using var cts1 = new CancellationTokenSource(30000);
+                    using var cts1 = new CancellationTokenSource(TimeoutMilliseconds);
                     var (Fingerprint, Sk, Pk, FarmerPk, PoolPk, Seed) = await Service.GetPrivateKey(fingerprint, cts1.Token);
 
                     ConsoleMessage.NameValue("Master public key (m)", Pk);

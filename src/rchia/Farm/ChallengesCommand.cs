@@ -16,9 +16,7 @@ namespace rchia.Farm
         {
             return await Execute(async () =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Daemon);
-                var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new FarmTasks(proxy, this);
+                using var tasks = await CreateTasksWithDaemon<FarmTasks>(ServiceNames.Farmer);
 
                 await DoWork("Retrieving challenges...", async ctx => { await tasks.Challenges(Limit); });
             });

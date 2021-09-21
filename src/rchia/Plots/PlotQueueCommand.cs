@@ -11,7 +11,7 @@ namespace rchia.Plots
         {
             return await Execute(async () =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Plotter);
+                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Plotter, TimeoutMilliseconds);
                 var proxy = new PlotterProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var tasks = new PlotterTasks(proxy, this);
 

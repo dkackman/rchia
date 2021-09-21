@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using chia.dotnet;
 using rchia.Commands;
 
 namespace rchia.PlotNft
@@ -14,9 +13,7 @@ namespace rchia.PlotNft
         {
             return await Execute(async () =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Wallet);
-                var wallet = await LoginToWallet(rpcClient);
-                var tasks = new PlotNftTasks(wallet, this);
+                using var tasks = new PlotNftTasks(await Login(), this);
 
                 await tasks.Show(Id);
             });

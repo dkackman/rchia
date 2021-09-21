@@ -20,7 +20,7 @@ namespace rchia.PlotNft
 
             return await Execute(async () =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Wallet);
+                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Wallet, TimeoutMilliseconds);
                 var wallet = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var tasks = new PlotNftTasks(wallet, this);
 
