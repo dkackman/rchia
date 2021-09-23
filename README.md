@@ -35,6 +35,9 @@ There are three downloads types for each OS:
 
 ## Example
 
+Incorporates Ansi console features when available.
+![image](https://user-images.githubusercontent.com/5160233/134552277-59128c00-64e0-474d-88ac-50b092993a68.png)
+
 The details of the endpoint can be specified in the following ways:
 
 ### On the command line
