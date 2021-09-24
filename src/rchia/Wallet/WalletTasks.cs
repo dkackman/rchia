@@ -58,7 +58,7 @@ namespace rchia.Wallet
             ConsoleMessage.NameValue("Wallet height", await Service.GetHeightInfo(cts.Token));
 
             var synced = await Service.GetSyncStatus(cts.Token);
-            ConsoleMessage.NameValue("Sync status", synced.Synced ? "Synced" : "Not synced");
+            ConsoleMessage.NameValue("Sync status", synced.Synced ? "[green]Synced[/]" : "[red]Not synced[/]");
             ConsoleMessage.NameValue("Wallet height", await Service.GetHeightInfo(cts.Token));
             ConsoleMessage.NameValue("Fingerprint", Service.Fingerprint);
 
@@ -69,23 +69,32 @@ namespace rchia.Wallet
                 return;
             }
 
+            ConsoleMessage.MarkupLine($"[orange3]Balances ({NetworkPrefix})[/]");
+            var table = new Table();
+            table.AddColumn("[orange3]Id[/]");
+            table.AddColumn("[orange3]Type[/]");
+            table.AddColumn("[orange3]Name[/]");
+            table.AddColumn("[orange3]Total[/]");
+            table.AddColumn("[orange3]Pending Total[/]");
+            table.AddColumn("[orange3]Spendable[/]");
+
             foreach (var summary in wallets)
             {
                 var newWallet = new chia.dotnet.Wallet(summary.Id, Service);
                 var (ConfirmedWalletBalance, UnconfirmedWalletBalance, SpendableBalance, PendingChange, MaxSendAmount, UnspentCoinCount, PendingCoinRemovalCount) = await newWallet.GetBalance(cts.Token);
 
-                ConsoleMessage.MarkupLine($"Wallet ID [wheat1]{summary.Id}[/] of type [green]{summary.Type}[/] '{summary.Name}'");
-                ConsoleMessage.NameValue("   -Total Balance", $"{ConfirmedWalletBalance.AsChia()} {NetworkPrefix}");
-                ConsoleMessage.NameValue("   -Pending Total Balance", $"{UnconfirmedWalletBalance.AsChia()} {NetworkPrefix}");
-                ConsoleMessage.NameValue("   -Spendable", $"{SpendableBalance.AsChia()} {NetworkPrefix}");
-                if (ConsoleMessage.Verbose)
-                {
-                    ConsoleMessage.NameValue("   -Pending Changee", $"{PendingChange.AsChia()} {NetworkPrefix}");
-                    ConsoleMessage.NameValue("   -Max Spend Amount", $"{MaxSendAmount.AsChia()} {NetworkPrefix}");
-                    ConsoleMessage.NameValue("   -Unspent Coin Count", $"{UnspentCoinCount}");
-                    ConsoleMessage.NameValue("   -Pending Coin Removal Count", $"{PendingCoinRemovalCount}");
-                }
+                table.AddRow(summary.Id.ToString(), summary.Name, $"[green]{summary.Type}[/]", ConfirmedWalletBalance.AsChia(), UnconfirmedWalletBalance.AsChia(), SpendableBalance.AsChia());
+
+                //if (ConsoleMessage.Verbose)
+                //{
+                //    ConsoleMessage.NameValue("   -Pending Change", $"{PendingChange.AsChia()} {NetworkPrefix}");
+                //    ConsoleMessage.NameValue("   -Max Spend Amount", $"{MaxSendAmount.AsChia()} {NetworkPrefix}");
+                //    ConsoleMessage.NameValue("   -Unspent Coin Count", $"{UnspentCoinCount}");
+                //    ConsoleMessage.NameValue("   -Pending Coin Removal Count", $"{PendingCoinRemovalCount}");
+                //}
             }
+
+            AnsiConsole.Render(table);
         }
 
         public async Task DeleteUnconfirmedTransactions(uint id)
