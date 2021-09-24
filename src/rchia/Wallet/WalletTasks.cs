@@ -122,7 +122,8 @@ namespace rchia.Wallet
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var tx = await Service.GetTransaction(txId, cts.Token);
             var (NetworkName, NetworkPrefix) = await Service.GetNetworkInfo(cts.Token);
-            PrintTransaction(tx, NetworkPrefix);
+
+            PrintTransaction(tx, NetworkPrefix, CreateTransactionTable());
         }
 
         public async Task GetTransactions(uint id, uint start, uint? count)
@@ -140,41 +141,46 @@ namespace rchia.Wallet
             var transactions = await wallet.GetTransactions(start, count.Value - start, cts.Token);
             if (transactions.Any())
             {
+                var table = CreateTransactionTable();
                 foreach (var tx in transactions)
                 {
-                    PrintTransaction(tx, NetworkPrefix);
+                    PrintTransaction(tx, NetworkPrefix, table);
                 }
                 var c = transactions.Count();
-                ConsoleMessage.Message($"{c} transaction{(c == 1 ? string.Empty : "s")}");
+                AnsiConsole.Render(table);
+                ConsoleMessage.MarkupLine($"[wheat1]{c}[/] transaction{(c == 1 ? string.Empty : "s")}");
             }
             else
             {
                 ConsoleMessage.Warning("There are no transactions to this address");
             }
         }
-
-        private void PrintTransaction(TransactionRecord tx, string prefix)
+        private static Table CreateTransactionTable()
         {
-            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-            ConsoleMessage.NameValue("Transaction", tx.Name);
-            if (tx.Confirmed)
-            {
-                ConsoleMessage.NameValue("Status", "Confirmed");
-            }
-            else if (tx.IsInMempool)
-            {
-                ConsoleMessage.NameValue($"Status", "In mempool");
-            }
-            else
-            {
-                ConsoleMessage.NameValue("Status", "Pending");
-            }
+            var table = new Table();
+            table.AddColumn("[orange3]Name[/]");
+            table.AddColumn("[orange3]Status[/]");
+            table.AddColumn("[orange3]Amount[/]");
+            table.AddColumn("[orange3]To[/]");
+            table.AddColumn("[orange3]At[/]");
+            return table;
+        }
 
-            var (verb, color) = tx.Sent > 0 ? ("sent", "red") : ("received", "green");
-            ConsoleMessage.NameValue($"Amount {verb}", $"[{color}]{tx.Amount.AsChia()} {prefix}[/]");
+        private void PrintTransaction(TransactionRecord tx, string prefix, Table table)
+        {
+            var name = ConsoleMessage.Verbose ? tx.Name : tx.Name.Substring(2, 10) + "...";
+            var status = tx.Confirmed ? "Confirmed"
+                : tx.IsInMempool ? "In mempool"
+                : "Pending";
+
+            var color = tx.Sent > 0 ? "red" : "green";
+
+            var amount = $"[{color}]{tx.Amount.AsChia()} {prefix}[/]";
             var bech32 = new Bech32M(prefix);
-            ConsoleMessage.NameValue("To address", bech32.PuzzleHashToAddress(tx.ToPuzzleHash));
-            ConsoleMessage.NameValue("Created at", tx.CreatedAtDateTime.ToLocalTime());
+            var to = ConsoleMessage.Verbose ? bech32.PuzzleHashToAddress(tx.ToPuzzleHash) : bech32.PuzzleHashToAddress(tx.ToPuzzleHash).Substring(2, 10) + "...";
+            var at = tx.CreatedAtDateTime.ToLocalTime().ToString();
+
+            table.AddRow(name, status, amount, to, at);
         }
 
         public async Task Send(uint id, string address, decimal amount, decimal fee)
@@ -184,9 +190,9 @@ namespace rchia.Wallet
             var wallet = new chia.dotnet.Wallet(id, Service);
             var tx = await wallet.SendTransaction(address, amount.ToMojo(), fee.ToMojo(), cts.Token);
 
-            PrintTransaction(tx, NetworkPrefix);
+            PrintTransaction(tx, NetworkPrefix,CreateTransactionTable());
 
-            ConsoleMessage.Helpful($"Do 'rchia wallet get-transaction -tx {tx.TransactionId}' to get status");
+            ConsoleMessage.Helpful($"Do [grey]rchia wallet get-transaction -tx {tx.TransactionId}[/] to get status");
         }
     }
 }
