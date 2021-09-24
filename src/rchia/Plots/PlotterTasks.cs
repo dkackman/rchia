@@ -55,10 +55,10 @@ namespace rchia.Plots
             {
                 var running = q.Where(p => p.PlotState == PlotState.RUNNING);
                 var count = running.Count();
-                ConsoleMessage.WriteLine($"There {(count == 1 ? "is" : "are")} {count} running plot job{(count == 1 ? "" : "s")}");
+                ConsoleMessage.MarkupLine($"There {(count == 1 ? "is" : "are")} [wheat1]{count}[/] running plot job{(count == 1 ? "" : "s")}");
                 foreach (var plot in running)
                 {
-                    ConsoleMessage.WriteLine($"Log for plot {plot.Id}:");
+                    ConsoleMessage.MarkupLine($"Log for plot [wheat1]{plot.Id}[/]");
                     ConsoleMessage.WriteLine(plot.Log);
                     ConsoleMessage.WriteLine("");
                 }

@@ -155,6 +155,7 @@ namespace rchia.Wallet
                 ConsoleMessage.Warning("There are no transactions to this address");
             }
         }
+
         private static Table CreateTransactionTable()
         {
             var table = new Table();
@@ -177,7 +178,7 @@ namespace rchia.Wallet
 
             var amount = $"[{color}]{tx.Amount.AsChia()} {prefix}[/]";
             var bech32 = new Bech32M(prefix);
-            var to = ConsoleMessage.Verbose ? bech32.PuzzleHashToAddress(tx.ToPuzzleHash) : bech32.PuzzleHashToAddress(tx.ToPuzzleHash).Substring(2, 10) + "...";
+            var to = ConsoleMessage.Verbose ? bech32.PuzzleHashToAddress(tx.ToPuzzleHash) : bech32.PuzzleHashToAddress(tx.ToPuzzleHash).Substring(prefix.Length, 10) + "...";
             var at = tx.CreatedAtDateTime.ToLocalTime().ToString();
 
             table.AddRow(name, status, amount, to, at);

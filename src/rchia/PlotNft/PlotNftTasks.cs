@@ -56,7 +56,7 @@ namespace rchia.PlotNft
                 ConsoleMessage.NameValue($"Sent to", sentTo.Peer);
             }
 
-            ConsoleMessage.Helpful($"Do 'rchia wallet get-transaction -tx {tx.Name}' to get status");
+            ConsoleMessage.Helpful($"Do [grey]'rchia wallet get-transaction -tx {tx.Name}'[/] to get status");
         }
 
         public async Task LeavePool(uint walletId)
