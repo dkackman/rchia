@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-
+using System.Linq;
 using chia.dotnet;
 
 using rchia.Commands;
@@ -36,46 +36,32 @@ namespace rchia
 
         internal int TimeoutMilliseconds => Timeout * 1000;
 
-        // these next three methods use reflection to find the right constructor. errors won't be caught a compile time
+        // these next two methods use reflection to find the right constructor. errors won't be caught a compile time
         // should realy be replaced with parameterless constructors and property initialization
         internal protected async Task<TTask> CreateTasksWithDaemon<TTask>(string serviceName) where TTask : ConsoleTask<DaemonProxy>
         {
             var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, serviceName, TimeoutMilliseconds);
             var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
 
-            var constructor = typeof(TTask).GetConstructor(new Type[] { typeof(DaemonProxy), typeof(IConsoleMessage), typeof(int) });
-
-            return constructor is null
-                ? throw new InvalidOperationException($"Cannot create a {typeof(TTask).Name}")
-                : constructor.Invoke(new object[] { proxy, this, TimeoutMilliseconds }) is not TTask tasks
-                ? throw new InvalidOperationException($"Cannot create a {typeof(TTask).Name}")
-                : tasks;
+            return Create<TTask>(proxy, this, TimeoutMilliseconds);
         }
 
         internal protected async Task<TTask> CreateTasks<TTask, TService>(string serviceName) where TTask : ConsoleTask<TService>
                                                                                               where TService : ServiceProxy
         {
             var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, serviceName, TimeoutMilliseconds);
-            var proxy = CreateProxy<TService>(rpcClient, ClientFactory.Factory.OriginService);
+            var proxy = Create<TService>(rpcClient, ClientFactory.Factory.OriginService);
 
-            var constructor = typeof(TTask).GetConstructor(new Type[] { typeof(TService), typeof(IConsoleMessage), typeof(int) });
-
-            return constructor is null
-                ? throw new InvalidOperationException($"Cannot create a {typeof(TTask).Name}")
-                : constructor.Invoke(new object[] { proxy, this, TimeoutMilliseconds }) is not TTask tasks
-                ? throw new InvalidOperationException($"Cannot create a {typeof(TTask).Name}")
-                : tasks;
+            return Create<TTask>(proxy, this, TimeoutMilliseconds);
         }
 
-        private static TService CreateProxy<TService>(IRpcClient rpcClient, string originService) where TService : ServiceProxy
+        private static T Create<T>(params object[] args)
         {
-            var constructor = typeof(TService).GetConstructor(new Type[] { typeof(IRpcClient), typeof(string) });
+            var constructor = typeof(T).GetConstructor(args.Select(arg => arg.GetType()).ToArray());
 
-            return constructor is null
-                ? throw new InvalidOperationException($"Cannot create a {typeof(TService).Name}")
-                : constructor.Invoke(new object[] { rpcClient, originService }) is not TService proxy
-                ? throw new InvalidOperationException($"Cannot create a {typeof(TService).Name}")
-                : proxy;
+            return constructor is null || constructor.Invoke(args) is not T retval
+                ? throw new InvalidOperationException($"Cannot create a {typeof(T).Name}")
+                : retval;
         }
     }
 }
