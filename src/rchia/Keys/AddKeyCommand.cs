@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
@@ -19,7 +20,7 @@ namespace rchia.Keys
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            return await DoWork2("Adding key...", async ctx =>
             {
                 var mnemonic = Mnemonic;
 
@@ -36,9 +37,13 @@ namespace rchia.Keys
                     throw new InvalidOperationException("Exactly 24 words are required in the mnenomic passphrase");
                 }
 
-                using var tasks = await CreateTasks<KeysTasks, WalletProxy>(ServiceNames.Wallet);
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
+                var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
 
-                await tasks.Add(Mnemonic);
+                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                var fingerprint = await proxy.AddKey(mnemonic, true, cts.Token);
+
+                MarkupLine($"Added private key with public key fingerprint [wheat1]{fingerprint}[/]");
             });
         }
     }

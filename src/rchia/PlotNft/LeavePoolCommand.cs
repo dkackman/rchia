@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using chia.dotnet;
 using rchia.Commands;
 
 namespace rchia.PlotNft
@@ -14,12 +16,19 @@ namespace rchia.PlotNft
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            return await DoWork2("Leaving pool...", async ctx =>
             {
                 if (Confirm($"Are you sure you want to start self-farming with Plot NFT on wallet id {Id}?", Force))
                 {
-                    using var tasks = new PlotNftTasks(await Login(), this, TimeoutMilliseconds);
-                    await DoWork("Leaving pool...", async ctx => await tasks.LeavePool(Id));
+                    using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
+
+                    using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                    var wallet = new PoolWallet(Id, await Login(rpcClient));
+                    await wallet.Validate(cts.Token);
+
+                    var tx = await wallet.SelfPool(cts.Token);
+
+                    PrintTransactionSentTo(tx);
                 }
             });
         }

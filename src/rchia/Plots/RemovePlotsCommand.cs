@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 
@@ -12,11 +13,15 @@ namespace rchia.Plots
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            return await DoWork2("Removing plot directory...", async ctx =>
             {
-                using var tasks = await CreateTasks<HarvesterPlotTasks, HarvesterProxy>(ServiceNames.Harvester);
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Harvester);
+                var proxy = new HarvesterProxy(rpcClient, ClientFactory.Factory.OriginService);
 
-                await DoWork("Removing plot directory...", async ctx => { await tasks.Remove(FinalDir); });
+                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                await proxy.RemovePlotDirectory(FinalDir, cts.Token);
+
+                MarkupLine($"Removed [wheat1]{FinalDir}[/]");
             });
         }
     }

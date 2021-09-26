@@ -1,5 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using chia.dotnet;
 using rchia.Commands;
+using Spectre.Console;
 
 namespace rchia.Wallet
 {
@@ -17,10 +21,32 @@ namespace rchia.Wallet
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            return await DoWork2("Retrieving transactions...", async ctx =>
             {
-                using var tasks = new WalletTasks(await Login(), this, TimeoutMilliseconds);
-                await DoWork("Retrieving transactions...", async ctx => { await tasks.GetTransactions(Id, Start, Count); });
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
+                var wallet = new chia.dotnet.Wallet(Id, await Login(rpcClient));
+
+                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                var (NetworkName, NetworkPrefix) = await wallet.WalletProxy.GetNetworkInfo(cts.Token);
+
+                var count = Count is null ? await wallet.GetTransactionCount(cts.Token) : Count.Value;
+                var transactions = await wallet.GetTransactions(Start, count - Start, cts.Token);
+
+                if (transactions.Any())
+                {
+                    var table = CreateTransactionTable();
+                    foreach (var tx in transactions)
+                    {
+                        PrintTransaction(tx, NetworkPrefix, table);
+                    }
+                    var c = transactions.Count();
+                    AnsiConsole.Render(table);
+                    MarkupLine($"[wheat1]{c}[/] transaction{(c == 1 ? string.Empty : "s")}");
+                }
+                else
+                {
+                    Warning("There are no transactions to this address");
+                }
             });
         }
     }

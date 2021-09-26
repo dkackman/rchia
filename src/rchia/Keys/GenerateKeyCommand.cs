@@ -1,7 +1,6 @@
-﻿using System.Threading.Tasks;
-
+﻿using System.Threading;
+using System.Threading.Tasks;
 using chia.dotnet;
-
 using rchia.Commands;
 
 namespace rchia.Keys
@@ -11,11 +10,18 @@ namespace rchia.Keys
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            return await DoWork2("Generating a new key...", async ctx =>
             {
-                using var tasks = await CreateTasks<KeysTasks, WalletProxy>(ServiceNames.Wallet);
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
 
-                await DoWork("Generating a new key...", async ctx => { await tasks.Generate(); });
+                var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
+
+                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                var mnemonic = await proxy.GenerateMnemonic(cts.Token);
+                var fingerprint = await proxy.AddKey(mnemonic, true, cts.Token);
+
+                MarkupLine($"Added private key with public key fingerprint [wheat1]{fingerprint}[/]");
+                MarkupLine($"[wheat1]{string.Join(' ', mnemonic)}[/]");
             });
         }
     }

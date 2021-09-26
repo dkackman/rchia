@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using chia.dotnet;
 using rchia.Commands;
 
 namespace rchia.Wallet
@@ -11,10 +13,15 @@ namespace rchia.Wallet
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            return await DoWork2("Deleting unconfirmed transactions...", async ctx =>
             {
-                using var tasks = new WalletTasks(await Login(), this, TimeoutMilliseconds);
-                await DoWork("Deleting unconfirmed transactions...", async ctx => { await tasks.DeleteUnconfirmedTransactions(Id); });
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
+                var wallet = new chia.dotnet.Wallet(Id, await Login(rpcClient));
+
+                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                await wallet.DeleteUnconfirmedTransactions(cts.Token);
+
+                MarkupLine($"Successfully deleted all unconfirmed transactions for wallet id [wheat1]{Id}[/]");
             });
         }
     }

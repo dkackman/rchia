@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 
@@ -12,11 +13,15 @@ namespace rchia.Plots
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            return await DoWork2("Adding plot directory...", async ctx =>
             {
-                using var tasks = await CreateTasks<HarvesterPlotTasks, HarvesterProxy>(ServiceNames.Harvester);
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Harvester);
+                var proxy = new HarvesterProxy(rpcClient, ClientFactory.Factory.OriginService);
 
-                await DoWork("Adding plot directory...", async ctx => { await tasks.Add(FinalDir); });
+                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                await proxy.AddPlotDirectory(FinalDir, cts.Token);
+
+                MarkupLine($"Added [wheat1]{FinalDir}[/]");
             });
         }
     }

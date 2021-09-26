@@ -1,8 +1,7 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
-
 using chia.dotnet;
-
 using rchia.Commands;
 
 namespace rchia.StartStop
@@ -22,27 +21,45 @@ namespace rchia.StartStop
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            if (ServiceGroup is null || !ServiceGroups.Groups.ContainsKey(ServiceGroup))
             {
-                if (ServiceGroup is null || !ServiceGroups.Groups.ContainsKey(ServiceGroup))
-                {
-                    throw new InvalidOperationException($"Unrecognized service group {ServiceGroup}. It must be one of\n  {string.Join("|", ServiceGroups.Groups.Keys)}.");
-                }
+                throw new InvalidOperationException($"Unrecognized service group {ServiceGroup}. It must be one of\n  {string.Join("|", ServiceGroups.Groups.Keys)}.");
+            }
 
-                if (Daemon)
+            if (Daemon)
+            {
+                if (!Confirm("The daemon cannot be restared remotely. You will need shell access to the node in order to restart it.\nAre you sure you want to stop the daemon?", Force))
                 {
-                    if (!Confirm("The daemon cannot be restared remotely. You will need shell access to the node in order to restart it.\nAre you sure you want to stop the daemon?", Force))
+                    throw new Exception("No services were stopped.");
+                }
+            }
+
+            return await DoWork2("Stopping services...", async ctx =>
+            {
+                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this, ServiceNames.Daemon);
+
+                var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
+
+                foreach (var service in ServiceGroups.Groups[ServiceGroup])
+                {
+                    using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                    var isRunnnig = await proxy.IsServiceRunning(service, cts.Token);
+
+                    if (isRunnnig)
                     {
-                        throw new Exception("No services were stopped.");
+                        MarkupLine($"Stopping [wheat1]{service}[/]...");
+                        await proxy.StopService(service, cts.Token);
+                    }
+                    else
+                    {
+                        MarkupLine($"[wheat1]{service}[/] is not running...");
                     }
                 }
 
-                using var tasks = await CreateTasksWithDaemon<StartStopTasks>(ServiceNames.Daemon);
-
-                await DoWork("Stopping services...", async ctx => { await tasks.Stop(ServiceGroup); });
                 if (Daemon)
                 {
-                    await DoWork("Stopping the daemon...", async ctx => { await tasks.StopDeamon(); });
+                    using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                    await proxy.Exit(cts.Token);
                 }
             });
         }

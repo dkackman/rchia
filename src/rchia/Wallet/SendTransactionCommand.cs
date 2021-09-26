@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using chia.dotnet;
 using rchia.Commands;
 
 namespace rchia.Wallet
@@ -24,7 +26,7 @@ namespace rchia.Wallet
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            return await DoWork2("Sending Transaction...", async ctx =>
             {
                 if (string.IsNullOrEmpty(Address))
                 {
@@ -47,8 +49,16 @@ namespace rchia.Wallet
                     throw new InvalidOperationException("Pass in --force if you are sure you mean to do this.");
                 }
 
-                using var tasks = new WalletTasks(await Login(), this, TimeoutMilliseconds);
-                await DoWork("Sending transaction...", async ctx => { await tasks.Send(Id, Address, Amount, Fee); });
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
+                var wallet = new chia.dotnet.Wallet(Id, await Login(rpcClient));
+
+                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                var (NetworkName, NetworkPrefix) = await wallet.WalletProxy.GetNetworkInfo(cts.Token);
+                var tx = await wallet.SendTransaction(Address, Amount.ToMojo(), Fee.ToMojo(), cts.Token);
+
+                PrintTransaction(tx, NetworkPrefix, CreateTransactionTable());
+
+                Helpful($"Do '[grey]rchia wallet get-transaction -tx {tx.TransactionId}[/]' to get status");
             });
         }
     }

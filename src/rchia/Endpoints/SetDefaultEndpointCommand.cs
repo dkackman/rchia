@@ -13,7 +13,9 @@ namespace rchia.Endpoints
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            await Task.CompletedTask;
+
+            return Execute(() =>
             {
                 var library = EndpointLibrary.OpenLibrary();
 
@@ -29,8 +31,6 @@ namespace rchia.Endpoints
 
                 library.Save();
                 MarkupLine($"Endpoint [wheat1]{Id}[/] is now the default");
-
-                await Task.CompletedTask;
             });
         }
     }

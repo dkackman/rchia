@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using chia.dotnet;
 using rchia.Commands;
 
 namespace rchia.Wallet
@@ -14,10 +16,15 @@ namespace rchia.Wallet
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            return await DoWork2("Retrieving wallet address...", async ctx =>
             {
-                using var tasks = new WalletTasks(await Login(), this, TimeoutMilliseconds);
-                await DoWork("Retrieving wallet address...", async ctx => { await tasks.GetAddress(Id, New); });
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
+                var wallet = new chia.dotnet.Wallet(Id, await Login(rpcClient));
+
+                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                var address = await wallet.GetNextAddress(New, cts.Token);
+
+                MarkupLine($"[wheat1]{address}[/]");
             });
         }
     }

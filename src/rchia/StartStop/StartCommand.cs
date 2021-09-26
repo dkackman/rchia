@@ -1,8 +1,7 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
-
 using chia.dotnet;
-
 using rchia.Commands;
 
 namespace rchia.StartStop
@@ -19,16 +18,40 @@ namespace rchia.StartStop
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            if (ServiceGroup is null || !ServiceGroups.Groups.ContainsKey(ServiceGroup))
             {
-                using var tasks = await CreateTasksWithDaemon<StartStopTasks>(ServiceNames.Daemon);
+                throw new InvalidOperationException($"Unrecognized service group {ServiceGroup}. It must be one of\n  {string.Join('|', ServiceGroups.Groups.Keys)}.");
+            }
 
-                if (ServiceGroup is null || !ServiceGroups.Groups.ContainsKey(ServiceGroup))
+            return await DoWork2("Starting services...", async ctx =>
+            {
+                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this, ServiceNames.Daemon);
+
+                var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
+
+                foreach (var service in ServiceGroups.Groups[ServiceGroup])
                 {
-                    throw new InvalidOperationException($"Unrecognized service group {ServiceGroup}. It must be one of\n  {string.Join('|', ServiceGroups.Groups.Keys)}.");
-                }
+                    using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                    var isRunnnig = await proxy.IsServiceRunning(service, cts.Token);
 
-                await DoWork("Starting services...", async ctx => { await tasks.Start(ServiceGroup, Restart); });
+                    if (isRunnnig && !Restart)
+                    {
+                        MarkupLine($"[wheat1]{service}[/] is already running. Use -r to restart it...");
+                    }
+                    else
+                    {
+                        if (isRunnnig && Restart)
+                        {
+                            MarkupLine($"Stopping [wheat1]{service}[/]...");
+                            using var cts2 = new CancellationTokenSource(TimeoutMilliseconds);
+                            await proxy.StopService(service, cts2.Token);
+                        }
+
+                        MarkupLine($"Starting [wheat1]{service}[/]...");
+                        using var cts3 = new CancellationTokenSource(TimeoutMilliseconds);
+                        await proxy.StartService(service, cts3.Token);
+                    }
+                }
             });
         }
     }

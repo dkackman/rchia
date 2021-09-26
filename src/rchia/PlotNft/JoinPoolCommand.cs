@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using chia.dotnet;
 using rchia.Commands;
 
 namespace rchia.PlotNft
@@ -18,14 +20,21 @@ namespace rchia.PlotNft
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            return await DoWork2("Joining pool...", async ctx =>
             {
-                using var tasks = new PlotNftTasks(await Login(), this, TimeoutMilliseconds);
-
-                var msg = await tasks.ValidatePoolingOptions(InitialPoolingState.pool, PoolUrl);
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
+                var proxy = await Login(rpcClient);
+                var msg = await proxy.ValidatePoolingOptions(true, PoolUrl, TimeoutMilliseconds);
                 if (Confirm(msg, Force))
                 {
-                    await DoWork("Joining pool...", async ctx => await tasks.Join(Id, PoolUrl));
+                    using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                    var wallet = new PoolWallet(Id, proxy);
+                    await wallet.Validate(cts.Token);
+
+                    var poolInfo = await PoolUrl.GetPoolInfo(TimeoutMilliseconds);
+                    var tx = await wallet.JoinPool(poolInfo.TargetPuzzleHash ?? string.Empty, PoolUrl.ToString(), poolInfo.RelativeLockHeight, cts.Token);
+
+                    PrintTransactionSentTo(tx);
                 }
             });
         }

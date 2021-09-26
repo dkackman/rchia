@@ -23,12 +23,13 @@ namespace rchia.Endpoints
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
-            {
-                var library = EndpointLibrary.OpenLibrary();
+            await Task.CompletedTask;
 
+            return Execute(() =>
+            {
                 if (!string.IsNullOrEmpty(Id))
                 {
+                    var library = EndpointLibrary.OpenLibrary();
                     if (library.Endpoints.ContainsKey(Id))
                     {
                         throw new InvalidOperationException($"An endpoint with an id of {Id} already exists.");
@@ -65,8 +66,6 @@ namespace rchia.Endpoints
 
                     MarkupLine($"Endpoint [wheat1]{endpoint.Id}[/] added");
                     WriteLine(endpoint.ToJson());
-
-                    await Task.CompletedTask;
                 }
             });
         }

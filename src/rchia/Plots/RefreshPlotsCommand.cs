@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 
@@ -9,11 +10,13 @@ namespace rchia.Plots
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            return await DoWork2("Refreshing plot list...", async ctx =>
             {
-                using var tasks = await CreateTasks<HarvesterPlotTasks, HarvesterProxy>(ServiceNames.Harvester);
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Harvester);
+                var proxy = new HarvesterProxy(rpcClient, ClientFactory.Factory.OriginService);
 
-                await DoWork("Refreshing plot list...", async ctx => { await tasks.Refresh(); });
+                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                await proxy.RefreshPlots(cts.Token);
             });
         }
     }

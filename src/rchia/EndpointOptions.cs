@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
 using chia.dotnet;
-
 using rchia.Commands;
 
 namespace rchia
@@ -40,7 +39,7 @@ namespace rchia
         // should realy be replaced with parameterless constructors and property initialization
         internal protected async Task<TTask> CreateTasksWithDaemon<TTask>(string serviceName) where TTask : ConsoleTask<DaemonProxy>
         {
-            var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, serviceName, TimeoutMilliseconds);
+            var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, serviceName);
             var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
 
             return Create<TTask>(proxy, this, TimeoutMilliseconds);
@@ -49,7 +48,7 @@ namespace rchia
         internal protected async Task<TTask> CreateTasks<TTask, TService>(string serviceName) where TTask : ConsoleTask<TService>
                                                                                               where TService : ServiceProxy
         {
-            var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, serviceName, TimeoutMilliseconds);
+            var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, serviceName);
             var proxy = Create<TService>(rpcClient, ClientFactory.Factory.OriginService);
 
             return Create<TTask>(proxy, this, TimeoutMilliseconds);

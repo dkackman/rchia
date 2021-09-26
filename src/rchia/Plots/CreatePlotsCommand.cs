@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 
@@ -54,13 +55,16 @@ namespace rchia.Plots
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            return await DoWork2("Adding request to the plot queue...", async ctx =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Plotter, TimeoutMilliseconds);
+                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this, ServiceNames.Plotter);
                 var proxy = new PlotterProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new PlotterTasks(proxy, this, TimeoutMilliseconds);
 
-                await DoWork("Adding request to the plot queue...", async ctx => { await tasks.CreatePlots(CreateConfig()); });
+                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                _ = await proxy.RegisterPlotter(cts.Token);
+                await proxy.StartPlotting(CreateConfig(), cts.Token);
+
+                Helpful("Plot queued. Run '[grey]rchia plots queue -v[/]' or '[grey]rchia plots log[/]' to check status", true);
             });
         }
 

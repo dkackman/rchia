@@ -1,7 +1,6 @@
-﻿using System.Threading.Tasks;
-
+﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using chia.dotnet;
-
 using rchia.Commands;
 
 namespace rchia.Status
@@ -11,11 +10,16 @@ namespace rchia.Status
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            return await DoWork2("Pinging the daemon...", async ctx =>
             {
-                using var tasks = await CreateTasksWithDaemon<StatusTasks>(ServiceNames.Daemon);
+                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this, ServiceNames.Daemon);
 
-                await DoWork("Pinging the daemon...", async ctx => { await tasks.Ping(); });
+                var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
+                var stopWatch = Stopwatch.StartNew();
+                await proxy.Ping();
+                stopWatch.Stop();
+
+                MarkupLine($"Ping response received after [wheat1]{stopWatch.ElapsedMilliseconds / 1000.0:N2}[/] seconds");
             });
         }
     }

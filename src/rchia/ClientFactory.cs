@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
+using Spectre.Console;
 
 namespace rchia
 {
@@ -28,11 +29,19 @@ namespace rchia
             using var rpcClient = await CreateRpcClient(endpoint, timeoutMilliseconds);
         }
 
-        public async Task<IRpcClient> CreateRpcClient(EndpointOptions options, string serviceName, int timeoutMilliseconds)
+        public async Task<IRpcClient> CreateRpcClient(EndpointOptions options, string serviceName)
         {
             var endpoint = GetEndpointInfo(options, serviceName);
 
-            return await options.Status($"Connecting to endpoint {endpoint.Uri}...", async ctx => await CreateRpcClient(endpoint, timeoutMilliseconds));
+            return await options.Status($"Connecting to endpoint {endpoint.Uri}...", async ctx => await CreateRpcClient(endpoint, options.TimeoutMilliseconds));
+        }
+
+        public async Task<IRpcClient> CreateRpcClient(StatusContext ctx, EndpointOptions options, string serviceName)
+        {
+            var endpoint = GetEndpointInfo(options, serviceName);
+            using var status = new StatusMessage(ctx, $"Connecting to endpoint {endpoint.Uri}...");
+
+            return await CreateRpcClient(endpoint, options.TimeoutMilliseconds);
         }
 
         private async Task<IRpcClient> CreateRpcClient(EndpointInfo endpoint, int timeoutMilliseconds)
@@ -43,8 +52,20 @@ namespace rchia
                 ? new HttpRpcClient(endpoint)
                 : throw new InvalidOperationException($"Unrecognized endpoint Uri scheme {endpoint.Uri.Scheme}");
         }
+        public async Task<WebSocketRpcClient> CreateWebSocketClient(StatusContext ctx, EndpointOptions options, string serviceName)
+        {
+            var endpoint = GetEndpointInfo(options, serviceName);
 
-        public async Task<WebSocketRpcClient> CreateWebSocketClient(EndpointOptions options, string serviceName, int timeoutMilliseconds)
+            if (endpoint.Uri.Scheme != "wss")
+            {
+                throw new InvalidOperationException($"Expecting a daemon endpoint using the websocket protocol but found {endpoint.Uri}");
+            }
+            using var status = new StatusMessage(ctx, $"Connecting to websocket {endpoint.Uri}...");
+
+            return await CreateWebSocketClient(endpoint, options.TimeoutMilliseconds);
+        }
+
+        public async Task<WebSocketRpcClient> CreateWebSocketClient(EndpointOptions options, string serviceName)
         {
             var endpoint = GetEndpointInfo(options, serviceName);
 
@@ -53,7 +74,7 @@ namespace rchia
                 throw new InvalidOperationException($"Expecting a daemon endpoint using the websocket protocol but found {endpoint.Uri}");
             }
 
-            return await options.Status($"Connecting to websocket {endpoint.Uri}...", async ctx => await CreateWebSocketClient(endpoint, timeoutMilliseconds));
+            return await options.Status($"Connecting to websocket {endpoint.Uri}...", async ctx => await CreateWebSocketClient(endpoint, options.TimeoutMilliseconds));
         }
 
         private async Task<WebSocketRpcClient> CreateWebSocketClient(EndpointInfo endpoint, int timeoutMilliseconds)

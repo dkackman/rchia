@@ -1,9 +1,17 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using chia.dotnet;
 using rchia.Commands;
 
 namespace rchia.PlotNft
 {
+    public enum InitialPoolingState
+    {
+        pool,
+        local
+    }
+
     internal sealed class CreatePlotNftCommand : WalletCommand
     {
         [Option("u", "pool-url", Description = "HTTPS host:port of the pool to join. Omit for self pooling")]
@@ -18,14 +26,27 @@ namespace rchia.PlotNft
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            return await DoWork2("Creating pool NFT and wallet...", async ctx =>
             {
-                using var tasks = new PlotNftTasks(await Login(), this, TimeoutMilliseconds);
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
+                var proxy = await Login(rpcClient);
+                var msg = await proxy.ValidatePoolingOptions(State == InitialPoolingState.pool, PoolUrl, TimeoutMilliseconds);
 
-                var msg = await tasks.ValidatePoolingOptions(State, PoolUrl);
                 if (Confirm(msg, Force))
                 {
-                    await DoWork("Creating pool NFT and wallet...", async ctx => await tasks.Create(State, PoolUrl));
+                    var poolInfo = PoolUrl is not null ? await PoolUrl.GetPoolInfo(TimeoutMilliseconds) : new PoolInfo();
+                    var poolState = new PoolState()
+                    {
+                        PoolUrl = PoolUrl?.ToString(),
+                        State = State == InitialPoolingState.pool ? PoolSingletonState.FARMING_TO_POOL : PoolSingletonState.SELF_POOLING,
+                        TargetPuzzleHash = poolInfo.TargetPuzzleHash!,
+                        RelativeLockHeight = poolInfo.RelativeLockHeight
+                    };
+
+                    using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                    var (tx, launcherId, p2SingletonHash) = await proxy.CreatePoolWallet(poolState, null, null, cts.Token);
+                    NameValue("Launcher Id", launcherId);
+                    PrintTransactionSentTo(tx);
                 }
             });
         }

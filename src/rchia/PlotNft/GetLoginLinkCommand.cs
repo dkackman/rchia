@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
@@ -18,13 +19,22 @@ namespace rchia.PlotNft
                 throw new InvalidOperationException("A valid launcher id is required. To get the launcher id, use 'plotnft show'.");
             }
 
-            return await Execute(async () =>
+            return await DoWork2("Getting pool login link...", async ctx =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, ServiceNames.Wallet, TimeoutMilliseconds);
-                var wallet = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
-                var tasks = new PlotNftTasks(wallet, this, TimeoutMilliseconds);
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Farmer);
+                var farmer = new FarmerProxy(rpcClient, ClientFactory.Factory.OriginService);
 
-                await DoWork("Getting pool login link...", async ctx => await tasks.GetLoginLink(LauncherId));
+                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                var link = await farmer.GetPoolLoginLink(LauncherId, cts.Token);
+
+                if (string.IsNullOrEmpty(link))
+                {
+                    Warning("Was not able to get login link.");
+                }
+                else
+                {
+                    MarkupLine($"[link={link}]{link}[/]");
+                }
             });
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 
@@ -12,13 +13,17 @@ namespace rchia.Keys
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            return await DoWork2("Deleting all keys....", async ctx =>
             {
-                using var tasks = await CreateTasks<KeysTasks, WalletProxy>(ServiceNames.Wallet);
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
 
-                if (Confirm($"Deleting all of your keys [wheat1]CANNOT[/] be undone.\nAre you sure you want to delete all keys from [red]{tasks.Service.RpcClient.Endpoint.Uri}[/]?", Force))
+                if (Confirm($"Deleting all of your keys [wheat1]CANNOT[/] be undone.\nAre you sure you want to delete all keys from [red]{rpcClient.Endpoint.Uri}[/]?", Force))
                 {
-                    await DoWork("Deleting all keys...", async ctx => { await tasks.DeleteAll(); });
+                    var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
+                    using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                    await proxy.DeleteAllKeys(cts.Token);
+
+                    MarkupLine("Deleted all keys");
                 }
             });
         }

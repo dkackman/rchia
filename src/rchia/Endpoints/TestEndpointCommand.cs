@@ -16,7 +16,7 @@ namespace rchia.Endpoints
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            return await DoWork2("Testing connection...", async ctx =>
             {
                 var library = EndpointLibrary.OpenLibrary();
 
@@ -26,7 +26,7 @@ namespace rchia.Endpoints
                 }
 
                 var endpoint = library.Endpoints[Id];
-                await ClientFactory.Factory.TestConnection(endpoint.EndpointInfo, (int)(Timeout * 1000));
+                await ClientFactory.Factory.TestConnection(endpoint.EndpointInfo, Timeout * 1000);
 
                 MarkupLine($"Successfully connected to [wheat1]{Id}[/]");
             });

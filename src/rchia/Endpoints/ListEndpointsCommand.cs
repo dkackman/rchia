@@ -9,7 +9,9 @@ namespace rchia.Endpoints
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            await Task.CompletedTask;
+
+            return Execute(() =>
             {
                 var library = EndpointLibrary.OpenLibrary();
 
@@ -20,7 +22,6 @@ namespace rchia.Endpoints
                 }
 
                 MarkupLine($"[wheat1]{library.Endpoints.Count}[/] saved endpoint{(library.Endpoints.Count == 1 ? string.Empty : "s")}");
-                await Task.CompletedTask;
             });
         }
     }

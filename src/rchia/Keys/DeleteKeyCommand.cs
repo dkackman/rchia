@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
-
+using chia.dotnet;
 using rchia.Commands;
 
 namespace rchia.Keys
@@ -13,18 +14,22 @@ namespace rchia.Keys
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            return await DoWork2("Deleting key...", async ctx =>
             {
                 if (Fingerprint is null || Fingerprint == 0)
                 {
                     throw new InvalidOperationException($"{Fingerprint} is not a valid wallet fingerprint");
                 }
 
-                using var tasks = new KeysTasks(await Login(), this, TimeoutMilliseconds);
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Farmer);
 
-                if (Confirm($"Deleting a key CANNOT be undone.\nAre you sure you want to delete key {Fingerprint} from [red]{tasks.Service.RpcClient.Endpoint.Uri}[/]?", Force))
+                if (Confirm($"Deleting a key CANNOT be undone.\nAre you sure you want to delete key {Fingerprint} from [red]{rpcClient.Endpoint.Uri}[/]?", Force))
                 {
-                    await DoWork("Deleting key...", async ctx => { await tasks.Delete(Fingerprint.Value); });
+                    var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
+                    using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                    await proxy.DeleteKey(Fingerprint.Value, cts.Token);
+
+                    MarkupLine($"Deleted the key with fingerprint [wheat1]{Fingerprint}[/]");
                 }
             });
         }

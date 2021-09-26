@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using chia.dotnet;
 using rchia.Commands;
 
 namespace rchia.Wallet
@@ -11,10 +13,16 @@ namespace rchia.Wallet
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            return await DoWork2("Retrieving transaction...", async ctx =>
             {
-                using var tasks = new WalletTasks(await Login(), this, TimeoutMilliseconds);
-                await DoWork("Retrieving transaction...", async ctx => { await tasks.GetTransaction(TxId); });
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
+                var proxy = await Login(rpcClient);
+
+                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                var tx = await proxy.GetTransaction(TxId, cts.Token);
+                var (NetworkName, NetworkPrefix) = await proxy.GetNetworkInfo(cts.Token);
+
+                PrintTransaction(tx, NetworkPrefix, CreateTransactionTable());
             });
         }
     }

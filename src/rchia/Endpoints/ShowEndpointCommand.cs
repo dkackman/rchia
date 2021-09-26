@@ -13,7 +13,9 @@ namespace rchia.Endpoints
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await Execute(async () =>
+            await Task.CompletedTask;
+
+            return Execute(() =>
             {
                 var library = EndpointLibrary.OpenLibrary();
 
@@ -24,8 +26,6 @@ namespace rchia.Endpoints
 
                 var endpoint = library.Endpoints[Id];
                 WriteLine(endpoint.ToJson());
-
-                await Task.CompletedTask;
             });
         }
     }
