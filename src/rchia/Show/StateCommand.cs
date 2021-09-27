@@ -69,6 +69,8 @@ namespace rchia.Show
                     }
 
                     var table = new Table();
+                    table.Title = new TableTitle("Recent Blocks");
+
                     table.AddColumn("[orange3]Height[/]");
                     table.AddColumn("[orange3]Hash[/]");
 

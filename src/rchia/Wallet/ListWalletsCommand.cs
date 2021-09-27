@@ -27,13 +27,13 @@ namespace rchia.Wallet
 
                 foreach (var fingerprint in keys)
                 {
-                    NameValue("Fingerprint", fingerprint);
-
                     using var cts1 = new CancellationTokenSource(TimeoutMilliseconds);
                     _ = proxy.LogIn(fingerprint, false, cts1.Token);
                     var wallets = await proxy.GetWallets(cts1.Token);
 
                     var table = new Table();
+                    table.Title = new TableTitle($"Fingerprint {fingerprint}");
+
                     table.AddColumn("[orange3]Id[/]");
                     table.AddColumn("[orange3]Name[/]");
                     table.AddColumn("[orange3]Type[/]");

@@ -19,8 +19,9 @@ namespace rchia.Show
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 var connections = await proxy.GetConnections(cts.Token);
 
-                MarkupLine("[wheat1]Connections[/]");
                 var table = new Table();
+                table.Title = new TableTitle("Connections");
+
                 table.AddColumn("[orange3]Type[/]");
                 table.AddColumn("[orange3]IP[/]");
                 table.AddColumn("[orange3]Ports[/]");

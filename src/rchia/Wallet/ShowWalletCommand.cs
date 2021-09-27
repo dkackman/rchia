@@ -29,11 +29,12 @@ namespace rchia.Wallet
 
                 if (wallets.Any())
                 {
-                    MarkupLine($"[orange3]Balances ({NetworkPrefix})[/]");
                     var table = new Table();
+                    table.Title = new TableTitle($"[orange3]Balances ({NetworkPrefix})[/]");
+
                     table.AddColumn("[orange3]Id[/]");
-                    table.AddColumn("[orange3]Type[/]");
                     table.AddColumn("[orange3]Name[/]");
+                    table.AddColumn("[orange3]Type[/]");
                     table.AddColumn("[orange3]Total[/]");
                     table.AddColumn("[orange3]Pending Total[/]");
                     table.AddColumn("[orange3]Spendable[/]");

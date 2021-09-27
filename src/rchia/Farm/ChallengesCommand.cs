@@ -27,6 +27,7 @@ namespace rchia.Farm
                 var count = Limit == 0 ? list.Count : Limit;
 
                 var table = new Table();
+                table.Title = new TableTitle("Challenges");
                 table.AddColumn("[orange3]Index[/]");
                 table.AddColumn("[orange3]Hash[/]");
 

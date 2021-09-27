@@ -41,7 +41,7 @@ namespace rchia.Wallet
                     }
                     var c = transactions.Count();
                     AnsiConsole.Render(table);
-                    MarkupLine($"[wheat1]{c}[/] transaction{(c == 1 ? string.Empty : "s")}");
+                    MarkupLine($"Showing [wheat1]{c}[/] transaction{(c == 1 ? string.Empty : "s")}");
                 }
                 else
                 {
