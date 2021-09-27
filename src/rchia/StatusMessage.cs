@@ -6,7 +6,7 @@ namespace rchia
     internal class StatusMessage : IDisposable
     {
         private readonly StatusContext _ctx;
-        private readonly string _originalMessage = string.Empty;
+        private readonly string _originalMessage;
 
         public StatusMessage(StatusContext ctx, string msg)
         {

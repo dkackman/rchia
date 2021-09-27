@@ -13,7 +13,7 @@ namespace rchia
             Factory = new(originService);
         }
 
-        internal static ClientFactory Factory { get; private set; } = new("not_Set");
+        internal static ClientFactory Factory { get; private set; } = new("not_set");
 
         private ClientFactory(string originService)
         {

@@ -84,10 +84,8 @@ namespace rchia.Commands
             try
             {
                 await AnsiConsole.Status().StartAsync(msg, async ctx => await work(ctx));
-                if (Verbose)
-                {
-                    Helpful("Done.");
-                }
+
+                Helpful("Done.");
 
                 return 0;
             }
@@ -104,10 +102,8 @@ namespace rchia.Commands
             try
             {
                 run();
-                if (Verbose)
-                {
-                    Helpful("Done.");
-                }
+
+                Helpful("Done.");
 
                 return 0;
             }
