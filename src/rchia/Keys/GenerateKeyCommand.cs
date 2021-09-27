@@ -10,7 +10,7 @@ namespace rchia.Keys
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await DoWork2("Generating a new key...", async ctx =>
+            return await DoWorkAsync("Generating a new key...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
 

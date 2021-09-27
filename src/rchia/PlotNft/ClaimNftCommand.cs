@@ -16,7 +16,7 @@ namespace rchia.PlotNft
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await DoWork2("Claiming pool rewards...", async ctx =>
+            return await DoWorkAsync("Claiming pool rewards...", async ctx =>
             {
                 if (Confirm($"Are you sure you want to claim rewards for wallet ID {Id}?", Force))
                 {

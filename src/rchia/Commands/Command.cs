@@ -85,7 +85,8 @@ namespace rchia.Commands
         }
 
         public abstract Task<int> Run();
-        protected async Task<int> DoWork2(string msg, Func<StatusContext, Task> work)
+
+        protected async Task<int> DoWorkAsync(string msg, Func<StatusContext, Task> work)
         {
             try
             {
@@ -105,36 +106,15 @@ namespace rchia.Commands
             }
         }
 
-        protected async Task DoWork(string msg, Func<StatusContext, Task> work)
-        {
-            await AnsiConsole.Status().StartAsync(msg, async ctx => await work(ctx));
-            if (Verbose)
-            {
-                Helpful("Done.");
-            }
-        }
-
-        protected int Execute(Action run)
+        protected int DoWork(Action run)
         {
             try
             {
                 run();
-
-                return 0;
-            }
-            catch (Exception e)
-            {
-                Message(e);
-
-                return -1;
-            }
-        }
-
-        protected async Task<int> Execute(Func<Task> run)
-        {
-            try
-            {
-                await run();
+                if (Verbose)
+                {
+                    Helpful("Done.");
+                }
 
                 return 0;
             }

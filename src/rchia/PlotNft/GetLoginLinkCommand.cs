@@ -19,7 +19,7 @@ namespace rchia.PlotNft
                 throw new InvalidOperationException("A valid launcher id is required. To get the launcher id, use 'plotnft show'.");
             }
 
-            return await DoWork2("Getting pool login link...", async ctx =>
+            return await DoWorkAsync("Getting pool login link...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Farmer);
                 var farmer = new FarmerProxy(rpcClient, ClientFactory.Factory.OriginService);

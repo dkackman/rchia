@@ -14,7 +14,7 @@ namespace rchia.Keys
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await DoWork2("Deleting key...", async ctx =>
+            return await DoWorkAsync("Deleting key...", async ctx =>
             {
                 if (Fingerprint is null || Fingerprint == 0)
                 {

@@ -12,7 +12,7 @@ namespace rchia.Wallet
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await DoWork2("Retrieving wallet info...", async ctx =>
+            return await DoWorkAsync("Retrieving wallet info...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
                 var proxy = await Login(rpcClient);

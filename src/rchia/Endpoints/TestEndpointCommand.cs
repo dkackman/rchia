@@ -16,7 +16,7 @@ namespace rchia.Endpoints
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await DoWork2("Testing connection...", async ctx =>
+            return await DoWorkAsync("Testing connection...", async ctx =>
             {
                 var library = EndpointLibrary.OpenLibrary();
 

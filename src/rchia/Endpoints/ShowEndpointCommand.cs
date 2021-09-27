@@ -15,7 +15,7 @@ namespace rchia.Endpoints
         {
             await Task.CompletedTask;
 
-            return Execute(() =>
+            return DoWork(() =>
             {
                 var library = EndpointLibrary.OpenLibrary();
 

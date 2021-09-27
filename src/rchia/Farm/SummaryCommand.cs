@@ -12,7 +12,7 @@ namespace rchia.Farm
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await DoWork2("Retrieving farm info...", async ctx =>
+            return await DoWorkAsync("Retrieving farm info...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this, ServiceNames.Farmer);
                 var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);

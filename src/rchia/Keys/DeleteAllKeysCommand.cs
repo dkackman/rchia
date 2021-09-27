@@ -13,7 +13,7 @@ namespace rchia.Keys
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await DoWork2("Deleting all keys....", async ctx =>
+            return await DoWorkAsync("Deleting all keys....", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
 

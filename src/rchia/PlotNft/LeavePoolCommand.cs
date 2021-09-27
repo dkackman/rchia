@@ -16,7 +16,7 @@ namespace rchia.PlotNft
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await DoWork2("Leaving pool...", async ctx =>
+            return await DoWorkAsync("Leaving pool...", async ctx =>
             {
                 if (Confirm($"Are you sure you want to start self-farming with Plot NFT on wallet id {Id}?", Force))
                 {

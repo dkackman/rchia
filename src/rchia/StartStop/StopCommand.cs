@@ -34,7 +34,7 @@ namespace rchia.StartStop
                 }
             }
 
-            return await DoWork2("Stopping services...", async ctx =>
+            return await DoWorkAsync("Stopping services...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this, ServiceNames.Daemon);
 

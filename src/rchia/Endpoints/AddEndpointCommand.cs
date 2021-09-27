@@ -25,7 +25,7 @@ namespace rchia.Endpoints
         {
             await Task.CompletedTask;
 
-            return Execute(() =>
+            return DoWork(() =>
             {
                 if (!string.IsNullOrEmpty(Id))
                 {

@@ -13,7 +13,7 @@ namespace rchia.Plots
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await DoWork2("Adding plot directory...", async ctx =>
+            return await DoWorkAsync("Adding plot directory...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Harvester);
                 var proxy = new HarvesterProxy(rpcClient, ClientFactory.Factory.OriginService);

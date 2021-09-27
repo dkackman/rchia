@@ -20,7 +20,7 @@ namespace rchia.Show
                 throw new InvalidOperationException("Age must be 1 or more");
             }
 
-            return await DoWork2("Pruning connections...", async ctx =>
+            return await DoWorkAsync("Pruning connections...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.FullNode);
                 var proxy = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);

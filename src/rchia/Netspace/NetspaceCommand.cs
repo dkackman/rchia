@@ -20,7 +20,7 @@ namespace rchia.Netspace
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await DoWork2("Retrieving network info...", async ctx =>
+            return await DoWorkAsync("Retrieving network info...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.FullNode);
 

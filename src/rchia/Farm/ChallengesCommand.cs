@@ -15,7 +15,7 @@ namespace rchia.Farm
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await DoWork2("Retrieving challenges...", async ctx =>
+            return await DoWorkAsync("Retrieving challenges...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Farmer);
                 var farmer = new FarmerProxy(rpcClient, ClientFactory.Factory.OriginService);

@@ -20,7 +20,7 @@ namespace rchia.PlotNft
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await DoWork2("Joining pool...", async ctx =>
+            return await DoWorkAsync("Joining pool...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
                 var proxy = await Login(rpcClient);

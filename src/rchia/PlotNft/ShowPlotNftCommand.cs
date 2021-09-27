@@ -16,7 +16,7 @@ namespace rchia.PlotNft
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await DoWork2("Retrieving pool info...", async ctx =>
+            return await DoWorkAsync("Retrieving pool info...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this, ServiceNames.Daemon);
                 var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);

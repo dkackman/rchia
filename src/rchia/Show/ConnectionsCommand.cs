@@ -11,7 +11,7 @@ namespace rchia.Show
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await DoWork2("Retrieving connections...", async ctx =>
+            return await DoWorkAsync("Retrieving connections...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.FullNode);
                 var proxy = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);

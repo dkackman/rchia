@@ -20,7 +20,7 @@ namespace rchia.Keys
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await DoWork2("Adding key...", async ctx =>
+            return await DoWorkAsync("Adding key...", async ctx =>
             {
                 var mnemonic = Mnemonic;
 

@@ -13,7 +13,7 @@ namespace rchia.PlotNft
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await DoWork2("Retrieving nft plot info...", async ctx =>
+            return await DoWorkAsync("Retrieving nft plot info...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
                 var wallet = new PoolWallet(Id, await Login(rpcClient));

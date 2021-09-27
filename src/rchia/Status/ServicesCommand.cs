@@ -12,7 +12,7 @@ namespace rchia.Status
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await DoWork2("Retrieving service info...", async ctx =>
+            return await DoWorkAsync("Retrieving service info...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this, ServiceNames.Daemon);
 

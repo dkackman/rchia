@@ -26,7 +26,7 @@ namespace rchia.Wallet
         [CommandTarget]
         public async override Task<int> Run()
         {
-            return await DoWork2("Sending Transaction...", async ctx =>
+            return await DoWorkAsync("Sending Transaction...", async ctx =>
             {
                 if (string.IsNullOrEmpty(Address))
                 {
