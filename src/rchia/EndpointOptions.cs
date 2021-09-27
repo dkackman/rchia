@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using chia.dotnet;
+﻿using System.IO;
 using rchia.Commands;
 
 namespace rchia
@@ -34,33 +30,5 @@ namespace rchia
         public int Timeout { get; init; } = 30;
 
         internal int TimeoutMilliseconds => Timeout * 1000;
-
-        // these next two methods use reflection to find the right constructor. errors won't be caught a compile time
-        // should realy be replaced with parameterless constructors and property initialization
-        internal protected async Task<TTask> CreateTasksWithDaemon<TTask>(string serviceName) where TTask : ConsoleTask<DaemonProxy>
-        {
-            var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(this, serviceName);
-            var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
-
-            return Create<TTask>(proxy, this, TimeoutMilliseconds);
-        }
-
-        internal protected async Task<TTask> CreateTasks<TTask, TService>(string serviceName) where TTask : ConsoleTask<TService>
-                                                                                              where TService : ServiceProxy
-        {
-            var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, serviceName);
-            var proxy = Create<TService>(rpcClient, ClientFactory.Factory.OriginService);
-
-            return Create<TTask>(proxy, this, TimeoutMilliseconds);
-        }
-
-        private static T Create<T>(params object[] args)
-        {
-            var constructor = typeof(T).GetConstructor(args.Select(arg => arg.GetType()).ToArray());
-
-            return constructor is null || constructor.Invoke(args) is not T retval
-                ? throw new InvalidOperationException($"Cannot create a {typeof(T).Name}")
-                : retval;
-        }
     }
 }

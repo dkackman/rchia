@@ -51,12 +51,6 @@ namespace rchia
             table.AddRow(name, status, amount, to, at);
         }
 
-        protected async Task<WalletProxy> Login()
-        {
-            var rpcClient = await ClientFactory.Factory.CreateRpcClient(this, ServiceNames.Wallet);
-            return await Login(rpcClient);
-        }
-
         protected async Task<WalletProxy> Login(IRpcClient rpcClient)
         {
             var walletProxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);

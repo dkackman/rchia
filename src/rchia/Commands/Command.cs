@@ -64,11 +64,6 @@ namespace rchia.Commands
             }
         }
 
-        public async Task<T> Status<T>(string msg, Func<StatusContext, Task<T>> func)
-        {
-            return await AnsiConsole.Status().StartAsync(msg, func);
-        }
-
         public bool Confirm(string warning, bool force)
         {
             if (!force)
