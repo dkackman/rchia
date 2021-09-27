@@ -18,7 +18,7 @@ namespace rchia.Keys
         public FileInfo? Filename { get; init; }
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Adding key...", async ctx =>
             {

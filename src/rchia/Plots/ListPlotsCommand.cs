@@ -10,7 +10,7 @@ namespace rchia.Plots
     internal sealed class ListPlotsCommand : EndpointOptions
     {
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Retrieving plot list...", async ctx =>
             {

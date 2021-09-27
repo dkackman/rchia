@@ -14,7 +14,7 @@ namespace rchia.Endpoints
         public int Timeout { get; init; } = 30;
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Testing connection...", async ctx =>
             {

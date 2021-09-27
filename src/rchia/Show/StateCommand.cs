@@ -10,7 +10,7 @@ namespace rchia.Show
     internal sealed class StateCommand : EndpointOptions
     {
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Retrieving node info...", async ctx =>
             {

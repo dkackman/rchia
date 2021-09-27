@@ -13,7 +13,7 @@ namespace rchia.Plots
         public string? Id { get; init; }
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Retrieving plot log...", async ctx =>
             {

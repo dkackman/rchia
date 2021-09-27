@@ -12,7 +12,7 @@ namespace rchia.PlotNft
         public string LauncherId { get; init; } = string.Empty;
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             if (string.IsNullOrEmpty(LauncherId))
             {

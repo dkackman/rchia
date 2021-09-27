@@ -19,7 +19,7 @@ namespace rchia.Wallet
         public uint? Count { get; init; }
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Retrieving transactions...", async ctx =>
             {

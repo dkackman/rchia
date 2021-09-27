@@ -8,7 +8,7 @@ namespace rchia.Status
     internal sealed class PingCommand : EndpointOptions
     {
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Pinging the daemon...", async ctx =>
             {

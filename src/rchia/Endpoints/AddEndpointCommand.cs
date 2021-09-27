@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 
@@ -21,10 +20,8 @@ namespace rchia.Endpoints
         public FileInfo? KeyPath { get; init; }
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public int Run()
         {
-            await Task.CompletedTask;
-
             return DoWork(() =>
             {
                 if (!string.IsNullOrEmpty(Id))

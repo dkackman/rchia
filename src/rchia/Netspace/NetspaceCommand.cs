@@ -18,7 +18,7 @@ namespace rchia.Netspace
         public string? Start { get; init; }
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Retrieving network info...", async ctx =>
             {

@@ -19,7 +19,7 @@ namespace rchia.StartStop
         public bool Force { get; init; }
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             if (ServiceGroup is null || !ServiceGroups.Groups.ContainsKey(ServiceGroup))
             {

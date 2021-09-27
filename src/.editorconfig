@@ -120,3 +120,9 @@ csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
 dotnet_style_qualification_for_method = false:suggestion
 #prefer properties not to be prefaced with this. or Me. in Visual Basic
 dotnet_style_qualification_for_property = false:suggestion
+dotnet_diagnostic.CA1507.severity=warning
+dotnet_diagnostic.CA1812.severity=suggestion
+
+[*.{cs,vb}]
+dotnet_diagnostic.CA1708.severity=warning
+dotnet_diagnostic.CA1712.severity=warning

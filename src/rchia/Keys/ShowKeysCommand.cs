@@ -13,7 +13,7 @@ namespace rchia.Keys
         public bool ShowMnemonicSeed { get; init; }
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Retrieving kets...", async ctx =>
             {

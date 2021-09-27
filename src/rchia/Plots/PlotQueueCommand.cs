@@ -9,7 +9,7 @@ namespace rchia.Plots
     internal sealed class PlotQueueCommand : EndpointOptions
     {
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Removing plot queue...", async ctx =>
             {

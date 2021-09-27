@@ -35,7 +35,7 @@ namespace rchia.Show
         }
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Retrieving block header connection...", async ctx =>
             {

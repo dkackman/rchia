@@ -10,7 +10,7 @@ namespace rchia.Status
     internal sealed class ServicesCommand : EndpointOptions
     {
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Retrieving service info...", async ctx =>
             {

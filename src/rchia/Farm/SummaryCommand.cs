@@ -10,7 +10,7 @@ namespace rchia.Farm
     internal sealed class SummaryCommand : EndpointOptions
     {
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Retrieving farm info...", async ctx =>
             {

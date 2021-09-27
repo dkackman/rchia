@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 
 using rchia.Commands;
 
@@ -11,10 +10,8 @@ namespace rchia.Endpoints
         public string Id { get; init; } = string.Empty;
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public int Run()
         {
-            await Task.CompletedTask;
-
             return DoWork(() =>
             {
                 var library = EndpointLibrary.OpenLibrary();

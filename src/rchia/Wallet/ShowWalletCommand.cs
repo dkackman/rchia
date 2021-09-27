@@ -10,7 +10,7 @@ namespace rchia.Wallet
     internal sealed class ShowWalletCommand : WalletCommand
     {
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Retrieving wallet info...", async ctx =>
             {

@@ -9,7 +9,7 @@ namespace rchia.Show
     internal sealed class ConnectionsCommand : EndpointOptions
     {
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Retrieving connections...", async ctx =>
             {

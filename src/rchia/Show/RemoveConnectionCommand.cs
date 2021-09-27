@@ -11,7 +11,7 @@ namespace rchia.Show
         public string NodeID { get; init; } = string.Empty;
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Removing connection...", async ctx =>
             {

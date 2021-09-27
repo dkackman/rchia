@@ -8,7 +8,7 @@ namespace rchia.Show
     internal sealed class ExitNodeCommand : EndpointOptions
     {
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Shutting down the node...", async ctx =>
             {

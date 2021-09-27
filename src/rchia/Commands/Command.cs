@@ -79,8 +79,6 @@ namespace rchia.Commands
             return true;
         }
 
-        public abstract Task<int> Run();
-
         protected async Task<int> DoWorkAsync(string msg, Func<StatusContext, Task> work)
         {
             try

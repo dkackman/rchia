@@ -14,7 +14,7 @@ namespace rchia.PlotNft
         public uint Id { get; init; } = 1;
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Claiming pool rewards...", async ctx =>
             {

@@ -11,7 +11,7 @@ namespace rchia.Wallet
     internal sealed class ListWalletsCommand : EndpointOptions
     {
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Retrieving wallet list...", async ctx =>
             {

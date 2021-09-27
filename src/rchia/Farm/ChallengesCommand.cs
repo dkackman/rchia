@@ -13,7 +13,7 @@ namespace rchia.Farm
         public int Limit { get; init; } = 20;
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Retrieving challenges...", async ctx =>
             {

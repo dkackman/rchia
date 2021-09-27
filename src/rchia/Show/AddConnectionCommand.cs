@@ -12,7 +12,7 @@ namespace rchia.Show
         public string HostUri { get; init; } = string.Empty;
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Adding connection...", async ctx =>
             {

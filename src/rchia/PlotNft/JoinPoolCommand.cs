@@ -18,7 +18,7 @@ namespace rchia.PlotNft
         public bool Force { get; init; }
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Joining pool...", async ctx =>
             {

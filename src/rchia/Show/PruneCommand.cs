@@ -13,7 +13,7 @@ namespace rchia.Show
         public int Age { get; init; } = 12;
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             if (Age < 1)
             {

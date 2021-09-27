@@ -53,7 +53,7 @@ namespace rchia.Plots
         public bool ExcludeFinalDir { get; init; }
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Adding request to the plot queue...", async ctx =>
             {

@@ -8,7 +8,7 @@ namespace rchia.Keys
     internal sealed class GenerateKeyCommand : EndpointOptions
     {
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Generating a new key...", async ctx =>
             {

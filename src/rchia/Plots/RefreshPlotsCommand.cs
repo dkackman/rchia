@@ -8,7 +8,7 @@ namespace rchia.Plots
     internal sealed class RefreshPlotsCommand : EndpointOptions
     {
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Refreshing plot list...", async ctx =>
             {

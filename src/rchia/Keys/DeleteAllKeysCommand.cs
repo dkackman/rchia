@@ -11,7 +11,7 @@ namespace rchia.Keys
         public bool Force { get; init; }
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Deleting all keys....", async ctx =>
             {

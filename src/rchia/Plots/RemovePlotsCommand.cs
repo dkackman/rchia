@@ -11,7 +11,7 @@ namespace rchia.Plots
         public string FinalDir { get; init; } = ".";
 
         [CommandTarget]
-        public async override Task<int> Run()
+        public async Task<int> Run()
         {
             return await DoWorkAsync("Removing plot directory...", async ctx =>
             {
