@@ -24,11 +24,11 @@ namespace rchia.Commands
         {
             if (important)
             {
-                AnsiConsole.MarkupLine($"[yellow]{msg}[/]");
+                MarkupLine($"[yellow]{msg}[/]");
             }
             else if (Verbose)
             {
-                AnsiConsole.MarkupLine(msg);
+                MarkupLine(msg);
             }
 
             Debug.WriteLine(msg);
@@ -36,20 +36,20 @@ namespace rchia.Commands
 
         public void NameValue(string name, object? value)
         {
-            AnsiConsole.MarkupLine($"[wheat1]{name}:[/] {value}");
+            MarkupLine($"[wheat1]{name}:[/] {value}");
         }
 
         public void Helpful(string msg, bool important = false)
         {
             if (Verbose || important)
             {
-                AnsiConsole.MarkupLine($"[{(important ? "lime" : "grey")}]{msg}[/]");
+                MarkupLine($"[{(important ? "lime" : "grey")}]{msg}[/]");
             }
         }
 
         public void Warning(string msg)
         {
-            AnsiConsole.MarkupLine($"[yellow]{msg}[/]");
+            MarkupLine($"[yellow]{msg}[/]");
         }
 
         public void Message(Exception e)
@@ -60,7 +60,7 @@ namespace rchia.Commands
             }
             else
             {
-                AnsiConsole.MarkupLine($"[red]{e.Message}[/]");
+                MarkupLine($"[red]{e.Message}[/]");
             }
         }
 
@@ -73,6 +73,7 @@ namespace rchia.Commands
                     Message("Cancelled");
                     return false;
                 }
+
                 Message("Confirmed");
             }
 
@@ -91,8 +92,9 @@ namespace rchia.Commands
             }
             catch (TaskCanceledException)
             {
-                AnsiConsole.MarkupLine($"[red]The operation timed out[/]");
+                MarkupLine($"[red]The operation timed out[/]");
                 Helpful("Check that the chia service is running and available. You can extend the timeout period by using the '-to' option.");
+                
                 return -1;
             }
             catch (Exception e)
