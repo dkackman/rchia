@@ -92,7 +92,7 @@ namespace rchia.Commands
             catch (TaskCanceledException)
             {
                 AnsiConsole.MarkupLine($"[red]The operation timed out[/]");
-                Helpful("Check that the chia service is running and available. You an extend the timeout period by using the '-to' option.");
+                Helpful("Check that the chia service is running and available. You can extend the timeout period by using the '-to' option.");
                 return -1;
             }
             catch (Exception e)
