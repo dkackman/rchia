@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
@@ -62,9 +63,15 @@ namespace rchia.Plots
 
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 _ = await proxy.RegisterPlotter(cts.Token);
-                await proxy.StartPlotting(CreateConfig(), cts.Token);
+                var ids = await proxy.StartPlotting(CreateConfig(), cts.Token);
 
-                Helpful("Plot queued. Run '[grey]rchia plots queue -v[/]' or '[grey]rchia plots log[/]' to check status", true);
+                WriteLine($"Plot{(ids.Count() == 1 ? string.Empty : "s")} queued:");
+                foreach (var id in ids)
+                {
+                    MarkupLine($"[wheat1]{id}[/]");
+                }
+
+                Helpful("Run '[grey]rchia plots queue -v[/]' or '[grey]rchia plots log[/]' to check status", true);
             });
         }
 

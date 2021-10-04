@@ -11,7 +11,7 @@ namespace rchia.Plots
         [CommandTarget]
         public async Task<int> Run()
         {
-            return await DoWorkAsync("Removing plot queue...", async ctx =>
+            return await DoWorkAsync("Retrieving plot queue...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this, ServiceNames.Plotter);
                 var proxy = new PlotterProxy(rpcClient, ClientFactory.Factory.OriginService);
