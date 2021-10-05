@@ -7,7 +7,7 @@ Remote management CLI for [chia nodes](https://github.com/Chia-Network/chia-bloc
 
 ## Introduction
 
-A cross platform (Linux, Windows, MacOS) command line utility that mirrors the `chia` CLI, but uses RPC rather than running locally on the node. This allows management of any number of nodes from a central location, as long as [their RPC interface is exposed on the network](https://github.com/dkackman/rchia/wiki/Exposing-a-Node-on-the-Network).
+A cross platform (Linux ARM & x64, Windows, MacOS) command line utility that mirrors the `chia` CLI, but uses RPC rather than running locally on the node. This allows management of any number of nodes from a central location, as long as [their RPC interface is exposed on the network](https://github.com/dkackman/rchia/wiki/Exposing-a-Node-on-the-Network).
 
 ## Getting Started
 
@@ -107,25 +107,19 @@ show
   Requires a daemon or full_node endpoint.
 
 Usage:
-  rchia [options] show
+  rchia [options] show [command]
 
 Options:
-  -a, --add-connection <URI>                   Connect to another Full Node by ip:port
-  -b, --block-by-header-hash <HASH>            Look up a block by block header hash
-  -bh, --block-header-hash-by-height <HEIGHT>  Look up a block header hash by block height
-  -c, --connections                            List nodes connected to this Full Node
-  -e, --exit-node                              Shut down the running Full Node
-  -r, --remove-connection <NODE ID>            Remove a Node by the full or first 8 characters of NodeID
-  -s, --state                                  Show the current state of the blockchain
-  -uri, --endpoint-uri <PATH>                  The uri of the rpc endpoint, including the proper port and wss/https scheme prefix
-  -cp, --cert-path <PATH>                      The full path to the .crt file to use for authentication
-  -kp, --key-path <PATH>                       The full path to the .key file to use for authentication
-  -ccp, --chia-config-path <PATH>              The full path to a chia config yaml file for endpoints
-  -dcc, --default-chia-config                  Flag indicating to use the default chia config for endpoints
-  -de, --default-endpoint                      Flag indicating to use the default saved endpoint
-  -ep, --endpoint <ID>                         Use a saved endpoint
-  -v, --verbose                                Set output to verbose messages
-  -?, -h, --help                               Show help and usage information
+  -?, -h, --help  Show help and usage information
+
+Commands:
+  add <host>   Connect to another Full Node by ip:port
+  exit         Shut down the running Full Node
+  header       Look up a block header hash by block height or hash
+  state        Show the current state of the blockchain
+  connections  List nodes connected to this Full Node
+  prune        Prune stale connections
+  remove <ID>  Remove a Node by the full or first 8 characters of NodeID
 ```
 ___
 
