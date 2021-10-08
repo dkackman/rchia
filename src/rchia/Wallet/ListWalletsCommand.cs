@@ -31,8 +31,10 @@ namespace rchia.Wallet
                     _ = proxy.LogIn(fingerprint, false, cts1.Token);
                     var wallets = await proxy.GetWallets(cts1.Token);
 
-                    var table = new Table();
-                    table.Title = new TableTitle($"Fingerprint {fingerprint}");
+                    var table = new Table
+                    {
+                        Title = new TableTitle($"Fingerprint {fingerprint}")
+                    };
 
                     table.AddColumn("[orange3]Id[/]");
                     table.AddColumn("[orange3]Name[/]");
@@ -43,7 +45,7 @@ namespace rchia.Wallet
                         table.AddRow(wallet.Id.ToString(), wallet.Name, $"[green]{wallet.Type}[/]");
                     }
 
-                    AnsiConsole.Render(table);
+                    AnsiConsole.Write(table);
                 }
             });
         }

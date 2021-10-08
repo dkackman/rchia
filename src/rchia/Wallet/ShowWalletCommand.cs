@@ -29,8 +29,10 @@ namespace rchia.Wallet
 
                 if (wallets.Any())
                 {
-                    var table = new Table();
-                    table.Title = new TableTitle($"[orange3]Balances ({NetworkPrefix})[/]");
+                    var table = new Table
+                    {
+                        Title = new TableTitle($"[orange3]Balances ({NetworkPrefix})[/]")
+                    };
 
                     table.AddColumn("[orange3]Id[/]");
                     table.AddColumn("[orange3]Name[/]");
@@ -55,7 +57,7 @@ namespace rchia.Wallet
                         //}
                     }
 
-                    AnsiConsole.Render(table);
+                    AnsiConsole.Write(table);
                 }
                 else
                 {

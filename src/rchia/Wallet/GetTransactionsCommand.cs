@@ -40,7 +40,7 @@ namespace rchia.Wallet
                         PrintTransaction(tx, NetworkPrefix, table);
                     }
                     var c = transactions.Count();
-                    AnsiConsole.Render(table);
+                    AnsiConsole.Write(table);
                     MarkupLine($"Showing [wheat1]{c}[/] transaction{(c == 1 ? string.Empty : "s")}");
                 }
                 else

@@ -25,5 +25,9 @@ namespace rchia.Show
 
         [Command("remove", Description = "Remove a Node by the full or first 8 characters of NodeID")]
         public RemoveConnectionCommand Remove { get; init; } = new();
+
+
+        [Command("version", Description = "Shows the version of the node")]
+        public VersionCommand Version { get; init; } = new();
     }
 }

@@ -68,8 +68,10 @@ namespace rchia.Show
                         block = await proxy.GetBlockRecord(block.PrevHash, cts.Token);
                     }
 
-                    var table = new Table();
-                    table.Title = new TableTitle("Recent Blocks");
+                    var table = new Table
+                    {
+                        Title = new TableTitle("Recent Blocks")
+                    };
 
                     table.AddColumn("[orange3]Height[/]");
                     table.AddColumn("[orange3]Hash[/]");
@@ -78,7 +80,7 @@ namespace rchia.Show
                     {
                         table.AddRow(b.Height.ToString(), b.HeaderHash.Replace("0x", ""));
                     }
-                    AnsiConsole.Render(table);
+                    AnsiConsole.Write(table);
                 }
             });
         }

@@ -19,8 +19,10 @@ namespace rchia.Show
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 var connections = await proxy.GetConnections(cts.Token);
 
-                var table = new Table();
-                table.Title = new TableTitle("Connections");
+                var table = new Table
+                {
+                    Title = new TableTitle("Connections")
+                };
 
                 table.AddColumn("[orange3]Type[/]");
                 table.AddColumn("[orange3]IP[/]");
@@ -44,7 +46,7 @@ namespace rchia.Show
                     table.AddRow(c.Type.ToString(), c.PeerHost, ports, id, $"{c.LastMessageDateTime.ToLocalTime():MMM dd HH:mm}", up.ToBytesString("N1"), down.ToBytesString("N1"), height, hash);
                 }
 
-                AnsiConsole.Render(table);
+                AnsiConsole.Write(table);
             });
         }
     }

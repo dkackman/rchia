@@ -26,8 +26,10 @@ namespace rchia.Farm
                 var list = signagePoints.Reverse().ToList(); // convert to list to avoid multiple iteration
                 var count = Limit == 0 ? list.Count : Limit;
 
-                var table = new Table();
-                table.Title = new TableTitle("Challenges");
+                var table = new Table
+                {
+                    Title = new TableTitle("Challenges")
+                };
                 table.AddColumn("[orange3]Index[/]");
                 table.AddColumn("[orange3]Hash[/]");
 
@@ -36,7 +38,7 @@ namespace rchia.Farm
                     table.AddRow(sp.SignagePoint.SignagePointIndex.ToString(), sp.SignagePoint.ChallengeHash);
                 }
 
-                AnsiConsole.Render(table);
+                AnsiConsole.Write(table);
                 Message($"Showing {count} of {list.Count} challenges.");
             });
         }
