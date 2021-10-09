@@ -4,23 +4,30 @@ using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
+using System.ComponentModel;
+using Spectre.Console.Cli;
 
 namespace rchia.Farm
 {
-    internal sealed class SummaryCommand : EndpointOptions
+    [Description("Summary of farming information")]
+    internal sealed class SummaryCommand : AsyncCommand<EndpointSettings>
     {
-        [CommandTarget]
-        public async Task<int> Run()
+        public async override Task<int> ExecuteAsync(CommandContext context, EndpointSettings settings)
         {
-            return await DoWorkAsync("Retrieving farm info...", async ctx =>
+            var worker = new Worker()
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this, ServiceNames.Farmer);
+                Verbose = settings.Verbose
+            };
+
+            return await worker.DoWorkAsync("Retrieving farm info...", async ctx =>
+            {
+                using var rpcClient = await ClientFactory2.Factory.CreateWebSocketClient(ctx, settings, ServiceNames.Farmer);
                 var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var farmer = daemon.CreateProxyFrom<FarmerProxy>();
                 var fullNode = daemon.CreateProxyFrom<FullNodeProxy>();
                 var wallet = daemon.CreateProxyFrom<WalletProxy>();
 
-                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                using var cts = new CancellationTokenSource(settings.TimeoutMilliseconds);
                 var all_harvesters = await farmer.GetHarvesters(cts.Token);
                 var blockchain_state = await fullNode.GetBlockchainState(cts.Token);
                 var farmer_running = await daemon.IsServiceRunning(ServiceNames.Farmer, cts.Token);
@@ -37,7 +44,7 @@ namespace rchia.Farm
                     ? "[red]Not running[/]"
                     : "[green]Farming[/]";
 
-                NameValue("Farming status", status);
+                worker.NameValue("Farming status", status);
 
                 var wallet_ready = true;
                 if (wallet_running)
@@ -46,10 +53,10 @@ namespace rchia.Farm
                     {
                         var (FarmedAmount, FarmerRewardAmount, FeeAmount, LastHeightFarmed, PoolRewardAmount) = await wallet.GetFarmedAmount(cts.Token);
 
-                        NameValue("Total chia farmed", FarmedAmount.AsChia("F1"));
-                        NameValue("User transaction fees", FeeAmount.AsChia("F1"));
-                        NameValue("Block rewards", (FarmerRewardAmount + PoolRewardAmount).AsChia("F1"));
-                        NameValue("Last height farmed", LastHeightFarmed);
+                        worker.NameValue("Total chia farmed", FarmedAmount.AsChia("F1"));
+                        worker.NameValue("User transaction fees", FeeAmount.AsChia("F1"));
+                        worker.NameValue("Block rewards", (FarmerRewardAmount + PoolRewardAmount).AsChia("F1"));
+                        worker.NameValue("Last height farmed", LastHeightFarmed);
                     }
                     catch
                     {
@@ -67,47 +74,47 @@ namespace rchia.Farm
 
                 if (localHarvesters.Any())
                 {
-                    MarkupLine($"[wheat1]Local Harvester{(localHarvesters.Count() == 1 ? string.Empty : 's')}[/]");
+                    worker.MarkupLine($"[wheat1]Local Harvester{(localHarvesters.Count() == 1 ? string.Empty : 's')}[/]");
                     foreach (var harvester in localHarvesters)
                     {
                         var size = harvester.Plots.Sum(p => (double)p.FileSize);
                         totalplotSize += (ulong)size;
                         totalPlotCount += harvester.Plots.Count;
 
-                        MarkupLine($"  [green]{harvester.Connection.Host}[/]: [wheat1]{harvester.Plots.Count}[/] plots of size [wheat1]{size.ToBytesString("N1")}[/]");
+                        worker.MarkupLine($"  [green]{harvester.Connection.Host}[/]: [wheat1]{harvester.Plots.Count}[/] plots of size [wheat1]{size.ToBytesString("N1")}[/]");
                     }
                 }
 
                 if (remoteHarvesters.Any())
                 {
-                    MarkupLine($"[wheat1]Remote Harvester{(remoteHarvesters.Count() == 1 ? string.Empty : 's')}[/]");
+                    worker.MarkupLine($"[wheat1]Remote Harvester{(remoteHarvesters.Count() == 1 ? string.Empty : 's')}[/]");
                     foreach (var harvester in remoteHarvesters)
                     {
                         var size = harvester.Plots.Sum(p => (double)p.FileSize);
                         totalplotSize += (ulong)size;
                         totalPlotCount += harvester.Plots.Count;
 
-                        MarkupLine($"  [green]{harvester.Connection.Host}[/]: [wheat1]{harvester.Plots.Count}[/] plots of size [wheat1]{size.ToBytesString("N1")}[/]");
+                        worker.MarkupLine($"  [green]{harvester.Connection.Host}[/]: [wheat1]{harvester.Plots.Count}[/] plots of size [wheat1]{size.ToBytesString("N1")}[/]");
                     }
                 }
 
-                NameValue("Plot count for all harvesters", totalPlotCount);
-                NameValue("Total size of plots", totalplotSize.ToBytesString("N1"));
+                worker.NameValue("Plot count for all harvesters", totalPlotCount);
+                worker.NameValue("Total size of plots", totalplotSize.ToBytesString("N1"));
 
                 if (blockchain_state is not null)
                 {
-                    NameValue("Estimated network space", blockchain_state.Space.ToBytesString());
+                    worker.NameValue("Estimated network space", blockchain_state.Space.ToBytesString());
                 }
                 else
                 {
-                    NameValue("Estimated network space", "Unknown");
+                    worker.NameValue("Estimated network space", "Unknown");
                 }
 
                 if (blockchain_state is not null && blockchain_state.Space != BigInteger.Zero)
                 {
                     if (totalPlotCount == 0)
                     {
-                        NameValue("Expected time to win", "Never (no plots)");
+                        worker.NameValue("Expected time to win", "Never (no plots)");
                     }
                     else
                     {
@@ -115,23 +122,24 @@ namespace rchia.Farm
                         var blocktime = await fullNode.GetAverageBlockTime(cts.Token);
                         var span = blocktime / proportion;
 
-                        NameValue("Expected time to win", span.FormatTimeSpan());
-                        Message($"Farming about {proportion:P6} percent of the network");
+                        worker.NameValue("Expected time to win", span.FormatTimeSpan());
+                        worker.Message($"Farming about {proportion:P6} percent of the network");
                     }
                 }
 
                 if (!wallet_running)
                 {
-                    Helpful("For details on farmed rewards and fees you should run '[grey]rchia start wallet[/]' and '[grey]rchia wallet show[/]'", true);
+                    worker.Helpful("For details on farmed rewards and fees you should run '[grey]rchia start wallet[/]' and '[grey]rchia wallet show[/]'", true);
                 }
                 else if (!wallet_ready)
                 {
-                    Helpful("For details on farmed rewards and fees you should run '[grey]rchia wallet show[/]'", true);
+                    worker.Helpful("For details on farmed rewards and fees you should run '[grey]rchia wallet show[/]'", true);
                 }
                 else
                 {
-                    Helpful("Note: log into your key using '[grey]rchia wallet show[/]' to see rewards for each key", true);
+                    worker.Helpful("Note: log into your key using '[grey]rchia wallet show[/]' to see rewards for each key", true);
                 }
+
             });
         }
     }

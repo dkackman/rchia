@@ -6,23 +6,23 @@ using Spectre.Console;
 
 namespace rchia
 {
-    internal class ClientFactory
+    internal class ClientFactory2
     {
         public static void Initialize(string originService)
         {
             Factory = new(originService);
         }
 
-        internal static ClientFactory Factory { get; private set; } = new("not_set");
+        internal static ClientFactory2 Factory { get; private set; } = new("not_set");
 
-        private ClientFactory(string originService)
+        private ClientFactory2(string originService)
         {
             OriginService = originService;
         }
 
         public string OriginService { get; init; } // this is needed for any daemon wss endpoints
 
-        public async Task<IRpcClient> CreateRpcClient(StatusContext ctx, EndpointOptions options, string serviceName)
+        public async Task<IRpcClient> CreateRpcClient(StatusContext ctx, EndpointSettings options, string serviceName)
         {
             var endpoint = GetEndpointInfo(options, serviceName);
             return await CreateRpcClient(ctx, endpoint, options.TimeoutMilliseconds);
@@ -44,7 +44,7 @@ namespace rchia
                 : throw new InvalidOperationException($"Unrecognized endpoint Uri scheme {endpoint.Uri.Scheme}");
         }
 
-        public async Task<WebSocketRpcClient> CreateWebSocketClient(StatusContext ctx, EndpointOptions options, string serviceName)
+        public async Task<WebSocketRpcClient> CreateWebSocketClient(StatusContext ctx, EndpointSettings options, string serviceName)
         {
             var endpoint = GetEndpointInfo(options, serviceName);
 
@@ -70,7 +70,7 @@ namespace rchia
             return rpcClient;
         }
 
-        private static EndpointInfo GetEndpointInfo(EndpointOptions options, string serviceName)
+        private static EndpointInfo GetEndpointInfo(EndpointSettings options, string serviceName)
         {
             var library = EndpointLibrary.OpenLibrary();
 
@@ -88,7 +88,7 @@ namespace rchia
 
             if (options.ConfigPath is not null)
             {
-                return Config.Open(options.ConfigPath.FullName).GetEndpoint(serviceName);
+                return Config.Open(options.ConfigPath).GetEndpoint(serviceName);
             }
 
             if (!string.IsNullOrEmpty(options.EndpointUri))
@@ -98,14 +98,9 @@ namespace rchia
                     : new EndpointInfo()
                     {
                         Uri = new Uri(options.EndpointUri),
-                        CertPath = options.CertPath.FullName,
-                        KeyPath = options.KeyPath.FullName
+                        CertPath = options.CertPath,
+                        KeyPath = options.KeyPath
                     };
-            }
-
-            if (!options.DefaultEndpoint)
-            {
-                options.Helpful("No endpoint options set. Using default endpoint.");
             }
 
             var endpoint = library.GetDefault();

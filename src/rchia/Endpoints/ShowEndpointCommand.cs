@@ -1,28 +1,24 @@
-﻿using System;
-
-using rchia.Commands;
+﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace rchia.Endpoints
 {
-    internal sealed class ShowEndpointCommand : Command
+    [Description("Shows the details of a saved endpoint")]
+    internal sealed class ShowEndpointCommand : Command<EndpointIdCommandSettings>
     {
-        [Argument(0, Name = "id", Description = "The id of the endpoint to show")]
-        public string Id { get; init; } = string.Empty;
-
-        [CommandTarget]
-        public int Run()
+        public override int Execute([NotNull] CommandContext context, [NotNull] EndpointIdCommandSettings settings)
         {
-            return DoWork(() =>
+            var worker = new Worker()
             {
-                var library = EndpointLibrary.OpenLibrary();
+                Verbose = settings.Verbose
+            };
 
-                if (!library.Endpoints.ContainsKey(Id))
-                {
-                    throw new InvalidOperationException($"There is no saved endpoint with an id of {Id}.");
-                }
-
-                var endpoint = library.Endpoints[Id];
-                WriteLine(endpoint.ToJson());
+            return worker.DoWork(() =>
+            {
+                var endpoint = settings.Library.Endpoints[settings.Id];
+                AnsiConsole.WriteLine(endpoint.ToJson());
             });
         }
     }

@@ -1,24 +1,31 @@
-﻿
-using rchia.Commands;
+﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace rchia.Endpoints
 {
-    internal sealed class ListEndpointsCommand : Command
+    [Description("Lists the ids of saved endpoint")]
+    internal sealed class ListEndpointsCommand : Command<EndpointIdCommandSettings>
     {
-        [CommandTarget]
-        public int Run()
+        public override int Execute([NotNull] CommandContext context, [NotNull] EndpointIdCommandSettings settings)
         {
-            return DoWork(() =>
+            var worker = new Worker()
+            {
+                Verbose = settings.Verbose
+            };
+
+            return worker.DoWork(() =>
             {
                 var library = EndpointLibrary.OpenLibrary();
 
                 foreach (var endpoint in library.Endpoints.Values)
                 {
                     var isDefault = endpoint.IsDefault ? "[wheat1](default)[/]" : string.Empty;
-                    MarkupLine($" - {endpoint.Id} {isDefault}");
+                    AnsiConsole.MarkupLine($" - {endpoint.Id} {isDefault}");
                 }
 
-                MarkupLine($"[wheat1]{library.Endpoints.Count}[/] saved endpoint{(library.Endpoints.Count == 1 ? string.Empty : "s")}");
+                AnsiConsole.MarkupLine($"[wheat1]{library.Endpoints.Count}[/] saved endpoint{(library.Endpoints.Count == 1 ? string.Empty : "s")}");
             });
         }
     }

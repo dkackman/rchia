@@ -1,30 +1,26 @@
-﻿using System;
-
-using rchia.Commands;
+﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace rchia.Endpoints
 {
-    internal sealed class RemoveEndpointCommand : Command
+    [Description("Removes a saved endpoint")]
+    internal sealed class RemoveEndpointCommand : Command<EndpointIdCommandSettings>
     {
-        [Argument(0, Name = "id", Description = "The id of the endpoint to remove")]
-        public string Id { get; init; } = string.Empty;
-
-        [CommandTarget]
-        public int Run()
+        public override int Execute([NotNull] CommandContext context, [NotNull] EndpointIdCommandSettings settings)
         {
-            return DoWork(() =>
+            var worker = new Worker()
             {
-                var library = EndpointLibrary.OpenLibrary();
+                Verbose = settings.Verbose
+            };
 
-                if (!library.Endpoints.ContainsKey(Id))
-                {
-                    throw new InvalidOperationException($"There is no saved endpoint with an id of {Id}.");
-                }
+            return worker.DoWork(() =>
+            {
+                _ = settings.Library.Endpoints.Remove(settings.Id);
+                settings.Library.Save();
 
-                _ = library.Endpoints.Remove(Id);
-                library.Save();
-
-                MarkupLine($"Endpoint [wheat1]{Id}[/] removed");
+                AnsiConsole.MarkupLine($"Endpoint [wheat1]{settings.Id}[/] removed");
             });
         }
     }

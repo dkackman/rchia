@@ -1,34 +1,35 @@
-﻿using System;
-using System.Threading.Tasks;
-
-using rchia.Commands;
+﻿using System.Threading.Tasks;
+using System.ComponentModel;
+using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace rchia.Endpoints
 {
-    internal sealed class TestEndpointCommand : Command
+    [Description("Tests the configuration of a saved endpoint")]
+    internal sealed class TestEndpointCommand : AsyncCommand<TestEndpointCommand.TestEndpointSettings>
     {
-        [Argument(0, Name = "id", Description = "The id of the endpoint to test")]
-        public string Id { get; init; } = string.Empty;
-
-        [Option("to", "timeout", Default = 30, ArgumentHelpName = "TIMEOUT", Description = "Timeout in seconds")]
-        public int Timeout { get; init; } = 30;
-
-        [CommandTarget]
-        public async Task<int> Run()
+        public class TestEndpointSettings : EndpointIdCommandSettings
         {
-            return await DoWorkAsync("Testing connection...", async ctx =>
+            [Description("Timeout in seconds")]
+            [CommandOption("--to|--timeout")]
+            [DefaultValue(30)]
+            public int Timeout { get; init; } = 30;
+        }
+
+        public async override Task<int> ExecuteAsync(CommandContext context, TestEndpointCommand.TestEndpointSettings settings)
+        {
+            var worker = new Worker()
             {
-                var library = EndpointLibrary.OpenLibrary();
+                Verbose = settings.Verbose
+            };
 
-                if (!library.Endpoints.ContainsKey(Id))
-                {
-                    throw new InvalidCastException($"There is no saved endpoint with an id of {Id}.");
-                }
+            return await worker.DoWorkAsync($"Testing endpoint {settings.Id}...", async ctx => 
+            {
+                var endpoint = settings.Library.Endpoints[settings.Id];
 
-                var endpoint = library.Endpoints[Id];
-                await ClientFactory.Factory.TestConnection(endpoint.EndpointInfo, Timeout * 1000);
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, endpoint.EndpointInfo, settings.Timeout * 1000);
 
-                MarkupLine($"Successfully connected to [wheat1]{Id}[/]");
+                AnsiConsole.MarkupLine($"Successfully connected to [wheat1]{settings.Id}[/]");
             });
         }
     }
