@@ -24,8 +24,6 @@ namespace rchia
 
         public async Task TestConnection(EndpointInfo endpoint, int timeoutMilliseconds)
         {
-            using var cts = new CancellationTokenSource(timeoutMilliseconds);
-
             using var rpcClient = await CreateRpcClient(endpoint, timeoutMilliseconds);
         }
 
