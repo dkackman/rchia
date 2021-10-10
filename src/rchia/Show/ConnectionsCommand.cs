@@ -21,7 +21,7 @@ namespace rchia.Show
 
                 var table = new Table
                 {
-                    Title = new TableTitle("Connections")
+                    Title = new TableTitle("[orange3]Connections[/]")
                 };
 
                 table.AddColumn("[orange3]Type[/]");

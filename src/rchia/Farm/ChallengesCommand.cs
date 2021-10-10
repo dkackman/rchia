@@ -28,7 +28,7 @@ namespace rchia.Farm
 
                 var table = new Table
                 {
-                    Title = new TableTitle("Challenges")
+                    Title = new TableTitle("[orange3]Challenges[/]")
                 };
                 table.AddColumn("[orange3]Index[/]");
                 table.AddColumn("[orange3]Hash[/]");

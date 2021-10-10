@@ -70,7 +70,7 @@ namespace rchia.Show
 
                     var table = new Table
                     {
-                        Title = new TableTitle("Recent Blocks")
+                        Title = new TableTitle("[orange3]Recent Blocks[/]")
                     };
 
                     table.AddColumn("[orange3]Height[/]");

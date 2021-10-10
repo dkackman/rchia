@@ -33,7 +33,7 @@ namespace rchia.Wallet
 
                     var table = new Table
                     {
-                        Title = new TableTitle($"Fingerprint {fingerprint}")
+                        Title = new TableTitle($"[orange3]Fingerprint {fingerprint}[/]")
                     };
 
                     table.AddColumn("[orange3]Id[/]");
