@@ -19,7 +19,7 @@ namespace rchia.Wallet
             return await DoWorkAsync("Retrieving wallet address...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
-                var wallet = new chia.dotnet.Wallet(Id, await Login(rpcClient));
+                var wallet = new chia.dotnet.Wallet(Id, await Login(rpcClient, ctx));
 
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 var address = await wallet.GetNextAddress(New, cts.Token);

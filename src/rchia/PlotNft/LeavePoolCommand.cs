@@ -23,7 +23,7 @@ namespace rchia.PlotNft
                     using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
 
                     using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-                    var wallet = new PoolWallet(Id, await Login(rpcClient));
+                    var wallet = new PoolWallet(Id, await Login(rpcClient, ctx));
                     await wallet.Validate(cts.Token);
 
                     var tx = await wallet.SelfPool(cts.Token);

@@ -15,7 +15,7 @@ namespace rchia.Wallet
             return await DoWorkAsync("Retrieving wallet info...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
-                var proxy = await Login(rpcClient);
+                var proxy = await Login(rpcClient, ctx);
 
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 var (GenesisInitialized, Synced, Syncing) = await proxy.GetSyncStatus(cts.Token);

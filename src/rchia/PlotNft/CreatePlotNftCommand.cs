@@ -29,7 +29,7 @@ namespace rchia.PlotNft
             return await DoWorkAsync("Creating pool NFT and wallet...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
-                var proxy = await Login(rpcClient);
+                var proxy = await Login(rpcClient, ctx);
                 var msg = await proxy.ValidatePoolingOptions(State == InitialPoolingState.pool, PoolUrl, TimeoutMilliseconds);
 
                 if (Confirm(msg, Force))

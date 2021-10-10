@@ -16,7 +16,7 @@ namespace rchia.PlotNft
             return await DoWorkAsync("Retrieving nft plot info...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
-                var wallet = new PoolWallet(Id, await Login(rpcClient));
+                var wallet = new PoolWallet(Id, await Login(rpcClient, ctx));
 
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 await wallet.Validate(cts.Token);

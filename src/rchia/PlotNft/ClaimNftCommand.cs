@@ -21,7 +21,7 @@ namespace rchia.PlotNft
                 if (Confirm($"Are you sure you want to claim rewards for wallet ID {Id}?", Force))
                 {
                     using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
-                    var wallet = new PoolWallet(Id, await Login(rpcClient));
+                    var wallet = new PoolWallet(Id, await Login(rpcClient, ctx));
 
                     using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                     await wallet.Validate(cts.Token);
