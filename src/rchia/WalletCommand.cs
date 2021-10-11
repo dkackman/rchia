@@ -42,7 +42,6 @@ namespace rchia
                 : "Pending";
 
             var color = tx.Sent > 0 ? "red" : "green";
-
             var amount = $"[{color}]{tx.Amount.AsChia()} {prefix}[/]";
             var bech32 = new Bech32M(prefix);
             var to = Verbose ? bech32.PuzzleHashToAddress(tx.ToPuzzleHash) : bech32.PuzzleHashToAddress(tx.ToPuzzleHash).Substring(prefix.Length, 10) + "...";
@@ -55,8 +54,8 @@ namespace rchia
         {
             using var message = new StatusMessage(ctx, "Logging into wallet...");
             var walletProxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
-
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+
             if (Fingerprint.HasValue)
             {
                 _ = await walletProxy.LogIn(Fingerprint.Value, false, cts.Token);
