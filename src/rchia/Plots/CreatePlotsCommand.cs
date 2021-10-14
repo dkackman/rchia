@@ -50,7 +50,7 @@ namespace rchia.Plots
         [Option("e", "nobitfield", Default = false, Description = "Disable bitfield")]
         public bool NoBitField { get; init; }
 
-        [Option("x", "exclude-final-dir", Default = false, Description = "Skips adding [final dir] to harvester for farming")]
+        [Option("x", "exclude-final-dir", Default = false, Description = "Skips adding [final-dir] to harvester for farming")]
         public bool ExcludeFinalDir { get; init; }
 
         [CommandTarget]

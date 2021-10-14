@@ -10,7 +10,7 @@ namespace rchia
     {
         internal static EndpointLibrary OpenLibrary()
         {
-            var config = Settings.GetConfig();
+            var config = Settings.GetSettings();
             var library = new EndpointLibrary(config.endpointfile ?? Settings.DefaultEndpointsFilePath);
             library.Open();
 

@@ -20,7 +20,7 @@ namespace rchia
 
         public static string DefaultEndpointsFilePath => Path.Combine(SettingsDirectory, "endpoints.json");
 
-        public static dynamic GetConfig()
+        public static dynamic GetSettings()
         {
             try
             {
