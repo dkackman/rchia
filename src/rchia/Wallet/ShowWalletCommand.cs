@@ -29,6 +29,7 @@ namespace rchia.Wallet
 
                 if (wallets.Any())
                 {
+                    using var status = new StatusMessage(ctx, "Retrieving balances...");
                     var table = new Table
                     {
                         Title = new TableTitle($"[orange3]Balances ({NetworkPrefix})[/]")
@@ -40,21 +41,28 @@ namespace rchia.Wallet
                     table.AddColumn("[orange3]Total[/]");
                     table.AddColumn("[orange3]Pending Total[/]");
                     table.AddColumn("[orange3]Spendable[/]");
+                    if (Verbose)
+                    {
+                        table.AddColumn("[orange3]Pending Change[/]");
+                        table.AddColumn("[orange3]Max Spend Amount[/]");
+                        table.AddColumn("[orange3]Unspent Coin Count[/]");
+                        table.AddColumn("[orange3]Pending Coin Removal Count[/]");
+                    }
 
-                    foreach (var summary in wallets)
+                        foreach (var summary in wallets)
                     {
                         var newWallet = new chia.dotnet.Wallet(summary.Id, proxy);
                         var (ConfirmedWalletBalance, UnconfirmedWalletBalance, SpendableBalance, PendingChange, MaxSendAmount, UnspentCoinCount, PendingCoinRemovalCount) = await newWallet.GetBalance(cts.Token);
 
-                        table.AddRow(summary.Id.ToString(), summary.Name, $"[green]{summary.Type}[/]", ConfirmedWalletBalance.AsChia(), UnconfirmedWalletBalance.AsChia(), SpendableBalance.AsChia());
-
-                        //if (ConsoleMessage.Verbose)
-                        //{
-                        //    ConsoleMessage.NameValue("   -Pending Change", $"{PendingChange.AsChia()} {NetworkPrefix}");
-                        //    ConsoleMessage.NameValue("   -Max Spend Amount", $"{MaxSendAmount.AsChia()} {NetworkPrefix}");
-                        //    ConsoleMessage.NameValue("   -Unspent Coin Count", $"{UnspentCoinCount}");
-                        //    ConsoleMessage.NameValue("   -Pending Coin Removal Count", $"{PendingCoinRemovalCount}");
-                        //}
+                        if (Verbose)
+                        {
+                            table.AddRow(summary.Id.ToString(), summary.Name, $"[green]{summary.Type}[/]", ConfirmedWalletBalance.AsChia(), UnconfirmedWalletBalance.AsChia(), SpendableBalance.AsChia(),
+                                PendingChange.AsChia(), MaxSendAmount.AsChia(), UnspentCoinCount.ToString(), PendingCoinRemovalCount.ToString());
+                        }
+                        else
+                        {
+                            table.AddRow(summary.Id.ToString(), summary.Name, $"[green]{summary.Type}[/]", ConfirmedWalletBalance.AsChia(), UnconfirmedWalletBalance.AsChia(), SpendableBalance.AsChia());
+                        }
                     }
 
                     AnsiConsole.Write(table);
