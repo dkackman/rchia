@@ -14,7 +14,7 @@ namespace rchia.Farm
         {
             return await DoWorkAsync("Retrieving farm info...", async ctx =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this, ServiceNames.Farmer);
+                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this);
                 var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var farmer = daemon.CreateProxyFrom<FarmerProxy>();
                 var fullNode = daemon.CreateProxyFrom<FullNodeProxy>();

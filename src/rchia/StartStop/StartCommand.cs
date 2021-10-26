@@ -25,7 +25,7 @@ namespace rchia.StartStop
 
             return await DoWorkAsync("Starting services...", async ctx =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this, ServiceNames.Daemon);
+                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this);
 
                 var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
 

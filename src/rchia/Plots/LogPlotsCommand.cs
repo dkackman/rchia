@@ -17,7 +17,7 @@ namespace rchia.Plots
         {
             return await DoWorkAsync("Retrieving plot log...", async ctx =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this, ServiceNames.Plotter);
+                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this);
                 var proxy = new PlotterProxy(rpcClient, ClientFactory.Factory.OriginService);
 
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);

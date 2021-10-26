@@ -12,7 +12,7 @@ namespace rchia.Status
         {
             return await DoWorkAsync("Pinging the daemon...", async ctx =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this, ServiceNames.Daemon);
+                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this);
 
                 var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var stopWatch = Stopwatch.StartNew();

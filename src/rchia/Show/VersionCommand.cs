@@ -12,7 +12,7 @@ namespace rchia.Show
         {
             return await DoWorkAsync("Retrieving the version...", async ctx =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this, ServiceNames.Daemon);
+                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this);
                 var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
 
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);

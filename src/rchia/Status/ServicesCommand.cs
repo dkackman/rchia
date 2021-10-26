@@ -14,7 +14,7 @@ namespace rchia.Status
         {
             return await DoWorkAsync("Retrieving service info...", async ctx =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this, ServiceNames.Daemon);
+                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this);
 
                 var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
 

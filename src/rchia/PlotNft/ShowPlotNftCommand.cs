@@ -18,7 +18,7 @@ namespace rchia.PlotNft
         {
             return await DoWorkAsync("Retrieving pool info...", async ctx =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this, ServiceNames.Daemon);
+                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this);
                 var daemon = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
                 var farmer = daemon.CreateProxyFrom<FarmerProxy>();
                 var wallet = daemon.CreateProxyFrom<WalletProxy>();

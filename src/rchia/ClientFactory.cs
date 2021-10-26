@@ -44,9 +44,9 @@ namespace rchia
                 : throw new InvalidOperationException($"Unrecognized endpoint Uri scheme {endpoint.Uri.Scheme}");
         }
 
-        public async Task<WebSocketRpcClient> CreateWebSocketClient(StatusContext ctx, EndpointOptions options, string serviceName)
+        public async Task<WebSocketRpcClient> CreateWebSocketClient(StatusContext ctx, EndpointOptions options)
         {
-            var endpoint = GetEndpointInfo(options, serviceName);
+            var endpoint = GetEndpointInfo(options, ServiceNames.Daemon);
 
             if (endpoint.Uri.Scheme != "wss")
             {
