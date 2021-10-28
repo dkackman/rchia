@@ -5,7 +5,7 @@ using Spectre.Console;
 
 namespace rchia.Commands
 {
-    public abstract class Command : IConsoleMessage
+    public abstract class Command
     {
         [Option("v", "verbose", Description = "Set output to verbose messages")]
         public bool Verbose { get; init; }

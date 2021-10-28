@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using rchia.Bech32;
 using rchia.Commands;
 
 namespace rchia.Bech32
