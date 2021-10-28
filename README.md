@@ -72,6 +72,7 @@ Options:
   -?, -h, --help  Show help and usage information
 
 Commands:
+  bech32                 Convert addresses to and from puzzle hashes.
   endpoints              Manage saved endpoints.
   farm                   Manage your farm.
                          Requires a daemon endpoint.
