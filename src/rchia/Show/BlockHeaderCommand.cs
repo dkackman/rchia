@@ -17,10 +17,9 @@ namespace rchia.Show
 
         private async Task<string> GetHash(FullNodeProxy proxy)
         {
-            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-
             if (Height.HasValue)
             {
+                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 var block = await proxy.GetBlockRecordByHeight(Height.Value, cts.Token);
 
                 return block.HeaderHash;
@@ -65,13 +64,12 @@ namespace rchia.Show
                 NameValue("Total VDF Iterations", block.TotalIters.ToString("N0"));
                 NameValue("Is a Transaction Block", full_block.RewardChainBlock.IsTransactionBlock);
                 NameValue("Deficit", block.Deficit);
-                NameValue("PoSpace 'k' Size", full_block.RewardChainBlock.ProofOfSpace.Size);
+                NameValue("Proof of Space 'k' Size", full_block.RewardChainBlock.ProofOfSpace.Size);
                 NameValue("Plot Public Key", full_block.RewardChainBlock.ProofOfSpace.PlotPublicKey);
 
                 var poolPk = full_block.RewardChainBlock.ProofOfSpace.PublicPoolKey;
                 poolPk = string.IsNullOrEmpty(poolPk) ? "Pay to pool puzzle hash" : poolPk;
                 NameValue("Pool Public Key", poolPk);
-                NameValue("Tx Filter Hash", full_block.RewardChainBlock.ProofOfSpace.PlotPublicKey);
                 NameValue("Plot Public Key", full_block.RewardChainBlock.ProofOfSpace.PlotPublicKey);
 
                 var txFilterHash = full_block.FoliageTransactionBlock is not null ? full_block.FoliageTransactionBlock.FilterHash : "Not a transaction block";

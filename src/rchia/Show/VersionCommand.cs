@@ -10,7 +10,7 @@ namespace rchia.Show
         [CommandTarget]
         public async Task<int> Run()
         {
-            return await DoWorkAsync("Retrieving the version...", async ctx =>
+            return await DoWorkAsync("Retrieving chia version...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this);
                 var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
