@@ -49,7 +49,7 @@ namespace rchia.Wallet
                         table.AddColumn("[orange3]Pending Coin Removal Count[/]");
                     }
 
-                        foreach (var summary in wallets)
+                    foreach (var summary in wallets)
                     {
                         var newWallet = new chia.dotnet.Wallet(summary.Id, proxy);
                         var (ConfirmedWalletBalance, UnconfirmedWalletBalance, SpendableBalance, PendingChange, MaxSendAmount, UnspentCoinCount, PendingCoinRemovalCount) = await newWallet.GetBalance(cts.Token);
