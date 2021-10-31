@@ -28,7 +28,8 @@ namespace rchia.Show
                 }
                 else if (state.Peak is not null && state.Sync.SyncMode)
                 {
-                    NameValue("Current Blockchain Status", $"[yellow]Syncing[/] {state.Sync.SyncProgressHeight}/{state.Sync.SyncTipHeight}");
+                    NameValue("Current Blockchain Status", $"[yellow]Syncing[/] {state.Sync.SyncProgressHeight:N0}/{state.Sync.SyncTipHeight:N0}");
+                    NameValue("Blocks behind", $"{(state.Sync.SyncTipHeight - state.Sync.SyncProgressHeight):N0}");
                     NameValue("Peak Hash", peakHash.Replace("0x", ""));
                 }
                 else if (state.Peak is not null)
@@ -45,7 +46,7 @@ namespace rchia.Show
                 {
                     var time = state.Peak.DateTimestamp.HasValue ? state.Peak.DateTimestamp.Value.ToLocalTime().ToString("U") : "unknown";
                     NameValue("Time", time);
-                    NameValue("Peak Height", state.Peak.Height);
+                    NameValue("Peak Height", state.Peak.Height.ToString("N0"));
                 }
 
                 WriteLine("");
