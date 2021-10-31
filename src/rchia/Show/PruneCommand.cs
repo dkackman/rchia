@@ -9,8 +9,8 @@ namespace rchia.Show
 {
     internal sealed class PruneCommand : EndpointOptions
     {
-        [Argument(0, Name = "blocks", Description = "Prune nodes that are this many blocks behind the sync tip height")]
-        public ulong Blocks { get; init; }
+        [Argument(0, Name = "blocks", Default = 1, Description = "Prune nodes that are this many blocks behind the sync tip height")]
+        public ulong Blocks { get; init; } = 1;
 
         [CommandTarget]
         public async Task<int> Run()

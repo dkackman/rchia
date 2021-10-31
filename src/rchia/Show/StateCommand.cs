@@ -24,11 +24,11 @@ namespace rchia.Show
                 if (state.Sync.Synced)
                 {
                     NameValue("Current Blockchain Status", "[green]Full Node Synced[/]");
-                    NameValue("Peak Hash", peakHash);
+                    NameValue("Peak Hash", peakHash.Replace("0x", ""));
                 }
                 else if (state.Peak is not null && state.Sync.SyncMode)
                 {
-                    NameValue("Current Blockchain Status", $"[yellow]Syncing[/] {state.Sync.SyncProgressHeight:N0}/{state.Sync.SyncTipHeight:N0}");
+                    NameValue("Current Blockchain Status", $"[yellow]Syncing[/] {state.Sync.SyncProgressHeight:N0} of {state.Sync.SyncTipHeight:N0}");
                     NameValue("Blocks behind", $"{(state.Sync.SyncTipHeight - state.Sync.SyncProgressHeight):N0}");
                     NameValue("Peak Hash", peakHash.Replace("0x", ""));
                 }
