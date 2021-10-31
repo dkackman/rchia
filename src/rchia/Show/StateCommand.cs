@@ -39,7 +39,7 @@ namespace rchia.Show
                 else
                 {
                     Warning("Searching for an initial chain");
-                    MarkupLine("You may be able to expedite with '[grey]rchia show -a host:port[/]' using a known node.");
+                    MarkupLine("You may be able to expedite with '[grey]rchia show add host:port[/]' using a known node.");
                 }
 
                 if (state.Peak is not null)
@@ -79,7 +79,7 @@ namespace rchia.Show
 
                     foreach (var b in blocks)
                     {
-                        table.AddRow(b.Height.ToString(), b.HeaderHash.Replace("0x", ""));
+                        table.AddRow(b.Height.ToString("N0"), b.HeaderHash.Replace("0x", ""));
                     }
                     AnsiConsole.Write(table);
                 }
