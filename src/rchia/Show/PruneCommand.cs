@@ -27,6 +27,11 @@ namespace rchia.Show
 
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 var state = await fullNode.GetBlockchainState(cts.Token);
+                if (Blocks > state.Sync.SyncProgressHeight)
+                {
+                    throw new InvalidOperationException("Offset is greater than synced height. Aborting.");
+                }
+
                 MarkupLine($"Pruning connections that with a peak less than [wheat1]{state.Sync.SyncProgressHeight - Blocks}[/]");
                 var maxHeight = state.Sync.SyncProgressHeight - Blocks;
 
