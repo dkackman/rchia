@@ -23,7 +23,7 @@ namespace rchia.StartStop
                 throw new InvalidOperationException($"Unrecognized service group {ServiceGroup}. It must be one of\n  {string.Join('|', ServiceGroups.Groups.Keys)}.");
             }
 
-            return await DoWorkAsync("Starting services...", async ctx =>
+            return await DoWorkAsync($"{(Restart ? "Res" : "S")}tarting services...", async ctx =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this);
 

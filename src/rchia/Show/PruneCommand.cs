@@ -9,8 +9,8 @@ namespace rchia.Show
 {
     internal sealed class PruneCommand : EndpointOptions
     {
-        [Argument(0, Name = "blocks", Default = 1, Description = "Prune nodes that are this many blocks behind the sync tip height")]
-        public ulong Blocks { get; init; } = 1;
+        [Argument(0, Name = "blocks", Default = 10, Description = "Prune nodes that are this many blocks behind the sync tip height")]
+        public ulong Blocks { get; init; } = 10;
 
         [CommandTarget]
         public async Task<int> Run()
@@ -29,11 +29,11 @@ namespace rchia.Show
                 var state = await fullNode.GetBlockchainState(cts.Token);
                 if (Blocks > state.Sync.SyncProgressHeight)
                 {
-                    throw new InvalidOperationException("Offset is greater than synced height. Aborting.");
+                    throw new InvalidOperationException("Blocks offset is greater than synced height. Aborting.");
                 }
 
-                MarkupLine($"Pruning connections that with a peak less than [wheat1]{state.Sync.SyncProgressHeight - Blocks}[/]");
                 var maxHeight = state.Sync.SyncProgressHeight - Blocks;
+                MarkupLine($"Pruning connections that with a peak less than [wheat1]{maxHeight}[/]");
 
                 var connections = await fullNode.GetConnections(cts.Token);
                 // only prune other full nodes, not famers, harvesters, and wallets etc
