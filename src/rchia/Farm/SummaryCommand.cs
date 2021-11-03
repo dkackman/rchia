@@ -49,7 +49,7 @@ namespace rchia.Farm
                         NameValue("Total chia farmed", FarmedAmount.AsChia("F1"));
                         NameValue("User transaction fees", FeeAmount.AsChia("F1"));
                         NameValue("Block rewards", (FarmerRewardAmount + PoolRewardAmount).AsChia("F1"));
-                        NameValue("Last height farmed", LastHeightFarmed);
+                        NameValue("Last height farmed", LastHeightFarmed.ToString("N0"));
                     }
                     catch
                     {

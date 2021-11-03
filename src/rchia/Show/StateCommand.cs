@@ -45,6 +45,8 @@ namespace rchia.Show
                 if (state.Peak is not null)
                 {
                     var time = state.Peak.DateTimestamp.HasValue ? state.Peak.DateTimestamp.Value.ToLocalTime().ToString("U") : "unknown";
+                    NameValue("Time2", state.Peak.Timestamp);
+
                     NameValue("Time", time);
                     NameValue("Peak Height", state.Peak.Height.ToString("N0"));
                 }
