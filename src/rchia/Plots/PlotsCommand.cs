@@ -28,5 +28,8 @@ namespace rchia.Plots
 
         [Command("show", Description = "Shows the directory of current plots")]
         public ShowPlotsCommand Show { get; init; } = new();
+
+        [Command("plotters", Description = "Lists installed and installable plotters")]
+        public ListPlottersCommand Plotters { get; init; } = new();
     }
 }
