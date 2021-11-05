@@ -1,4 +1,4 @@
-$version = "0.5.2"
+$version = "0.6.2"
 
 # clean build and publish outputs
 Remove-Item '.\rchia\bin' -Recurse
