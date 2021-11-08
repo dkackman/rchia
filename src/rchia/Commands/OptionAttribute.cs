@@ -16,9 +16,9 @@ namespace rchia.Commands
             LongName = longName;
         }
 
-        public string? LongName { get; }
+        public string? LongName { get; init; }
 
-        public string? ShortName { get; }
+        public string? ShortName { get; init; }
 
         public string? Description { get; init; }
 

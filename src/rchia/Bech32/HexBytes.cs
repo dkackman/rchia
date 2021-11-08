@@ -24,6 +24,7 @@ namespace rchia.Bech32
         {
             var hash = SHA256.HashData(Bytes);
             var hexHash = HexMate.Convert.ToHexString(hash);
+
             return new HexBytes(hexHash, hash);
         }
 
@@ -66,10 +67,10 @@ namespace rchia.Bech32
         public static HexBytes FromHex(string hex)
         {
             return string.IsNullOrWhiteSpace(hex)
-                           ? Empty
-                           : hex.StartsWith("0x")
-                               ? new HexBytes(hex[2..], HexMate.Convert.FromHexString(hex.AsSpan()[2..]))
-                               : new HexBytes(hex, HexMate.Convert.FromHexString(hex.AsSpan()));
+                            ? Empty
+                            : hex.StartsWith("0x")
+                            ? new HexBytes(hex[2..], HexMate.Convert.FromHexString(hex.AsSpan()[2..]))
+                            : new HexBytes(hex, HexMate.Convert.FromHexString(hex.AsSpan()));
         }
 
         public static bool TryFromHex(string hex, out HexBytes result)
@@ -79,7 +80,6 @@ namespace rchia.Bech32
                 result = Empty;
                 return true;
             }
-
 
             var bytes = new byte[hex.Length / 2].AsSpan();
             var s = hex.StartsWith("0x") ? hex.AsSpan()[2..] : hex.AsSpan();
@@ -95,11 +95,7 @@ namespace rchia.Bech32
 
         public static HexBytes FromBytes(byte[] bytes)
         {
-            return bytes == null
-                           ? Empty
-                           : new HexBytes(
-                               HexMate.Convert.ToHexString(bytes),
-                               bytes);
+            return bytes == null ? Empty : new HexBytes(HexMate.Convert.ToHexString(bytes), bytes);
         }
 
         public override bool Equals(object? obj)

@@ -10,7 +10,7 @@ namespace rchia.Commands
             Name = name;
         }
 
-        public string Name { get; }
+        public string Name { get; init; }
 
         public string? Description { get; init; }
     }
