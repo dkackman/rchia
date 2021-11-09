@@ -10,6 +10,7 @@ namespace rchia.Bech32
     public struct HexBytes
     {
         public string Hex { get; init; }
+
         public byte[] Bytes { get; init; }
 
         public bool IsEmpty => string.IsNullOrWhiteSpace(Hex);
@@ -26,6 +27,21 @@ namespace rchia.Bech32
             var hexHash = HexMate.Convert.ToHexString(hash);
 
             return new HexBytes(hexHash, hash);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is HexBytes other && Hex.ToUpperInvariant() == other.Hex.ToUpperInvariant();
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Hex);
+        }
+
+        public override string ToString()
+        {
+            return Hex.ToUpperInvariant();
         }
 
         public static HexBytes operator +(HexBytes a, HexBytes b)
@@ -95,24 +111,9 @@ namespace rchia.Bech32
 
         public static HexBytes FromBytes(byte[] bytes)
         {
-            return bytes == null ? Empty : new HexBytes(HexMate.Convert.ToHexString(bytes), bytes);
+            return bytes is null ? Empty : new HexBytes(HexMate.Convert.ToHexString(bytes), bytes);
         }
 
-        public override bool Equals(object? obj)
-        {
-            return obj is HexBytes other && Hex.ToUpperInvariant() == other.Hex.ToUpperInvariant();
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Hex);
-        }
-
-        public override string ToString()
-        {
-            return Hex.ToUpperInvariant();
-        }
-
-        public static HexBytes Empty => new("", Array.Empty<byte>());
+        public static HexBytes Empty => new(string.Empty, Array.Empty<byte>());
     }
 }

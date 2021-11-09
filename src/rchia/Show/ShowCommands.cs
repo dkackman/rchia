@@ -28,5 +28,8 @@ namespace rchia.Show
 
         [Command("version", Description = "Shows the version of the node")]
         public VersionCommand Version { get; init; } = new();
+
+        [Command("adds-and-removes", Description = "Shows additions and removals by block height or hash")]
+        public AdditionsAndRemovalsCommand AddsAndRemoves { get; init; } = new();
     }
 }
