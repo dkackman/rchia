@@ -4,10 +4,9 @@ using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 
-namespace rchia.StartStop
+namespace rchia.Services
 {
-    [Command("start", Description = "Start service groups.\nRequires a daemon endpoint.")]
-    internal sealed class StartCommand : EndpointOptions
+    internal sealed class StartServicesCommand : EndpointOptions
     {
         [Argument(0, Name = "service-group", Description = "[all|node|harvester|farmer|farmer-no-wallet|farmer-only|timelord|\ntimelord-only|timelord-launcher-only|wallet|wallet-only|introducer|simulator]")]
         public string? ServiceGroup { get; init; }

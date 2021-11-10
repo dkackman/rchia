@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 
-namespace rchia.Show
+namespace rchia.Connections
 {
-    internal sealed class PruneCommand : EndpointOptions
+    internal sealed class PruneConnectionsCommand : EndpointOptions
     {
         [Argument(0, Name = "blocks", Default = 10, Description = "Prune nodes that are this many blocks behind the sync tip height")]
         public ulong Blocks { get; init; } = 10;

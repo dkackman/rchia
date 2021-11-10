@@ -5,9 +5,9 @@ using chia.dotnet;
 using rchia.Commands;
 using Spectre.Console;
 
-namespace rchia.Show
+namespace rchia.Node
 {
-    internal sealed class StateCommand : EndpointOptions
+    internal sealed class StatusCommand : EndpointOptions
     {
         [CommandTarget]
         public async Task<int> Run()
@@ -19,7 +19,7 @@ namespace rchia.Show
 
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 var state = await proxy.GetBlockchainState(cts.Token);
-                var peakHash = state.Peak is not null ? state.Peak.HeaderHash : "";
+                var peakHash = state.Peak is not null ? state.Peak.HeaderHash : string.Empty;
 
                 if (state.Sync.Synced)
                 {
@@ -30,7 +30,7 @@ namespace rchia.Show
                 {
                     NameValue("Current Blockchain Status", $"[yellow]Syncing[/] {state.Sync.SyncProgressHeight:N0} of {state.Sync.SyncTipHeight:N0}");
                     NameValue("Blocks behind", $"{(state.Sync.SyncTipHeight - state.Sync.SyncProgressHeight):N0}");
-                    NameValue("Peak Hash", peakHash.Replace("0x", ""));
+                    NameValue("Peak Hash", peakHash.Replace("0x", string.Empty));
                 }
                 else if (state.Peak is not null)
                 {

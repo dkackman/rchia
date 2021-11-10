@@ -5,7 +5,7 @@ using chia.dotnet;
 using rchia.Bech32;
 using rchia.Commands;
 
-namespace rchia.Show
+namespace rchia.Blocks
 {
     internal sealed class BlockHeaderCommand : EndpointOptions
     {

@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 
-namespace rchia.Status
+namespace rchia.Services
 {
-    internal sealed class ServicesCommand : EndpointOptions
+    internal sealed class ListServicesCommand : EndpointOptions
     {
         [CommandTarget]
         public async Task<int> Run()

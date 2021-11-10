@@ -4,9 +4,9 @@ using chia.dotnet;
 using rchia.Commands;
 using Spectre.Console;
 
-namespace rchia.Show
+namespace rchia.Connections
 {
-    internal sealed class ConnectionsCommand : EndpointOptions
+    internal sealed class ListConnectionsCommand : EndpointOptions
     {
         [CommandTarget]
         public async Task<int> Run()

@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 
-namespace rchia.Show
+namespace rchia.Node
 {
-    internal sealed class ExitNodeCommand : EndpointOptions
+    internal sealed class StopNodeCommand : EndpointOptions
     {
         [CommandTarget]
         public async Task<int> Run()

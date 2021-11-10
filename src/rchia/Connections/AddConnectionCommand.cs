@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 
-namespace rchia.Show
+namespace rchia.Connections
 {
     internal sealed class AddConnectionCommand : EndpointOptions
     {

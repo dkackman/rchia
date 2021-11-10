@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 
-namespace rchia.Status
+namespace rchia.Node
 {
     internal sealed class PingCommand : EndpointOptions
     {

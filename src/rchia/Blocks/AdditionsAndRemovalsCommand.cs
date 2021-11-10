@@ -7,14 +7,14 @@ using chia.dotnet;
 using rchia.Commands;
 using Spectre.Console;
 
-namespace rchia.Show
+namespace rchia.Blocks
 {
     internal sealed class AdditionsAndRemovalsCommand : EndpointOptions
     {
-        [Option("a", "hash", ArgumentHelpName = "HASH", Description = "Look up a block by header hash")]
+        [Option("a", "hash", ArgumentHelpName = "HASH", Description = "Look up by header hash")]
         public string? Hash { get; init; }
 
-        [Option("h", "height", ArgumentHelpName = "HEIGHT", Description = "Look up a block by height")]
+        [Option("h", "height", ArgumentHelpName = "HEIGHT", Description = "Look up by height")]
         public uint? Height { get; init; }
 
         private async Task<string> GetHash(FullNodeProxy proxy)
@@ -53,7 +53,7 @@ namespace rchia.Show
             });
         }
 
-        private void ShowCoinRecords(ICollection<CoinRecord> records, string name,string NetworkPrefix)
+        private void ShowCoinRecords(IEnumerable<CoinRecord> records, string name,string NetworkPrefix)
         {
             if (records.Any())
             {
@@ -76,7 +76,7 @@ namespace rchia.Show
                     table.AddRow(
                         record.Coin.ParentCoinInfo.Replace("0x", ""),
                         record.Coin.PuzzleHash.Replace("0x", ""),
-                        record.Coin.Amount.ToChia().ToString("N3"),
+                        record.Coin.Amount.AsChia("N3"),
                         record.ConfirmedBlockIndex.ToString("N0"),
                         record.SpentBlockIndex.ToString("N0"),
                         record.Spent.ToString(),
@@ -88,7 +88,7 @@ namespace rchia.Show
                 AnsiConsole.Write(table);
             }
 
-            MarkupLine($"{records.Count} {(records.Count == 1 ? name.ToLower().TrimEnd('s') : name.ToLower())}");
+            MarkupLine($"{records.Count()} {(records.Count() == 1 ? name.ToLower().TrimEnd('s') : name.ToLower())}");
         }
     }
 }
