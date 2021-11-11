@@ -6,7 +6,7 @@ using rchia.Commands;
 
 namespace rchia.Plots
 {
-    internal sealed class PlotQueueCommand : EndpointOptions
+    internal sealed class ShowPlotQueueCommand : EndpointOptions
     {
         [CommandTarget]
         public async Task<int> Run()

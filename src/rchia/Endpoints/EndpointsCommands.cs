@@ -3,7 +3,7 @@
 namespace rchia.Endpoints
 {
     [Command("endpoints", Description = "Manage saved endpoints.")]
-    internal sealed class EndpointsCommand
+    internal sealed class EndpointsCommands
     {
         [Command("add", Description = "Saves a new endpoint")]
         public AddEndpointCommand Add { get; init; } = new();

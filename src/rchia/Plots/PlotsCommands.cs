@@ -3,7 +3,7 @@
 namespace rchia.Plots
 {
     [Command("plots", Description = "Manage your plots.\nRequires a harvester, plotter or daemon endpoint.")]
-    internal sealed class PlotsCommand
+    internal sealed class PlotsCommands
     {
         [Command("add", Description = "Adds a directory of plots")]
         public AddPlotsCommand Add { get; init; } = new();
@@ -15,10 +15,10 @@ namespace rchia.Plots
         public ListPlotsCommand List { get; init; } = new();
 
         [Command("log", Description = "View the log for running plot jobs or a specific plot")]
-        public LogPlotsCommand Log { get; init; } = new();
+        public ShowPlotLogCommand Log { get; init; } = new();
 
         [Command("queue", Description = "View the plot queue")]
-        public PlotQueueCommand Queue { get; init; } = new();
+        public ShowPlotQueueCommand Queue { get; init; } = new();
 
         [Command("refresh", Description = "Refreshes the harvester's plot list")]
         public RefreshPlotsCommand Refresh { get; init; } = new();

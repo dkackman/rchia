@@ -35,7 +35,7 @@ namespace rchia.Farm
 
                 foreach (var sp in list.Take(count))
                 {
-                    table.AddRow(sp.SignagePoint.SignagePointIndex.ToString(), sp.SignagePoint.ChallengeHash);
+                    table.AddRow(sp.SignagePoint.SignagePointIndex.ToString(), sp.SignagePoint.ChallengeHash.Replace("0x", string.Empty));
                 }
 
                 AnsiConsole.Write(table);

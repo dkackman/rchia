@@ -49,13 +49,13 @@ namespace rchia.Blocks
                 var (NetworkName, NetworkPrefix) = await proxy.GetNetworkInfo(cts.Token);
                 var previous = await proxy.GetBlockRecord(block.PrevHash, cts.Token);
 
-                NameValue("Block Height", block.Height);
-                NameValue("Header Hash", block.HeaderHash);
+                NameValue("Block Height", block.Height.ToString("N0"));
+                NameValue("Header Hash", block.HeaderHash.Replace("0x", string.Empty));
 
                 var timestamp = block.DateTimestamp.HasValue ? block.DateTimestamp.Value.ToLocalTime().ToString() : "Not a transaction block";
                 NameValue("Timestamp", timestamp);
-                NameValue("Weight", block.Weight);
-                NameValue("Previous Block", block.PrevHash);
+                NameValue("Weight", block.Weight.ToString("N0"));
+                NameValue("Previous Block", block.PrevHash.Replace("0x", string.Empty));
 
                 var difficulty = previous is not null ? block.Weight - previous.Weight : block.Weight;
                 NameValue("Difficulty", difficulty);
@@ -73,11 +73,11 @@ namespace rchia.Blocks
                 NameValue("Plot Public Key", full_block.RewardChainBlock.ProofOfSpace.PlotPublicKey);
 
                 var txFilterHash = full_block.FoliageTransactionBlock is not null ? full_block.FoliageTransactionBlock.FilterHash : "Not a transaction block";
-                NameValue("Tx Filter Hash", txFilterHash);
+                NameValue("Tx Filter Hash", txFilterHash.Replace("0x", string.Empty));
 
                 var bech32 = new Bech32M(NetworkPrefix);
-                var farmerAddress = bech32.PuzzleHashToAddress(block.FarmerPuzzleHash);
-                var poolAddress = bech32.PuzzleHashToAddress(block.PoolPuzzleHash);
+                var farmerAddress = bech32.PuzzleHashToAddress(block.FarmerPuzzleHash.Replace("0x", string.Empty));
+                var poolAddress = bech32.PuzzleHashToAddress(block.PoolPuzzleHash.Replace("0x", string.Empty));
 
                 NameValue("Farmer Address", farmerAddress);
                 NameValue("Pool Address", poolAddress);

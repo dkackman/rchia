@@ -59,16 +59,16 @@ namespace rchia.Netspace
                 if (Verbose)
                 {
                     MarkupLine("[wheat1]Older Block[/]");
-                    NameValue("  Block Height", older_block_header.Height);
-                    NameValue("  Weight", older_block_header.Weight);
+                    NameValue("  Block Height", older_block_header.Height.ToString("N0"));
+                    NameValue("  Weight", older_block_header.Weight.ToString("N0"));
                     NameValue("  VDF Iterations", older_block_header.TotalIters.ToString("N0"));
-                    NameValue("  Header Hash", $"0x{ older_block_header.HeaderHash}");
+                    NameValue("  Header Hash", $"{older_block_header.HeaderHash.Replace("0x", string.Empty)}");
 
                     MarkupLine("[wheat1]Newer Block[/]");
-                    NameValue("  Block Height", newer_block_header.Height);
-                    NameValue("  Weight", newer_block_header.Weight);
+                    NameValue("  Block Height", newer_block_header.Height.ToString("N0"));
+                    NameValue("  Weight", newer_block_header.Weight.ToString("N0"));
                     NameValue("  VDF Iterations", newer_block_header.TotalIters.ToString("N0"));
-                    NameValue("  Header Hash", $"0x{ newer_block_header.HeaderHash}");
+                    NameValue("  Header Hash", $"{newer_block_header.HeaderHash.Replace("0x", string.Empty)}");
                 }
 
                 WriteLine(network_space_bytes_estimate.ToBytesString());

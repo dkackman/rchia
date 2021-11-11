@@ -7,7 +7,7 @@ using rchia.Commands;
 
 namespace rchia.Plots
 {
-    internal sealed class LogPlotsCommand : EndpointOptions
+    internal sealed class ShowPlotLogCommand : EndpointOptions
     {
         [Option("i", "id", Description = "The id of the plot log. Omit to see logs for all running plots.")]
         public string? Id { get; init; }
