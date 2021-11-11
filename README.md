@@ -43,20 +43,20 @@ The details of the endpoint can be specified in the following ways:
 ### On the command line
 
 ```bash
-./rchia show -s --endpoint-uri https://node1:8555 --cert-path ~/certs/node1/private_full_node.crt --key-path ~/certs/node1/private_full_node.key
+./rchia node status --endpoint-uri https://node1:8555 --cert-path ~/certs/node1/private_full_node.crt --key-path ~/certs/node1/private_full_node.key
 ```
 
 ### By using the `chia` config
 
 ```bash
-./rchia show -s --default-chia-config
+./rchia node status --default-chia-config
 ```
 
 ### Using saved endpoint connections
 
 ```bash
 ./rchia endpoints --add node1 https://node1:8555 ~/certs/node1/private_full_node.crt ~/certs/node1/private_full_node.key
-./rchia show -s --endpoint node1
+./rchia node status --endpoint node1
 ```
 
 ### Currently Suported Verbs
@@ -102,25 +102,22 @@ Commands:
 
 ## Usage for the Show Command
 ```bash
-user@computer:~$ ./rchia show --help
-show
-  Shows various properties of a full node.
-  Requires a daemon or full_node endpoint.
+user@computer:~$ ./rchia node --help
+node
+  Commands for managing a node.
+  Requires a daemon endpoint.
 
 Usage:
-  rchia [options] show [command]
+  rchia [options] node [command]
 
 Options:
   -?, -h, --help  Show help and usage information
 
 Commands:
-  add <host>   Connect to another Full Node by ip:port
-  exit         Shut down the running Full Node
-  header       Look up a block header hash by block height or hash
-  state        Show the current state of the blockchain
-  connections  List nodes connected to this Full Node
-  prune        Prune stale connections
-  remove <ID>  Remove a Node by the full or first 8 characters of NodeID
+  ping     Pings the daemon
+  version  Shows the version of the node
+  stop     Stops the node
+  status   Show the current status of the blockchain
 ```
 ___
 
