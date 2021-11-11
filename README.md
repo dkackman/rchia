@@ -72,28 +72,28 @@ Options:
   -?, -h, --help  Show help and usage information
 
 Commands:
-  bech32                 Convert addresses to and from puzzle hashes.
-  endpoints              Manage saved endpoints.
-  farm                   Manage your farm.
-                         Requires a daemon endpoint.
-  keys                   Manage your keys
-                         Requires a wallet or daemon endpoint.
-  netspace               Calculates the estimated space on the network given two block header hashes.
-                         Requires a daemon or full_node endpoint.
-  plotnft                Manage your plot NFTs.
-                         Requires a daemon endpoint.
-  plots                  Manage your plots.
-                         Requires a daemon endpoint.
-  show                   Shows various properties of a full node.
-                         Requires a daemon or full_node endpoint.
-  start <service-group>  Start service groups.
-                         Requires a daemon endpoint.
-  status                 Shows the status of the node.
-                         Requires a daemon endpoint.
-  stop <service-group>   Stop service groups.
-                         Requires a daemon endpoint.
-  wallet                 Manage your wallet.
-                         Requires a wallet or daemon endpoint.
+  bech32       Convert addresses to and from puzzle hashes.
+  blocks       Show informations about blocks and coins.
+               Requires a daemon or full_node endpoint.
+  connections  Various methods for managing node connections.
+               Requires a daemon or full_node endpoint.
+  endpoints    Manage saved endpoints.
+  farm         Manage your farm.
+               Requires a daemon endpoint.
+  keys         Manage your keys
+               Requires a wallet or daemon endpoint.
+  netspace     Calculates the estimated space on the network given two block header hashes.
+               Requires a daemon or full_node endpoint.
+  node         Commands to managing the node.
+               Requires a daemon endpoint.
+  plotnft      Manage your plot NFTs.
+               Requires a wallet or daemon endpoint.
+  plots        Manage your plots.
+               Requires a harvester, plotter or daemon endpoint.
+  services     Shows the status of the node.
+               Requires a daemon endpoint.
+  wallets      Manage your wallet.
+               Requires a wallet or daemon endpoint.
 ```
 
 ### Example output
