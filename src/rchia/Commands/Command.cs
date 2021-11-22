@@ -82,6 +82,8 @@ namespace rchia.Commands
 
         protected async Task<int> DoWorkAsync(string msg, Func<StatusContext, Task> work)
         {
+            Debug.Assert(!string.IsNullOrEmpty(msg));
+
             try
             {
                 await AnsiConsole.Status().StartAsync(msg, async ctx => await work(ctx));
@@ -105,11 +107,11 @@ namespace rchia.Commands
             }
         }
 
-        protected int DoWork(Action run)
+        protected int DoWork(Action work)
         {
             try
             {
-                run();
+                work();
 
                 Helpful("Done.");
 

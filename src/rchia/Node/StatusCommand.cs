@@ -45,14 +45,16 @@ namespace rchia.Node
                 if (state.Peak is not null)
                 {
                     var peak_time = state.Peak.DateTimestamp;
-                    if (!peak_time.HasValue)
+                    if (!state.Peak.IsTransactionBlock)
                     {
                         var curr = await proxy.GetBlockRecord(state.Peak.HeaderHash, cts.Token);
-                        while (curr is not null && !peak_time.HasValue)
+
+                        while (curr is not null && !curr.IsTransactionBlock)
                         {
                             curr = await proxy.GetBlockRecord(curr.PrevHash, cts.Token);
-                            peak_time = curr.DateTimestamp;
                         }
+                        
+                        peak_time = curr?.DateTimestamp;
                     }
 
                     var time = peak_time.HasValue ? peak_time.Value.ToLocalTime().ToString("U") : "unknown";
@@ -71,12 +73,12 @@ namespace rchia.Node
                 if (Verbose && state.Peak is not null)
                 {
                     var blocks = new List<BlockRecord>();
-
                     var block = await proxy.GetBlockRecord(state.Peak.HeaderHash, cts.Token);
+
                     while (block is not null && blocks.Count < 10 && block.Height > 0)
                     {
-                        using var cts1 = new CancellationTokenSource(TimeoutMilliseconds);
                         blocks.Add(block);
+                        using var cts1 = new CancellationTokenSource(TimeoutMilliseconds);
                         block = await proxy.GetBlockRecord(block.PrevHash, cts.Token);
                     }
 
@@ -92,6 +94,7 @@ namespace rchia.Node
                     {
                         table.AddRow(b.Height.ToString("N0"), b.HeaderHash.Replace("0x", ""));
                     }
+
                     AnsiConsole.Write(table);
                 }
             });
