@@ -44,7 +44,18 @@ namespace rchia.Node
 
                 if (state.Peak is not null)
                 {
-                    var time = state.Peak.DateTimestamp.HasValue ? state.Peak.DateTimestamp.Value.ToLocalTime().ToString("U") : "unknown";
+                    var peak_time = state.Peak.DateTimestamp;
+                    if (!peak_time.HasValue)
+                    {
+                        var curr = await proxy.GetBlockRecord(state.Peak.HeaderHash, cts.Token);
+                        while (curr is not null && !peak_time.HasValue)
+                        {
+                            curr = await proxy.GetBlockRecord(curr.PrevHash, cts.Token);
+                            peak_time = curr.DateTimestamp;
+                        }
+                    }
+
+                    var time = peak_time.HasValue ? peak_time.Value.ToLocalTime().ToString("U") : "unknown";
                     NameValue("Time", time);
                     NameValue("Peak Height", state.Peak.Height.ToString("N0"));
                 }
