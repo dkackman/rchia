@@ -12,13 +12,13 @@ namespace rchia.Commands
     {
         public static CommandLineBuilder UseAttributes(this CommandLineBuilder builder, Assembly assembly)
         {
-            var root = builder.Command;
             var types = from type in assembly.GetTypes()
                         let attr = type.GetCustomAttribute<CommandAttribute>()
                         where attr is not null
                         orderby attr.Name
                         select (type, attr);
 
+            var root = builder.Command;
             foreach (var (type, attr) in types)
             {
                 root.AddCommands(type, attr);

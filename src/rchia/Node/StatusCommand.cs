@@ -45,8 +45,6 @@ namespace rchia.Node
                 if (state.Peak is not null)
                 {
                     var time = state.Peak.DateTimestamp.HasValue ? state.Peak.DateTimestamp.Value.ToLocalTime().ToString("U") : "unknown";
-                    NameValue("Time2", state.Peak.Timestamp);
-
                     NameValue("Time", time);
                     NameValue("Peak Height", state.Peak.Height.ToString("N0"));
                 }
@@ -59,7 +57,7 @@ namespace rchia.Node
                 var totalIters = state.Peak is not null ? state.Peak.TotalIters : 0;
                 NameValue("Total iterations since the start of the blockchain", totalIters.ToString("N0"));
 
-                if (state.Peak is not null)
+                if (Verbose && state.Peak is not null)
                 {
                     var blocks = new List<BlockRecord>();
 
