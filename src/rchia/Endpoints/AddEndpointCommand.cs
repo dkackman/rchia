@@ -22,7 +22,7 @@ namespace rchia.Endpoints
         [CommandTarget]
         public int Run()
         {
-            return DoWork(() =>
+            return DoWork("Adding endpoint...", ctx =>
             {
                 if (!string.IsNullOrEmpty(Id))
                 {

@@ -8,7 +8,7 @@ namespace rchia.Endpoints
         [CommandTarget]
         public int Run()
         {
-            return DoWork(() =>
+            return DoWork("Listing saved endpoints...", ctx =>
             {
                 var library = EndpointLibrary.OpenLibrary();
 

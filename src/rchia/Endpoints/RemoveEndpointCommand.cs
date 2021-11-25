@@ -12,7 +12,7 @@ namespace rchia.Endpoints
         [CommandTarget]
         public int Run()
         {
-            return DoWork(() =>
+            return DoWork("Removing endpoint...", ctx =>
             {
                 var library = EndpointLibrary.OpenLibrary();
 

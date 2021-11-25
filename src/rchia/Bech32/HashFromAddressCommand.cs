@@ -11,7 +11,7 @@ namespace rchia.Bech32
         [CommandTarget]
         public int Run()
         {
-            return DoWork(() =>
+            return DoWork("Calculating hash...", ctx =>
             {
                 if (string.IsNullOrEmpty(Address))
                 {

@@ -107,11 +107,11 @@ namespace rchia.Commands
             }
         }
 
-        protected int DoWork(Action work)
+        protected int DoWork(string msg, Action<StatusContext> work)
         {
             try
             {
-                work();
+                AnsiConsole.Status().Start(msg, ctx => work(ctx));
 
                 Helpful("Done.");
 
