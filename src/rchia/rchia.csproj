@@ -28,7 +28,7 @@
     <PackageReference Include="chia-dotnet" Version="0.6.1" />
     <PackageReference Include="HexMate" Version="0.0.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Spectre.Console" Version="0.42.0" />
+    <PackageReference Include="Spectre.Console" Version="0.43.0" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21308.1" />
   </ItemGroup>
 
