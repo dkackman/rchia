@@ -27,10 +27,10 @@ namespace rchia
             using var rpcClient = await CreateRpcClient(endpoint, timeoutMilliseconds);
         }
 
-        public async Task<IRpcClient> CreateRpcClient(IStatus status, EndpointOptions options, string serviceName)
+        public async Task<IRpcClient> CreateRpcClient(ICommandOutput output, EndpointOptions options, string serviceName)
         {
-            var endpoint = GetEndpointInfo(options, serviceName);
-            using var message = new StatusMessage(status, $"Connecting to endpoint {endpoint.Uri}...");
+            var endpoint = GetEndpointInfo(output, options, serviceName);
+            using var message = new StatusMessage(output.Status, $"Connecting to endpoint {endpoint.Uri}...");
 
             return await CreateRpcClient(endpoint, options.TimeoutMilliseconds);
         }
@@ -44,15 +44,15 @@ namespace rchia
                 : throw new InvalidOperationException($"Unrecognized endpoint Uri scheme {endpoint.Uri.Scheme}");
         }
 
-        public async Task<WebSocketRpcClient> CreateWebSocketClient(IStatus status, EndpointOptions options)
+        public async Task<WebSocketRpcClient> CreateWebSocketClient(ICommandOutput output, EndpointOptions options)
         {
-            var endpoint = GetEndpointInfo(options, ServiceNames.Daemon);
+            var endpoint = GetEndpointInfo(output, options, ServiceNames.Daemon);
 
             if (endpoint.Uri.Scheme != "wss")
             {
                 throw new InvalidOperationException($"Expecting a daemon endpoint using the websocket protocol but found {endpoint.Uri}");
             }
-            using var message = new StatusMessage(status, $"Connecting to websocket {endpoint.Uri}...");
+            using var message = new StatusMessage(output.Status, $"Connecting to websocket {endpoint.Uri}...");
 
             return await CreateWebSocketClient(endpoint, options.TimeoutMilliseconds);
         }
@@ -70,7 +70,7 @@ namespace rchia
             return rpcClient;
         }
 
-        private static EndpointInfo GetEndpointInfo(EndpointOptions options, string serviceName)
+        private static EndpointInfo GetEndpointInfo(ICommandOutput output, EndpointOptions options, string serviceName)
         {
             var library = EndpointLibrary.OpenLibrary();
 
@@ -105,7 +105,7 @@ namespace rchia
 
             if (!options.DefaultEndpoint)
             {
-                options.Helpful("No endpoint options set. Using default endpoint.");
+                output.Helpful("No endpoint options set. Using default endpoint.");
             }
 
             var endpoint = library.GetDefault();

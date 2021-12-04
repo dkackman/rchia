@@ -4,39 +4,30 @@ using System.Collections.Generic;
 using chia.dotnet;
 using rchia.Commands;
 
-namespace rchia.Plots
+namespace rchia.Plots;
+
+internal sealed class ShowPlotsCommand : EndpointOptions
 {
-    internal sealed class ShowPlotsCommand : EndpointOptions
+    [CommandTarget]
+    public async Task<int> Run()
     {
-        [Option("", "json", Description = "Set this flag to output json")]
-        public bool Json { get; init; }
-
-        [CommandTarget]
-        public async Task<int> Run()
+        return await DoWorkAsync("Retrieving plot info...", async output =>
         {
-            if (Json)
+            using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Harvester);
+            var proxy = new HarvesterProxy(rpcClient, ClientFactory.Factory.OriginService);
+
+            output.WriteLine("Directories where plots are being searched for:");
+            output.Helpful("Note that subdirectories must be added manually", true);
+            output.MarkupLine("Add with '[grey]chia plots add <dir>[/]' and remove with '[grey]chia plots remove <dir>[/]'");
+            output.WriteLine("");
+
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+            var list = new List<string>();
+            foreach (var path in await proxy.GetPlotDirectories(cts.Token))
             {
-                SetJsonOutput();
+                list.Add(path);
             }
-
-            return await DoWorkAsync("Retrieving plot info...", async ctx =>
-            {
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Harvester);
-                var proxy = new HarvesterProxy(rpcClient, ClientFactory.Factory.OriginService);
-
-                WriteLine("Directories where plots are being searched for:");
-                Helpful("Note that subdirectories must be added manually", true);
-                MarkupLine("Add with '[grey]chia plots add <dir>[/]' and remove with '[grey]chia plots remove <dir>[/]'");
-                WriteLine("");
-
-                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-                var output = new List<string>();
-                foreach (var path in await proxy.GetPlotDirectories(cts.Token))
-                {
-                    output.Add(path);
-                }
-                WriteOutput(output);
-            });
-        }
+            output.WriteOutput(list);
+        });
     }
 }

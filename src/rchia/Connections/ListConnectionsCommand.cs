@@ -1,53 +1,44 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
-using Spectre.Console;
 
-namespace rchia.Connections
+namespace rchia.Connections;
+
+internal sealed class ListConnectionsCommand : EndpointOptions
 {
-    internal sealed class ListConnectionsCommand : EndpointOptions
+    [CommandTarget]
+    public async Task<int> Run()
     {
-        [CommandTarget]
-        public async Task<int> Run()
+        return await DoWorkAsync("Retrieving connections...", async output =>
         {
-            return await DoWorkAsync("Retrieving connections...", async ctx =>
+            using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.FullNode);
+            var proxy = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);
+
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+            var connections = await proxy.GetConnections(cts.Token);
+
+            var table = new List<IDictionary<string, string>>();
+
+            foreach (var c in await proxy.GetConnections(cts.Token))
             {
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.FullNode);
-                var proxy = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);
+                var row = new Dictionary<string, string>();
 
-                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-                var connections = await proxy.GetConnections(cts.Token);
+                row.Add("Type", c.Type.ToString());
+                row.Add("IP", c.PeerHost);
+                row.Add("Ports", $"{c.PeerPort}/{c.PeerServerPort}");
+                row.Add("NodeID", Verbose ? c.NodeId : c.NodeId.Substring(2, 10) + "...");
+                row.Add("Last Connect", $"{c.LastMessageDateTime.ToLocalTime():MMM dd HH:mm}");
+                row.Add("Up", (c.BytesRead ?? 0).ToBytesString("N1"));
+                row.Add("Down", (c.BytesWritten ?? 0).ToBytesString("N1"));
+                row.Add("Height", c.PeakHeight.HasValue ? c.PeakHeight.Value.ToString() : "na");
+                row.Add("Hash", string.IsNullOrEmpty(c.PeakHash) ? "no info" : Verbose ? c.PeakHash : c.PeakHash.Substring(2, 10) + "...");
 
-                var table = new Table
-                {
-                    Title = new TableTitle("[orange3]Connections[/]")
-                };
+                table.Add(row);
+            }
 
-                table.AddColumn("[orange3]Type[/]");
-                table.AddColumn("[orange3]IP[/]");
-                table.AddColumn("[orange3]Ports[/]");
-                table.AddColumn("[orange3]NodeID[/]");
-                table.AddColumn("[orange3]Last Connect[/]");
-                table.AddColumn("[orange3]Up[/]");
-                table.AddColumn("[orange3]Down[/]");
-                table.AddColumn("[orange3]Height[/]");
-                table.AddColumn("[orange3]Hash[/]");
-
-                foreach (var c in connections)
-                {
-                    var id = Verbose ? c.NodeId : c.NodeId.Substring(2, 10) + "...";
-                    var up = c.BytesRead ?? 0;
-                    var down = c.BytesWritten ?? 0;
-                    var ports = $"{c.PeerPort}/{c.PeerServerPort}";
-                    var height = c.PeakHeight.HasValue ? c.PeakHeight.Value.ToString() : "na";
-                    var hash = string.IsNullOrEmpty(c.PeakHash) ? "no info" : Verbose ? c.PeakHash : c.PeakHash.Substring(2, 10) + "...";
-
-                    table.AddRow(c.Type.ToString(), c.PeerHost, ports, id, $"{c.LastMessageDateTime.ToLocalTime():MMM dd HH:mm}", up.ToBytesString("N1"), down.ToBytesString("N1"), height, hash);
-                }
-
-                AnsiConsole.Write(table);
-            });
-        }
+            output.WriteOutput(table);
+        });
     }
 }

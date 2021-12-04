@@ -22,7 +22,7 @@ namespace rchia.Endpoints
         [CommandTarget]
         public int Run()
         {
-            return DoWork("Adding endpoint...", ctx =>
+            return DoWork("Adding endpoint...", output =>
             {
                 if (!string.IsNullOrEmpty(Id))
                 {
@@ -61,8 +61,8 @@ namespace rchia.Endpoints
                     library.Endpoints.Add(endpoint.Id, endpoint);
                     library.Save();
 
-                    MarkupLine($"Endpoint [wheat1]{endpoint.Id}[/] added");
-                    WriteLine(endpoint.ToJson());
+                    output.MarkupLine($"Endpoint [wheat1]{endpoint.Id}[/] added");
+                    output.WriteOutput(endpoint);
                 }
             });
         }

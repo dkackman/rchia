@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
@@ -20,9 +21,9 @@ namespace rchia.Connections
                 throw new InvalidOperationException("A number of blocks must be provided");
             }
 
-            return await DoWorkAsync("Pruning connections...", async ctx =>
+            return await DoWorkAsync("Pruning connections...", async output =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.FullNode);
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.FullNode);
                 var fullNode = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);
 
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
@@ -33,21 +34,22 @@ namespace rchia.Connections
                 }
 
                 var maxHeight = state.Sync.SyncProgressHeight - Blocks;
-                MarkupLine($"Pruning connections that with a peak less than [wheat1]{maxHeight}[/]");
+                output.MarkupLine($"Pruning connections that with a peak less than [wheat1]{maxHeight}[/]");
 
                 var connections = await fullNode.GetConnections(cts.Token);
                 // only prune other full nodes, not famers, harvesters, and wallets etc
                 var n = 0;
+                var list = new List<string>();
                 foreach (var connection in connections.Where(c => c.Type == NodeType.FULL_NODE && c.PeakHeight < maxHeight))
                 {
                     using var cts1 = new CancellationTokenSource(TimeoutMilliseconds);
 
                     await fullNode.CloseConnection(connection.NodeId, cts1.Token);
-                    MarkupLine($"Closed connection at [wheat1]{connection.PeerHost}:{connection.PeerServerPort}[/] with a peak of [wheat1]{connection.PeakHeight}[/]");
+                    list.Add($"{connection.PeerHost}:{connection.PeerServerPort}");
                     n++;
                 }
-
-                MarkupLine($"Pruned [wheat1]{n}[/] connection{(n == 1 ? string.Empty : "s")}");
+                output.WriteOutput(list);
+                output.MarkupLine($"Pruned [wheat1]{n}[/] connection{(n == 1 ? string.Empty : "s")}");
             });
         }
     }

@@ -50,9 +50,9 @@ namespace rchia
             table.AddRow(name, status, amount, to, at);
         }
 
-        protected async Task<WalletProxy> Login(IRpcClient rpcClient, IStatus status)
+        protected async Task<WalletProxy> Login(IRpcClient rpcClient, ICommandOutput output)
         {
-            using var message = new StatusMessage(status, "Logging into wallet...");
+            using var message = new StatusMessage(output.Status, "Logging into wallet...");
             var walletProxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 

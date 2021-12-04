@@ -12,10 +12,10 @@ namespace rchia.Wallet
         [CommandTarget]
         public async Task<int> Run()
         {
-            return await DoWorkAsync("Retrieving wallet info...", async ctx =>
+            return await DoWorkAsync("Retrieving wallet info...", async output =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
-                var proxy = await Login(rpcClient, ctx);
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
+                var proxy = await Login(rpcClient, output);
 
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 var (GenesisInitialized, Synced, Syncing) = await proxy.GetSyncStatus(cts.Token);
@@ -29,7 +29,7 @@ namespace rchia.Wallet
 
                 if (wallets.Any())
                 {
-                    using var status = new StatusMessage(ctx, "Retrieving balances...");
+                    using var status = new StatusMessage(output.Status, "Retrieving balances...");
                     var table = new Table
                     {
                         Title = new TableTitle($"[orange3]Balances ({NetworkPrefix})[/]")

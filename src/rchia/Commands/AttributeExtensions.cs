@@ -48,7 +48,8 @@ namespace rchia.Commands
                 var option = new Option(aliases.ToArray(), attr.Description, property.PropertyType)
                 {
                     ArgumentHelpName = attr.ArgumentHelpName ?? property.Name,
-                    IsRequired = attr.IsRequired
+                    IsRequired = attr.IsRequired,
+                    IsHidden = attr.IsHidden
                 };
 
                 if (attr.Default is not null)
