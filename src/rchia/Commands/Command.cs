@@ -1,94 +1,95 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+
 using Spectre.Console;
 
 namespace rchia.Commands
 {
-    public abstract class Command
+    public abstract class Command : ICommandOuptut
     {
+        private ICommandOuptut _commandOuptut = new ConsoleOutput();
+
+        protected void SetJsonOutput()
+        {
+            _commandOuptut = new JsonOutput()
+            {
+                Verbose = Verbose
+            };
+        }
+
         [Option("v", "verbose", Description = "Set output to verbose messages")]
-        public bool Verbose { get; init; }
+        public bool Verbose { get { return _commandOuptut.Verbose; } set { _commandOuptut.Verbose = value; } }
+
+        public bool IsInteractive => _commandOuptut.IsInteractive;
+
+        public IStatus CreateStatus(StatusContext? ctx)
+        {
+            return _commandOuptut.CreateStatus(ctx);
+        }
+
+        public void WriteOutput(IEnumerable<string> output)
+        {
+            _commandOuptut.WriteOutput(output);
+        }
 
         public void MarkupLine(string msg)
         {
-            AnsiConsole.MarkupLine(msg);
+            _commandOuptut.MarkupLine(msg);
         }
 
         public void WriteLine(string msg)
         {
-            AnsiConsole.WriteLine(msg);
+            _commandOuptut.WriteLine(msg);
         }
 
         public void Message(string msg, bool important = false)
         {
-            if (important)
-            {
-                MarkupLine($"[yellow]{msg}[/]");
-            }
-            else if (Verbose)
-            {
-                MarkupLine(msg);
-            }
-
-            Debug.WriteLine(msg);
+            _commandOuptut.Message(msg, important);
         }
 
         public void NameValue(string name, object? value)
         {
-            MarkupLine($"[wheat1]{name}:[/] {value}");
+            _commandOuptut.NameValue(name, value);
         }
 
         public void Helpful(string msg, bool important = false)
         {
-            if (Verbose || important)
-            {
-                MarkupLine($"[{(important ? "lime" : "grey")}]{msg}[/]");
-            }
+            _commandOuptut.Helpful(msg, important);
         }
 
         public void Warning(string msg)
         {
-            MarkupLine($"[yellow]{msg}[/]");
+            _commandOuptut.Warning(msg);
         }
 
         public void Message(Exception e)
         {
-            if (Verbose)
-            {
-                AnsiConsole.WriteException(e, ExceptionFormats.ShortenEverything | ExceptionFormats.ShowLinks);
-            }
-            else
-            {
-                MarkupLine($"[red]{e.Message}[/]");
-            }
+            _commandOuptut.Message(e);
         }
 
         public bool Confirm(string warning, bool force)
         {
-            if (!force)
-            {
-                if (!AnsiConsole.Confirm(warning, false))
-                {
-                    Message("Cancelled");
-                    return false;
-                }
-
-                Message("Confirmed");
-            }
-
-            return true;
+            return _commandOuptut.Confirm(warning, force);
         }
 
-        protected async Task<int> DoWorkAsync(string msg, Func<StatusContext, Task> work)
+        protected async Task<int> DoWorkAsync(string msg, Func<IStatus, Task> work)
         {
             Debug.Assert(!string.IsNullOrEmpty(msg));
 
             try
             {
-                await AnsiConsole.Status().StartAsync(msg, async ctx => await work(ctx));
+                if (IsInteractive)
+                {
+                    await AnsiConsole.Status().StartAsync(msg, async ctx => await work(_commandOuptut.CreateStatus(ctx)));
+                    Helpful("Done.");
 
-                Helpful("Done.");
+                }
+                else
+                {
+                    await work(_commandOuptut.CreateStatus(null));
+                }
 
                 return 0;
             }
@@ -107,13 +108,19 @@ namespace rchia.Commands
             }
         }
 
-        protected int DoWork(string msg, Action<StatusContext> work)
+        protected int DoWork(string msg, Action<IStatus> work)
         {
             try
             {
-                AnsiConsole.Status().Start(msg, ctx => work(ctx));
-
-                Helpful("Done.");
+                if (IsInteractive)
+                {
+                    AnsiConsole.Status().Start(msg, ctx => work(_commandOuptut.CreateStatus(ctx)));
+                    Helpful("Done.");
+                }
+                else
+                {
+                    work(_commandOuptut.CreateStatus(null));
+                }
 
                 return 0;
             }

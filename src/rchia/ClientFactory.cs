@@ -27,10 +27,10 @@ namespace rchia
             using var rpcClient = await CreateRpcClient(endpoint, timeoutMilliseconds);
         }
 
-        public async Task<IRpcClient> CreateRpcClient(StatusContext ctx, EndpointOptions options, string serviceName)
+        public async Task<IRpcClient> CreateRpcClient(IStatus status, EndpointOptions options, string serviceName)
         {
             var endpoint = GetEndpointInfo(options, serviceName);
-            using var status = new StatusMessage(ctx, $"Connecting to endpoint {endpoint.Uri}...");
+            using var message = new StatusMessage(status, $"Connecting to endpoint {endpoint.Uri}...");
 
             return await CreateRpcClient(endpoint, options.TimeoutMilliseconds);
         }
@@ -44,7 +44,7 @@ namespace rchia
                 : throw new InvalidOperationException($"Unrecognized endpoint Uri scheme {endpoint.Uri.Scheme}");
         }
 
-        public async Task<WebSocketRpcClient> CreateWebSocketClient(StatusContext ctx, EndpointOptions options)
+        public async Task<WebSocketRpcClient> CreateWebSocketClient(IStatus status, EndpointOptions options)
         {
             var endpoint = GetEndpointInfo(options, ServiceNames.Daemon);
 
@@ -52,7 +52,7 @@ namespace rchia
             {
                 throw new InvalidOperationException($"Expecting a daemon endpoint using the websocket protocol but found {endpoint.Uri}");
             }
-            using var status = new StatusMessage(ctx, $"Connecting to websocket {endpoint.Uri}...");
+            using var message = new StatusMessage(status, $"Connecting to websocket {endpoint.Uri}...");
 
             return await CreateWebSocketClient(endpoint, options.TimeoutMilliseconds);
         }
