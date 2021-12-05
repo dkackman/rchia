@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -46,12 +45,15 @@ internal sealed class AdditionsAndRemovalsCommand : EndpointOptions
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var (Additions, Removals) = await proxy.GetAdditionsAndRemovals(headerHash, cts.Token);
 
-            ShowCoinRecords(output, Additions, "Additions");
-            ShowCoinRecords(output, Removals, "Removals");
+            var result = new Dictionary<string, IEnumerable<IDictionary<string, string>>>();
+            result.Add("additions", GetCoinRecords(output, Additions));
+            result.Add("removals", GetCoinRecords(output, Removals));
+
+            output.WriteOutput(result);
         });
     }
 
-    private void ShowCoinRecords(ICommandOutput output, IEnumerable<CoinRecord> records, string name)
+    private IEnumerable<IDictionary<string, string>> GetCoinRecords(ICommandOutput output, IEnumerable<CoinRecord> records)
     {
         var table = new List<IDictionary<string, string>>();
 
@@ -71,8 +73,6 @@ internal sealed class AdditionsAndRemovalsCommand : EndpointOptions
             table.Add(row);
         }
 
-        output.WriteOutput(table);
-
-        output.MarkupLine($"{records.Count()} {(records.Count() == 1 ? name.ToLower().TrimEnd('s') : name.ToLower())}");
+        return table;
     }
 }

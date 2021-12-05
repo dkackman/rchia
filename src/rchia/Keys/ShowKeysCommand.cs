@@ -1,64 +1,55 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Bech32;
 using rchia.Commands;
 
-namespace rchia.Keys
+namespace rchia.Keys;
+
+internal sealed class ShowKeysCommand : EndpointOptions
 {
-    internal sealed class ShowKeysCommand : EndpointOptions
+    [Option("m", "show-mnemonic-seed", Default = false, Description = "Show the mnemonic seed of the keys")]
+    public bool ShowMnemonicSeed { get; init; }
+
+    [CommandTarget]
+    public async Task<int> Run()
     {
-        [Option("m", "show-mnemonic-seed", Default = false, Description = "Show the mnemonic seed of the keys")]
-        public bool ShowMnemonicSeed { get; init; }
-
-        [CommandTarget]
-        public async Task<int> Run()
+        return await DoWorkAsync("Retrieving keys...", async output =>
         {
-            return await DoWorkAsync("Retrieving kets...", async ctx =>
+            using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
+
+            var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
+
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+            var keys = await proxy.GetPublicKeys(cts.Token);
+
+            var (NetworkName, NetworkPrefix) = await proxy.GetNetworkInfo(cts.Token);
+            var bech32 = new Bech32M(NetworkPrefix);
+
+            var table = new List<Dictionary<string, string>>();
+            foreach (var fingerprint in keys)
             {
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
+                var row = new Dictionary<string, string>();
 
-                var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
+                row.Add("fingerprint", fingerprint.ToString());
+                using var cts1 = new CancellationTokenSource(TimeoutMilliseconds);
+                var (Fingerprint, Sk, Pk, FarmerPk, PoolPk, Seed) = await proxy.GetPrivateKey(fingerprint, cts1.Token);
 
-                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-                var keys = await proxy.GetPublicKeys(cts.Token);
+                row.Add("master_public_key", Pk);
+                row.Add("farmer_public_key", FarmerPk);
+                row.Add("pool_public_key", PoolPk);
 
-                if (keys.Any())
+                if (ShowMnemonicSeed)
                 {
-                    var (NetworkName, NetworkPrefix) = await proxy.GetNetworkInfo(cts.Token);
-                    var bech32 = new Bech32M(NetworkPrefix);
-
-                    foreach (var fingerprint in keys)
-                    {
-                        NameValue("Fingerprint", fingerprint);
-                        using var cts1 = new CancellationTokenSource(TimeoutMilliseconds);
-                        var (Fingerprint, Sk, Pk, FarmerPk, PoolPk, Seed) = await proxy.GetPrivateKey(fingerprint, cts1.Token);
-
-                        NameValue("Master public key (m)", Pk);
-                        NameValue("Farmer public key(m/12381/8444/0/0)", FarmerPk);
-                        NameValue("Pool public key (m/12381/8444/1/0)", PoolPk);
-
-                        // this isn't possible over rpc right now
-                        //var address = bech32.PuzzleHashToAddress(HexBytes.FromHex(Sk));
-                        // Console.WriteLine($"First wallet address", address(;
-
-                        if (ShowMnemonicSeed)
-                        {
-                            NameValue("Master private key (m)", Sk);
-
-                            // this isn't possible over rpc right now
-                            //Console.WriteLine($"First wallet secret key (m/12381/8444/2/0)", Sk(;
-
-                            NameValue("  Mnemonic seed (24 secret words)", Seed);
-                        }
-                    }
+                    row.Add("master_private_key", Sk);
+                    row.Add("mnemonic_seed", Seed);
                 }
-                else
-                {
-                    Warning("There are no saved private keys");
-                }
-            });
-        }
+
+                table.Add(row);
+            }
+
+            output.WriteOutput(table);
+        });
     }
 }

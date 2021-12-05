@@ -4,34 +4,33 @@ using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 
-namespace rchia.Keys
+namespace rchia.Keys;
+
+internal sealed class DeleteKeyCommand : WalletCommand
 {
-    internal sealed class DeleteKeyCommand : WalletCommand
+    [Option("f", "force", Default = false, Description = "Delete the key without prompting for confirmation")]
+    public bool Force { get; init; }
+
+    [CommandTarget]
+    public async Task<int> Run()
     {
-        [Option("f", "force", Default = false, Description = "Delete the key without prompting for confirmation")]
-        public bool Force { get; init; }
-
-        [CommandTarget]
-        public async Task<int> Run()
+        return await DoWorkAsync("Deleting key...", async output =>
         {
-            return await DoWorkAsync("Deleting key...", async ctx =>
+            if (Fingerprint is null || Fingerprint == 0)
             {
-                if (Fingerprint is null || Fingerprint == 0)
-                {
-                    throw new InvalidOperationException($"{Fingerprint} is not a valid wallet fingerprint");
-                }
+                throw new InvalidOperationException($"{Fingerprint} is not a valid wallet fingerprint");
+            }
 
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Farmer);
+            using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Farmer);
 
-                if (Confirm($"Deleting a key CANNOT be undone.\nAre you sure you want to delete key {Fingerprint} from [red]{rpcClient.Endpoint.Uri}[/]?", Force))
-                {
-                    var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
-                    using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-                    await proxy.DeleteKey(Fingerprint.Value, cts.Token);
+            if (output.Confirm($"Deleting a key CANNOT be undone.\nAre you sure you want to delete key {Fingerprint} from [red]{rpcClient.Endpoint.Uri}[/]?", Force))
+            {
+                var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
+                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                await proxy.DeleteKey(Fingerprint.Value, cts.Token);
 
-                    MarkupLine($"Deleted the key with fingerprint [wheat1]{Fingerprint}[/]");
-                }
-            });
-        }
+                output.MarkupLine($"Deleted the key with fingerprint [wheat1]{Fingerprint}[/]");
+            }
+        });
     }
 }
