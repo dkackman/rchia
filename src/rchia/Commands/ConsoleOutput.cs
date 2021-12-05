@@ -21,11 +21,19 @@ internal class ConsoleOutput : ICommandOutput
         return this;
     }
 
+    public void WriteOutput(IDictionary<string, IEnumerable<IDictionary<string, string>>> output)
+    {
+        foreach (var table in output)
+        {
+            WriteTable(table.Value, table.Key);
+        }
+    }
+
     public void WriteOutput(string name, string value, bool verbose)
     {
         if (verbose)
         {
-            WriteLine($"{name}:{value}");
+            MarkupLine($"[wheat1]{name.FromSnakeCase()}:[/] {value}");
         }
         else
         {
@@ -40,7 +48,23 @@ internal class ConsoleOutput : ICommandOutput
 
     public void WriteOutput(IEnumerable<IDictionary<string, string>> output)
     {
-        var table = new Table();
+        WriteTable(output, string.Empty);
+    }
+
+    public void WriteOutput(IEnumerable<string> output)
+    {
+        foreach (var value in output)
+        {
+            WriteLine(value);
+        }
+    }
+
+    private static void WriteTable(IEnumerable<IDictionary<string, string>> output, string title)
+    {
+        var table = new Table
+        {
+            Title = new TableTitle($"[orange3]{title.FromSnakeCase()}[/]")
+        };
 
         var first = output.FirstOrDefault();
         if (first != null)
@@ -48,7 +72,7 @@ internal class ConsoleOutput : ICommandOutput
             // the first item holds the column names - it is assumed all items have the same keys
             foreach (var column in first.Keys)
             {
-                table.AddColumn($"[orange3]{column}[/]");
+                table.AddColumn($"[orange3]{column.FromSnakeCase()}[/]");
             }
 
             // now add the values from all the rows
@@ -61,19 +85,11 @@ internal class ConsoleOutput : ICommandOutput
         AnsiConsole.Write(table);
     }
 
-    public void WriteOutput(IEnumerable<string> output)
-    {
-        foreach (var value in output)
-        {
-            WriteLine(value);
-        }
-    }
-
     public void WriteOutput(IDictionary<string, string> output)
     {
         foreach (var value in output)
         {
-            MarkupLine($"[wheat1]{value.Key}:[/] {value.Value}");
+            MarkupLine($"[wheat1]{value.Key.FromSnakeCase()}:[/] {value.Value}");
         }
     }
 
@@ -114,7 +130,7 @@ internal class ConsoleOutput : ICommandOutput
         MarkupLine($"[yellow]{msg}[/]");
     }
 
-    public void Message(Exception e)
+    public void WriteError(Exception e)
     {
         if (Verbose)
         {

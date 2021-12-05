@@ -34,17 +34,17 @@ internal sealed class GetTransactionsCommand : WalletCommand
 
             if (transactions.Any())
             {
-                var result = new List<IDictionary<string,object>>();
+                var result = new List<IDictionary<string, string>>();
 
                 foreach (var tx in transactions)
                 {
-                    var dict = new Dictionary<string, object>();
+                    var dict = new Dictionary<string, string>();
                     PrintTransaction(tx, NetworkPrefix, dict);
                     result.Add(dict);
                 }
 
                 output.WriteOutput(result);
-                var c = transactions.Count();                
+                var c = transactions.Count();
                 output.MarkupLine($"Showing [wheat1]{c}[/] transaction{(c == 1 ? string.Empty : "s")}");
             }
             else

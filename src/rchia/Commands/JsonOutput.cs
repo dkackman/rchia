@@ -17,6 +17,11 @@ internal class JsonOutput : ICommandOutput
         return this;
     }
 
+    public void WriteOutput(IDictionary<string, IEnumerable<IDictionary<string, string>>> output)
+    {
+        AnsiConsole.WriteLine(output.ToJson());
+    }
+
     public void WriteOutput(string name, string value, bool verbose = false)
     {
         var output = new Dictionary<string, string>()
@@ -29,12 +34,12 @@ internal class JsonOutput : ICommandOutput
 
     public void WriteOutput(object output)
     {
-        WriteLine(output.ToJson());
+        AnsiConsole.WriteLine(output.ToJson());
     }
 
     public void WriteOutput(IEnumerable<IDictionary<string, string>> output)
     {
-        AnsiConsole.WriteLine(output.ToJson());
+        AnsiConsole.WriteLine(output.SortAll().ToJson());
     }
 
     public void WriteOutput(IEnumerable<string> output)
@@ -44,19 +49,17 @@ internal class JsonOutput : ICommandOutput
 
     public void WriteOutput(IDictionary<string, string> output)
     {
-        AnsiConsole.WriteLine(output.ToJson());
+        AnsiConsole.WriteLine(output.Sort().ToJson());
     }
 
     public void MarkupLine(string msg)
     {
         Debug.WriteLine(msg);
-
     }
 
     public void WriteLine(string msg)
     {
         Debug.WriteLine(msg);
-
     }
 
     public void Message(string msg, bool important = false)
@@ -72,16 +75,11 @@ internal class JsonOutput : ICommandOutput
     public void Warning(string msg)
     {
         Debug.WriteLine(msg);
-
     }
 
-    public void Message(Exception e)
+    public void WriteError(Exception e)
     {
-        var error = new Dictionary<string, string>()
-                    {
-                        { "error", e.Message }
-                    };
-        WriteOutput(error);
+        WriteOutput("error", e.Message);
     }
 
     public bool Confirm(string warning, bool force)

@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using chia.dotnet;
 using rchia.Commands;
 
@@ -20,11 +19,7 @@ namespace rchia.Node
                 await proxy.Ping();
                 stopWatch.Stop();
 
-                var result = new Dictionary<string, string>()
-                {
-                    { "response_time", $"{stopWatch.ElapsedMilliseconds / 1000.0:N2}"}
-                };
-                output.WriteOutput(result);
+                output.WriteOutput("response_time", $"{stopWatch.ElapsedMilliseconds / 1000.0:N2}", true);
             });
         }
     }

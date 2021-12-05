@@ -57,7 +57,7 @@ namespace rchia.Wallet
                 var (_, NetworkPrefix) = await wallet.WalletProxy.GetNetworkInfo(cts.Token);
                 var tx = await wallet.SendTransaction(Address, Amount.ToMojo(), Fee.ToMojo(), cts.Token);
 
-                var result = new Dictionary<string, object>();
+                var result = new Dictionary<string, string>();
                 PrintTransaction(tx, NetworkPrefix, result);
                 output.WriteOutput(result);
 

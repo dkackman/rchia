@@ -27,7 +27,7 @@ namespace rchia.Plots
                         { "name", plotter.DisplayName },
                         { "installed", plotter.Installed.ToString() },
                         { "can_install", plotter.CanInstall.ToString() },
-                        { "version", plotter.Version is not null ? plotter.Version : string.Empty }
+                        { "version", plotter.Version ?? string.Empty }
                     };
 
                     table.Add(row);

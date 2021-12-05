@@ -36,10 +36,32 @@ internal sealed class ListPlotsCommand : EndpointOptions
                 }
             };
 
-            if (!Verbose)
+            if (!Json)
             {
-                output.Helpful("(use '[grey]-v/--verbose[/]' to see file names)", true);
+                ListPlots(output, plots.FailedToOpenFilenames, "failed to open");
+                ListPlots(output, plots.NotFoundFileNames, "not found");
+                ListPlots(output, plots.Plots.Select(p => p.Filename), "plots");
+                if (!Verbose)
+                {
+                    output.Helpful("(use '[grey]-v/--verbose[/]' to see file names)", true);
+                }
+            }
+            else
+            {
+                output.WriteOutput(result);
             }
         });
+    }
+
+    private void ListPlots(ICommandOutput output, IEnumerable<string> plots, string msg)
+    {
+        output.WriteLine($"{plots.Count()} {msg}.");
+        if (plots.Any() && Verbose)
+        {
+            foreach (var plot in plots)
+            {
+                output.WriteLine(plot);
+            }
+        }
     }
 }

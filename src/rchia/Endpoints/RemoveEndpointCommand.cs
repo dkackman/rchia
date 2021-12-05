@@ -1,5 +1,4 @@
 ﻿using System;
-
 using rchia.Commands;
 
 namespace rchia.Endpoints;
@@ -24,7 +23,7 @@ internal sealed class RemoveEndpointCommand : Command
             _ = library.Endpoints.Remove(Id);
             library.Save();
 
-            output.MarkupLine($"Endpoint [wheat1]{Id}[/] removed");
+            output.WriteOutput("removed", Id, Verbose);
         });
     }
 }

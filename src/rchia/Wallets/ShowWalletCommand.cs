@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Dynamic;
 using chia.dotnet;
 using rchia.Commands;
 
@@ -23,18 +24,17 @@ internal sealed class ShowWalletCommand : WalletCommand
             var height = await proxy.GetHeightInfo(cts.Token);
             var wallets = await proxy.GetWallets(cts.Token);
 
-            var result = new Dictionary<string, object>()
+            var wallet = new Dictionary<string, string>()
             {
+                { "fingerprint", proxy.Fingerprint?.ToString() ?? string.Empty },
                 { "sync_status", Synced ? "Synced" : "Not synced" },
-                { "wallet_height", height },
-                { "fingerprint", proxy.Fingerprint?.ToString() ?? string.Empty }
+                { "wallet_height", height.ToString() }
             };
-            output.WriteOutput(result);
+            var table = new List<IDictionary<string, string>>();
 
             if (wallets.Any())
             {
                 using var status = new StatusMessage(output.Status, "Retrieving balances...");
-                var table = new List<IDictionary<string, string>>();
 
                 foreach (var summary in wallets)
                 {
@@ -59,12 +59,24 @@ internal sealed class ShowWalletCommand : WalletCommand
 
                     table.Add(row);
                 }
-
-                output.WriteOutput(table);
             }
             else
             {
                 output.Warning($"There are no wallets for a this public key {proxy.Fingerprint}");
+            }
+
+            if (Json)
+            {
+                dynamic result = new ExpandoObject();
+                result.summary = wallet;
+                result.wallets = table;
+
+                output.WriteOutput(result);
+            }
+            else
+            {
+                output.WriteOutput(wallet);
+                output.WriteOutput(table);
             }
         });
     }

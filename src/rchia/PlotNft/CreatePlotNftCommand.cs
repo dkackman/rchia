@@ -7,52 +7,58 @@ using rchia.Commands;
 
 namespace rchia.PlotNft;
 
-    public enum InitialPoolingState
+public enum InitialPoolingState
+{
+    pool,
+    local
+}
+
+internal sealed class CreatePlotNftCommand : WalletCommand
+{
+    [Option("u", "pool-url", Description = "HTTPS host:port of the pool to join. Omit for self pooling")]
+    public Uri? PoolUrl { get; init; }
+
+    [Option("s", "state", IsRequired = true, Description = "Initial state of Plot NFT")]
+    public InitialPoolingState State { get; init; }
+
+    [Option("f", "force", Default = false, Description = "Do not prompt before nft creation")]
+    public bool Force { get; init; }
+
+    [CommandTarget]
+    public async Task<int> Run()
     {
-        pool,
-        local
-    }
-
-    internal sealed class CreatePlotNftCommand : WalletCommand
-    {
-        [Option("u", "pool-url", Description = "HTTPS host:port of the pool to join. Omit for self pooling")]
-        public Uri? PoolUrl { get; init; }
-
-        [Option("s", "state", IsRequired = true, Description = "Initial state of Plot NFT")]
-        public InitialPoolingState State { get; init; }
-
-        [Option("f", "force", Default = false, Description = "Do not prompt before nft creation")]
-        public bool Force { get; init; }
-
-        [CommandTarget]
-        public async Task<int> Run()
+        return await DoWorkAsync("Creating pool NFT and wallet...", async output =>
         {
-            return await DoWorkAsync("Creating pool NFT and wallet...", async output =>
+            using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
+            var proxy = await Login(rpcClient, output);
+
+            var msg = await proxy.ValidatePoolingOptions(State == InitialPoolingState.pool, PoolUrl, TimeoutMilliseconds);
+
+            if (output.Confirm(msg, Force))
             {
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
-                var proxy = await Login(rpcClient, output);
-                var msg = await proxy.ValidatePoolingOptions(State == InitialPoolingState.pool, PoolUrl, TimeoutMilliseconds);
-
-                if (output.Confirm(msg, Force))
+                var poolInfo = PoolUrl is not null ? await PoolUrl.GetPoolInfo(TimeoutMilliseconds) : new PoolInfo();
+                var poolState = new PoolState()
                 {
-                    var poolInfo = PoolUrl is not null ? await PoolUrl.GetPoolInfo(TimeoutMilliseconds) : new PoolInfo();
-                    var poolState = new PoolState()
-                    {
-                        PoolUrl = PoolUrl?.ToString(),
-                        State = State == InitialPoolingState.pool ? PoolSingletonState.FARMING_TO_POOL : PoolSingletonState.SELF_POOLING,
-                        TargetPuzzleHash = poolInfo.TargetPuzzleHash!,
-                        RelativeLockHeight = poolInfo.RelativeLockHeight
-                    };
+                    PoolUrl = PoolUrl?.ToString(),
+                    State = State == InitialPoolingState.pool ? PoolSingletonState.FARMING_TO_POOL : PoolSingletonState.SELF_POOLING,
+                    TargetPuzzleHash = poolInfo.TargetPuzzleHash!,
+                    RelativeLockHeight = poolInfo.RelativeLockHeight
+                };
 
-                    using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-                    var (tx, launcherId, _) = await proxy.CreatePoolWallet(poolState, null, null, cts.Token);
-                    var result = new Dictionary<string, string>()
-                    {
-                        { "launcher_id", launcherId }
-                    };
+                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+                var result = await proxy.CreatePoolWallet(poolState, null, null, cts.Token);
+
+                if (Json)
+                {
                     output.WriteOutput(result);
-                    PrintTransactionSentTo(output, tx);
                 }
-            });
-        }
+                else
+                {
+                    output.WriteOutput("launcher_id", result.launcherId, Verbose);
+
+                    PrintTransactionSentTo(output, result.transaction);
+                }
+            }
+        });
     }
+}

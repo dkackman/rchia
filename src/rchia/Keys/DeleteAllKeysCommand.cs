@@ -20,10 +20,11 @@ internal sealed class DeleteAllKeys : EndpointOptions
             if (output.Confirm($"Deleting all of your keys [wheat1]CANNOT[/] be undone.\nAre you sure you want to delete all keys from [red]{rpcClient.Endpoint.Uri}[/]?", Force))
             {
                 var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
+
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 await proxy.DeleteAllKeys(cts.Token);
 
-                output.MarkupLine("Deleted all keys");
+                output.WriteOutput("status", "Deleted all keys", Verbose);
             }
         });
     }

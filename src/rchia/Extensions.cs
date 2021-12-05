@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using chia.dotnet;
 using Newtonsoft.Json;
 
@@ -9,6 +11,35 @@ namespace rchia
 {
     internal static class Extensions
     {
+        public static IDictionary<K, V> Sort<K, V>(this IDictionary<K, V> dict) where K : notnull
+        {
+            return dict.OrderBy(kvp => kvp.Key).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        }
+
+        public static IEnumerable<IDictionary<string, string>> SortAll(this IEnumerable<IDictionary<string, string>> dict) 
+        {
+            var list = new List<IDictionary<string, string>>();
+            foreach (var item in dict)
+            {
+                list.Add(item.Sort());
+            }
+
+            return list;
+        }
+
+        public static string FromSnakeCase(this string s)
+        {
+            if (string.IsNullOrEmpty(s))
+            {
+                return string.Empty;
+            }
+
+            var builder = new StringBuilder(char.ToUpper(s[0]));
+            builder.Append(char.ToUpper(s[0])); 
+            builder.Append(s.Replace('_', ' ').Substring(1));
+            return builder.ToString();
+        }
+
         public static string ToJson(this object o)
         {
             return JsonConvert.SerializeObject(o, Formatting.Indented);

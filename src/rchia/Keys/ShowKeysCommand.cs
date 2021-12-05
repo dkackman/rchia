@@ -27,18 +27,19 @@ internal sealed class ShowKeysCommand : EndpointOptions
             var (NetworkName, NetworkPrefix) = await proxy.GetNetworkInfo(cts.Token);
             var bech32 = new Bech32M(NetworkPrefix);
 
-            var table = new List<Dictionary<string, string>>();
+            var table = new List<IDictionary<string, string>>();
             foreach (var fingerprint in keys)
             {
-                var row = new Dictionary<string, string>();
-
-                row.Add("fingerprint", fingerprint.ToString());
                 using var cts1 = new CancellationTokenSource(TimeoutMilliseconds);
                 var (Fingerprint, Sk, Pk, FarmerPk, PoolPk, Seed) = await proxy.GetPrivateKey(fingerprint, cts1.Token);
 
-                row.Add("master_public_key", Pk);
-                row.Add("farmer_public_key", FarmerPk);
-                row.Add("pool_public_key", PoolPk);
+                var row = new Dictionary<string, string>
+                {
+                    { "fingerprint", fingerprint.ToString() },
+                    { "master_public_key", Pk },
+                    { "farmer_public_key", FarmerPk },
+                    { "pool_public_key", PoolPk }
+                };
 
                 if (ShowMnemonicSeed)
                 {

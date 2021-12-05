@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-
 using Spectre.Console;
 
 namespace rchia.Commands;
@@ -9,7 +8,7 @@ namespace rchia.Commands;
 public abstract class Command
 {
     [Option("v", "verbose", Description = "Set output to verbose messages")]
-    public bool Verbose { get; set; }
+    public bool Verbose { get; init; }
 
     [Option("", "json", Description = "Set this flag to output json", IsHidden = true)]
     public bool Json { get; init; }
@@ -42,7 +41,7 @@ public abstract class Command
         }
         catch (Exception e)
         {
-            output.Message(e);
+            output.WriteError(e);
 
             return -1;
         }
@@ -68,7 +67,7 @@ public abstract class Command
         }
         catch (Exception e)
         {
-            output.Message(e);
+            output.WriteError(e);
 
             return -1;
         }

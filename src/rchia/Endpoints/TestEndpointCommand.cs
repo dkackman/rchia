@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-
 using rchia.Commands;
 
 namespace rchia.Endpoints;
@@ -24,11 +23,10 @@ internal sealed class TestEndpointCommand : Command
             {
                 throw new InvalidCastException($"There is no saved endpoint with an id of {Id}.");
             }
-
             var endpoint = library.Endpoints[Id];
             await ClientFactory.Factory.TestConnection(endpoint.EndpointInfo, Timeout * 1000);
 
-            output.MarkupLine($"Successfully connected to [wheat1]{Id}[/]");
+            output.WriteOutput("connected_to", Id, Verbose);
         });
     }
 }

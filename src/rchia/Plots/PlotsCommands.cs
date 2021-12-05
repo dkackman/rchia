@@ -26,8 +26,8 @@ internal sealed class PlotsCommands
     [Command("remove", Description = "Removes a directory of plots from config.yaml")]
     public RemovePlotsCommand Remove { get; init; } = new();
 
-    [Command("show", Description = "Shows the directory of current plots")]
-    public ShowPlotsCommand Show { get; init; } = new();
+    [Command("directories", Description = "Shows the directory of current plots")]
+    public ShowDirectoriesCommand Show { get; init; } = new();
 
     [Command("plotters", Description = "Lists installed and installable plotters")]
     public ListPlottersCommand Plotters { get; init; } = new();

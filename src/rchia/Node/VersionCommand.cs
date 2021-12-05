@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using chia.dotnet;
 using rchia.Commands;
 
@@ -19,11 +18,7 @@ internal sealed class VersionCommand : EndpointOptions
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var version = await proxy.GetVersion(cts.Token);
 
-            var result = new Dictionary<string, string>()
-            {
-                { "versin", version }
-            };
-            output.WriteOutput(result);
+            output.WriteOutput("version", version, Verbose);
         });
     }
 }

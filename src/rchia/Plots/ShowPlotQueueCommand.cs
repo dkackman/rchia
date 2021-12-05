@@ -34,6 +34,7 @@ internal sealed class ShowPlotQueueCommand : EndpointOptions
                     };
                     result.Add(row);
                 }
+
                 output.WriteOutput(result);
             }
             else

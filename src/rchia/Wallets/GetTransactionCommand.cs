@@ -8,7 +8,7 @@ namespace rchia.Wallet;
 
 internal sealed class GetTransactionCommand : WalletCommand
 {
-    [Option("tx", "tx-id", IsRequired = true, Description = "Transaction id to search for")]
+    [Option("tx", "txid", IsRequired = true, Description = "Transaction id to search for")]
     public string TxId { get; init; } = string.Empty;
 
     [CommandTarget]
@@ -23,7 +23,7 @@ internal sealed class GetTransactionCommand : WalletCommand
             var tx = await proxy.GetTransaction(TxId, cts.Token);
             var (NetworkName, NetworkPrefix) = await proxy.GetNetworkInfo(cts.Token);
 
-            var result = new Dictionary<string, object>();
+            var result = new Dictionary<string, string>();
             PrintTransaction(tx, NetworkPrefix, result);
             output.WriteOutput(result);
         });

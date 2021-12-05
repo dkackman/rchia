@@ -38,7 +38,7 @@ internal sealed class StatusCommand : EndpointOptions
             }
             else
             {
-                output.Warning("Searching for an initial chain");
+                output.Warning("The node is searching for an initial chain");
                 output.MarkupLine("You may be able to expedite with '[grey]rchia show add host:port[/]' using a known node.");
             }
 
@@ -59,7 +59,7 @@ internal sealed class StatusCommand : EndpointOptions
 
                 var time = peak_time.HasValue ? peak_time.Value.ToLocalTime().ToString("U") : "unknown";
                 result.Add("time", time);
-                result.Add("Peak Height", state.Peak.Height.ToString("N0"));
+                result.Add("peak_height", state.Peak.Height.ToString("N0"));
             }
 
             result.Add("estimated_network_space", state.Space.ToBytesString());

@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using chia.dotnet;
 using rchia.Commands;
 
@@ -22,11 +21,7 @@ internal sealed class RemovePlotsCommand : EndpointOptions
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             await proxy.RemovePlotDirectory(FinalDir, cts.Token);
 
-            var result = new Dictionary<string, string>()
-            {
-                { "removed", FinalDir }
-            };
-            output.WriteOutput(result);
+            output.WriteOutput("removed", FinalDir, Verbose);
         });
     }
 }

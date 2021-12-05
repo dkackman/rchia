@@ -24,6 +24,7 @@ internal sealed class JoinPoolCommand : WalletCommand
         {
             using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
             var proxy = await Login(rpcClient, output);
+
             var msg = await proxy.ValidatePoolingOptions(true, PoolUrl, TimeoutMilliseconds);
             if (output.Confirm(msg, Force))
             {
@@ -34,7 +35,14 @@ internal sealed class JoinPoolCommand : WalletCommand
                 var poolInfo = await PoolUrl.GetPoolInfo(TimeoutMilliseconds);
                 var tx = await wallet.JoinPool(poolInfo.TargetPuzzleHash ?? string.Empty, PoolUrl.ToString(), poolInfo.RelativeLockHeight, cts.Token);
 
-                PrintTransactionSentTo(output, tx);
+                if (Json)
+                {
+                    output.WriteOutput(tx);
+                }
+                else
+                {
+                    PrintTransactionSentTo(output, tx);
+                }
             }
         });
     }

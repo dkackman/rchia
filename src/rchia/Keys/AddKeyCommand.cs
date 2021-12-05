@@ -32,7 +32,7 @@ internal sealed class AddKeyCommand : EndpointOptions
                 mnemonic = contents.Split(' ').ToList();
             }
 
-            if (Mnemonic.Count != 24)
+            if (mnemonic.Count != 24)
             {
                 throw new InvalidOperationException("Exactly 24 words are required in the mnenomic passphrase");
             }
@@ -43,14 +43,7 @@ internal sealed class AddKeyCommand : EndpointOptions
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var fingerprint = await proxy.AddKey(mnemonic, true, cts.Token);
 
-            if (Json)
-            {
-                output.WriteOutput(fingerprint.ToString());
-            }
-            else
-            {
-                output.MarkupLine($"Added private key with public key fingerprint [wheat1]{fingerprint}[/]");
-            }
+            output.WriteOutput("fingerprint", fingerprint.ToString(), Verbose);
         });
     }
 }

@@ -26,9 +26,16 @@ internal sealed class ClaimNftCommand : WalletCommand
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 await wallet.Validate(cts.Token);
 
-                var (_, tx) = await wallet.AbsorbRewards(0, cts.Token);
+                var rewards = await wallet.AbsorbRewards(0, cts.Token);
 
-                PrintTransactionSentTo(output, tx);
+                if (Json)
+                {
+                    output.WriteOutput(rewards);
+                }
+                else
+                {
+                    PrintTransactionSentTo(output, rewards.Transaction);
+                }
             }
         });
     }

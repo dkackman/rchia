@@ -17,11 +17,6 @@ internal sealed class ShowPlotLogCommand : EndpointOptions
     {
         return await DoWorkAsync("Retrieving plot log...", async output =>
         {
-            if (Json)
-            {
-                throw new InvalidOperationException("The plot log command does not support json output");
-            }
-
             using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(output, this);
             var proxy = new PlotterProxy(rpcClient, ClientFactory.Factory.OriginService);
 
@@ -48,8 +43,7 @@ internal sealed class ShowPlotLogCommand : EndpointOptions
                     throw new InvalidOperationException($"No plot with an id of {Id} was found");
                 }
 
-                output.WriteLine(plot.Log);
-                output.WriteLine("");
+                output.WriteOutput("log", plot.Log ?? plot.State.ToString(), Verbose);
             }
         });
     }

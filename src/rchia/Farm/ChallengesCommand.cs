@@ -22,6 +22,7 @@ internal sealed class ChallengesCommand : EndpointOptions
 
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var signagePoints = await farmer.GetSignagePoints(cts.Token);
+            output.WriteOutput(signagePoints);
 
             var list = signagePoints.Reverse().ToList(); // convert to list to avoid multiple iteration
             var count = Limit == 0 ? list.Count : Limit;
@@ -32,15 +33,15 @@ internal sealed class ChallengesCommand : EndpointOptions
             {
                 var row = new Dictionary<string, string>
                 {
-                    { "index", sp.SignagePoint.SignagePointIndex.ToString() },
-                    { "hash", sp.SignagePoint.ChallengeHash.Replace("0x", string.Empty) }
+                    { "hash", sp.SignagePoint.ChallengeHash.Replace("0x", string.Empty) },
+                    { "index", sp.SignagePoint.SignagePointIndex.ToString() }
                 };
 
                 table.Add(row);
             }
 
             output.WriteOutput(table);
-            output.Message($"Showing {count} of {list.Count} challenges.");
+            output.Message($"Showing {count} of {list.Count} challenge{(list.Count == 1 ? string.Empty : "s")}.");
         });
     }
 }

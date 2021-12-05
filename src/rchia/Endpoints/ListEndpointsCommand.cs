@@ -15,13 +15,12 @@ internal sealed class ListEndpointsCommand : Command
                 var isDefault = endpoint.IsDefault ? "[wheat1](default)[/]" : string.Empty;
                 output.MarkupLine($" - {endpoint.Id} {isDefault}");
             }
+            output.MarkupLine($"[wheat1]{library.Endpoints.Count}[/] saved endpoint{(library.Endpoints.Count == 1 ? string.Empty : "s")}");
 
             if (Json)
             {
-                output.WriteOutput(library.Endpoints.Values);
+                output.WriteOutput(library.Endpoints);
             }
-
-            output.MarkupLine($"[wheat1]{library.Endpoints.Count}[/] saved endpoint{(library.Endpoints.Count == 1 ? string.Empty : "s")}");
         });
     }
 }

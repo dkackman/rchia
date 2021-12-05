@@ -48,7 +48,7 @@ internal sealed class ShowPlotNftCommand : WalletCommand
             var result = new Dictionary<string, string>()
             {
                 { "wallet_height", height.ToString() },
-                { "sync_status", $"{(Synced ? "" : "not ")}synced"},
+                { "sync_status", $"{(Synced ? string.Empty : "not ")}synced"},
                 { "wallet", walletInfo.Id.ToString() }
             };
 
@@ -132,7 +132,7 @@ internal sealed class ShowPlotNftCommand : WalletCommand
                 }
             }
 
-            output.WriteOutput(output);
+            output.WriteOutput(result);
         });
     }
 }

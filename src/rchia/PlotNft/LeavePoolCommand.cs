@@ -21,14 +21,21 @@ internal sealed class LeavePoolCommand : WalletCommand
             if (output.Confirm($"Are you sure you want to start self-farming with Plot NFT on wallet id {Id}?", Force))
             {
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
+                var wallet = new PoolWallet(Id, await Login(rpcClient, output));
 
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-                var wallet = new PoolWallet(Id, await Login(rpcClient, output));
                 await wallet.Validate(cts.Token);
 
                 var tx = await wallet.SelfPool(cts.Token);
 
-                PrintTransactionSentTo(output, tx);
+                if (Json)
+                {
+                    output.WriteOutput(tx);
+                }
+                else
+                {
+                    PrintTransactionSentTo(output, tx);
+                }
             }
         });
     }

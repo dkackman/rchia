@@ -13,15 +13,13 @@ internal sealed class GenerateKeyCommand : EndpointOptions
         return await DoWorkAsync("Generating a new key...", async output =>
         {
             using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
-
             var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
 
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var mnemonic = await proxy.GenerateMnemonic(cts.Token);
             var fingerprint = await proxy.AddKey(mnemonic, true, cts.Token);
 
-            output.MarkupLine($"Added private key with public key fingerprint [wheat1]{fingerprint}[/]");
-            output.WriteOutput(mnemonic);
+            output.WriteOutput("fingerprint", fingerprint.ToString(), Verbose);
         });
     }
 }

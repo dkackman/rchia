@@ -21,7 +21,8 @@ internal sealed class DeleteUnconfirmedTransactionsCommand : WalletCommand
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             await wallet.DeleteUnconfirmedTransactions(cts.Token);
 
-            output.MarkupLine($"Successfully deleted all unconfirmed transactions for wallet id [wheat1]{Id}[/]");
+            output.MarkupLine($"Successfully deleted all unconfirmed transactions for wallet id:");
+            output.WriteOutput("wallet", Id.ToString(), Verbose);
         });
     }
 }

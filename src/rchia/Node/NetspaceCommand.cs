@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using chia.dotnet;
 using rchia.Commands;
 
@@ -56,11 +55,7 @@ internal sealed class NetspaceCommand : EndpointOptions
             var older_block_header = await proxy.GetBlockRecordByHeight(older_block_height);
             var network_space_bytes_estimate = await proxy.GetNetworkSpace(newer_block_header.HeaderHash, older_block_header.HeaderHash);
 
-            var result = new Dictionary<string, string>()
-            {
-                { "network_space_bytes_estimate", network_space_bytes_estimate.ToBytesString()}
-            };
-            output.WriteOutput(result);
+            output.WriteOutput("network_space_bytes_estimate", network_space_bytes_estimate.ToBytesString(), Verbose);
         });
     }
 }

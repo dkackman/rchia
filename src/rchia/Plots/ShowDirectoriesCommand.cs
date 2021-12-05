@@ -6,7 +6,7 @@ using rchia.Commands;
 
 namespace rchia.Plots;
 
-internal sealed class ShowPlotsCommand : EndpointOptions
+internal sealed class ShowDirectoriesCommand : EndpointOptions
 {
     [CommandTarget]
     public async Task<int> Run()

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using chia.dotnet;
 using rchia.Bech32;
 using rchia.Commands;
+using System;
 
 namespace rchia;
 
@@ -18,23 +19,24 @@ internal abstract class WalletCommand : EndpointOptions
         var result = new Dictionary<string, object>()
         {
             { "transaction", tx.Name },
-            { "sent_t", tx.SentTo.Select(peer => peer.Peer) }
+            { "sent_to", tx.SentTo.Select(peer => peer.Peer) }
         };
         output.WriteOutput(result);
-        output.Helpful($"Do '[grey]rchia wallet get-transaction -tx {tx.Name}' to get status");
+        output.Helpful($"Do '[grey]rchia wallet get-transaction -tx {tx.Name}[/]' to get status");
     }
 
-    protected void PrintTransaction(TransactionRecord tx, string prefix, IDictionary<string, object> row)
+    protected void PrintTransaction(TransactionRecord tx, string prefix, IDictionary<string, string> row)
     {
-        var name = Verbose ? tx.Name : tx.Name.Substring(2, 10) + "...";
-        var status = tx.Confirmed ? "Confirmed"
-            : tx.IsInMempool ? "In mempool"
-            : "Pending";
+        var name = Verbose || Json ? tx.Name : tx.Name.Substring(2, 10) + "...";
+        var status = tx.Confirmed
+                        ? "Confirmed"
+                        : tx.IsInMempool
+                        ? "In mempool"
+                        : "Pending";
 
-        var color = tx.Sent > 0 ? "red" : "green";
-        var amount = $"[{color}]{tx.Amount.AsChia()} {prefix}";
+        var amount = $"{tx.Amount.AsChia()} {prefix}";
         var bech32 = new Bech32M(prefix);
-        var to = Verbose ? bech32.PuzzleHashToAddress(tx.ToPuzzleHash) : bech32.PuzzleHashToAddress(tx.ToPuzzleHash).Substring(prefix.Length, 10) + "...";
+        var to = Verbose || Json ? bech32.PuzzleHashToAddress(tx.ToPuzzleHash) : string.Concat(bech32.PuzzleHashToAddress(tx.ToPuzzleHash).AsSpan(prefix.Length, 10), "...");
         var at = tx.CreatedAtDateTime.ToLocalTime().ToString();
 
         row.Add("name", name);

@@ -41,11 +41,14 @@ namespace rchia.Wallet
                             { "Name", wallet.Name },
                             { "Type", wallet.Type.ToString() }
                         };
+
+                        table.Add(row);
                     }
 
                     result.Add(fingerprint.ToString(), table);
                 }
-                output.WriteOutput(output);
+
+                output.WriteOutput(result);
             });
         }
     }

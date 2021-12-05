@@ -26,10 +26,11 @@ internal sealed class DeleteKeyCommand : WalletCommand
             if (output.Confirm($"Deleting a key CANNOT be undone.\nAre you sure you want to delete key {Fingerprint} from [red]{rpcClient.Endpoint.Uri}[/]?", Force))
             {
                 var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
+
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 await proxy.DeleteKey(Fingerprint.Value, cts.Token);
 
-                output.MarkupLine($"Deleted the key with fingerprint [wheat1]{Fingerprint}[/]");
+                output.WriteOutput("deleted", Fingerprint.Value.ToString(), Verbose);
             }
         });
     }

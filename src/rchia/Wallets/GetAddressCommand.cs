@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using chia.dotnet;
 using rchia.Commands;
 
@@ -25,11 +24,7 @@ internal sealed class GetAddressCommand : WalletCommand
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var address = await wallet.GetNextAddress(New, cts.Token);
 
-            var result = new Dictionary<string, string>()
-            {
-                    { "address", address }
-            };
-            output.WriteOutput(result);
+            output.WriteOutput("address", address, Verbose);
         });
     }
 }
