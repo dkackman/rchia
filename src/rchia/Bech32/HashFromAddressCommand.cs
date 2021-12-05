@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using rchia.Commands;
 
@@ -13,19 +12,14 @@ namespace rchia.Bech32
         [CommandTarget]
         public int Run()
         {
+            if (string.IsNullOrEmpty(Address))
+            {
+                throw new InvalidOperationException("An address must be provided");
+            }
+
             return DoWork("Calculating hash...", output =>
             {
-                if (string.IsNullOrEmpty(Address))
-                {
-                    throw new InvalidOperationException("An address must be provided");
-                }
-
-                var result = new Dictionary<string, string>()
-                {
-                    { "hash", Bech32M.AddressToPuzzleHash(Address).ToString() }
-                };
-
-                output.WriteOutput(result);
+                output.WriteOutput("hash", Bech32M.AddressToPuzzleHash(Address).ToString(), Verbose);
             });
         }
     }

@@ -17,6 +17,16 @@ internal class JsonOutput : ICommandOutput
         return this;
     }
 
+    public void WriteOutput(string name, string value, bool verbose = false)
+    {
+        var output = new Dictionary<string, string>()
+        {
+            { name, value }
+        };
+
+        WriteOutput(output);
+    }
+
     public void WriteOutput(object output)
     {
         WriteLine(output.ToJson());

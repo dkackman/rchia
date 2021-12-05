@@ -21,6 +21,18 @@ internal class ConsoleOutput : ICommandOutput
         return this;
     }
 
+    public void WriteOutput(string name, string value, bool verbose)
+    {
+        if (verbose)
+        {
+            WriteLine($"{name}:{value}");
+        }
+        else
+        {
+            WriteLine(value);
+        }
+    }
+
     public void WriteOutput(object output)
     {
         WriteLine(output.ToJson());

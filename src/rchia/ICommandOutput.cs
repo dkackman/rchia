@@ -19,6 +19,7 @@ public interface ICommandOutput
     void Message(string msg, bool important = false);
     void Warning(string msg);
     void WriteLine(string msg);
+    void WriteOutput(string name, string value, bool verbose);
     void WriteOutput(object output);
     void WriteOutput(IEnumerable<IDictionary<string, string>> output);
     void WriteOutput(IEnumerable<string> output);
