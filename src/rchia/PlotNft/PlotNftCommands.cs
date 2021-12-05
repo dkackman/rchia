@@ -3,7 +3,7 @@
 namespace rchia.PlotNft
 {
     [Command("plotnft", Description = "Manage your plot NFTs.\nRequires a wallet or daemon endpoint.")]
-    internal sealed class PlotNftCommand
+    internal sealed class PlotNftCommands
     {
         [Command("claim", Description = "Claim rewards from a plot NFT")]
         public ClaimNftCommand Claim { get; init; } = new();

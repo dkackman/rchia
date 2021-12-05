@@ -13,21 +13,21 @@ namespace rchia.PlotNft
         [CommandTarget]
         public async Task<int> Run()
         {
-            return await DoWorkAsync("Retrieving nft plot info...", async ctx =>
+            return await DoWorkAsync("Retrieving nft plot info...", async output =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
-                var wallet = new PoolWallet(Id, await Login(rpcClient, ctx));
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
+                var wallet = new PoolWallet(Id, await Login(rpcClient, output));
 
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 await wallet.Validate(cts.Token);
 
                 var (State, UnconfirmedTransactions) = await wallet.Status(cts.Token);
 
-                WriteLine(State.ToJson());
+                output.WriteOutput(State);
 
                 foreach (var tx in UnconfirmedTransactions)
                 {
-                    PrintTransactionSentTo(tx);
+                    PrintTransactionSentTo(output, tx);
                 }
             });
         }

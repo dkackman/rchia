@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 
-namespace rchia.PlotNft
-{
+namespace rchia.PlotNft;
+
     public enum InitialPoolingState
     {
         pool,
@@ -26,13 +27,13 @@ namespace rchia.PlotNft
         [CommandTarget]
         public async Task<int> Run()
         {
-            return await DoWorkAsync("Creating pool NFT and wallet...", async ctx =>
+            return await DoWorkAsync("Creating pool NFT and wallet...", async output =>
             {
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
-                var proxy = await Login(rpcClient, ctx);
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
+                var proxy = await Login(rpcClient, output);
                 var msg = await proxy.ValidatePoolingOptions(State == InitialPoolingState.pool, PoolUrl, TimeoutMilliseconds);
 
-                if (Confirm(msg, Force))
+                if (output.Confirm(msg, Force))
                 {
                     var poolInfo = PoolUrl is not null ? await PoolUrl.GetPoolInfo(TimeoutMilliseconds) : new PoolInfo();
                     var poolState = new PoolState()
@@ -44,11 +45,14 @@ namespace rchia.PlotNft
                     };
 
                     using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-                    var (tx, launcherId, p2SingletonHash) = await proxy.CreatePoolWallet(poolState, null, null, cts.Token);
-                    NameValue("Launcher Id", launcherId);
-                    PrintTransactionSentTo(tx);
+                    var (tx, launcherId, _) = await proxy.CreatePoolWallet(poolState, null, null, cts.Token);
+                    var result = new Dictionary<string, string>()
+                    {
+                        { "launcher_id", launcherId }
+                    };
+                    output.WriteOutput(result);
+                    PrintTransactionSentTo(output, tx);
                 }
             });
         }
     }
-}

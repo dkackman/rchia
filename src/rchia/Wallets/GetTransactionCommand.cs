@@ -1,29 +1,31 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using chia.dotnet;
 using rchia.Commands;
 
-namespace rchia.Wallet
+namespace rchia.Wallet;
+
+internal sealed class GetTransactionCommand : WalletCommand
 {
-    internal sealed class GetTransactionCommand : WalletCommand
+    [Option("tx", "tx-id", IsRequired = true, Description = "Transaction id to search for")]
+    public string TxId { get; init; } = string.Empty;
+
+    [CommandTarget]
+    public async Task<int> Run()
     {
-        [Option("tx", "tx-id", IsRequired = true, Description = "Transaction id to search for")]
-        public string TxId { get; init; } = string.Empty;
-
-        [CommandTarget]
-        public async Task<int> Run()
+        return await DoWorkAsync("Retrieving transaction...", async output =>
         {
-            return await DoWorkAsync("Retrieving transaction...", async ctx =>
-            {
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
-                var proxy = await Login(rpcClient, ctx);
+            using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
+            var proxy = await Login(rpcClient, output);
 
-                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-                var tx = await proxy.GetTransaction(TxId, cts.Token);
-                var (NetworkName, NetworkPrefix) = await proxy.GetNetworkInfo(cts.Token);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+            var tx = await proxy.GetTransaction(TxId, cts.Token);
+            var (NetworkName, NetworkPrefix) = await proxy.GetNetworkInfo(cts.Token);
 
-                PrintTransaction(tx, NetworkPrefix, CreateTransactionTable());
-            });
-        }
+            var result = new Dictionary<string, object>();
+            PrintTransaction(tx, NetworkPrefix, result);
+            output.WriteOutput(result);
+        });
     }
 }

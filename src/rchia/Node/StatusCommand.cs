@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
-using Spectre.Console;
 
 namespace rchia.Node;
 
@@ -21,20 +20,21 @@ internal sealed class StatusCommand : EndpointOptions
             var state = await proxy.GetBlockchainState(cts.Token);
             var peakHash = state.Peak is not null ? state.Peak.HeaderHash : string.Empty;
 
+            var result = new Dictionary<string, string>();
             if (state.Sync.Synced)
             {
-                NameValue("Current Blockchain Status", "[green]Full Node Synced[/]");
-                NameValue("Peak Hash", peakHash.Replace("0x", ""));
+                result.Add("blockchain_status", "Full Node Synced");
+                result.Add("peak_hash", peakHash.Replace("0x", ""));
             }
             else if (state.Peak is not null && state.Sync.SyncMode)
             {
-                NameValue("Current Blockchain Status", $"[yellow]Syncing[/] {state.Sync.SyncProgressHeight:N0} of {state.Sync.SyncTipHeight:N0}");
-                NameValue("Blocks behind", $"{(state.Sync.SyncTipHeight - state.Sync.SyncProgressHeight):N0}");
-                NameValue("Peak Hash", peakHash.Replace("0x", string.Empty));
+                result.Add("blockchain_status", $"Syncing {state.Sync.SyncProgressHeight:N0} of {state.Sync.SyncTipHeight:N0}");
+                result.Add("blocks_behind", $"{(state.Sync.SyncTipHeight - state.Sync.SyncProgressHeight):N0}");
+                result.Add("peak_hash", peakHash.Replace("0x", string.Empty));
             }
             else if (state.Peak is not null)
             {
-                NameValue("Current Blockchain Status", $"[red]Not Synced[/] Peak height: {state.Peak.Height}");
+                result.Add("blockchain_status", $"Not Synced Peak height: {state.Peak.Height}");
             }
             else
             {
@@ -58,44 +58,18 @@ internal sealed class StatusCommand : EndpointOptions
                 }
 
                 var time = peak_time.HasValue ? peak_time.Value.ToLocalTime().ToString("U") : "unknown";
-                NameValue("Time", time);
-                NameValue("Peak Height", state.Peak.Height.ToString("N0"));
+                result.Add("time", time);
+                result.Add("Peak Height", state.Peak.Height.ToString("N0"));
             }
 
-            NameValue("Estimated network space", state.Space.ToBytesString());
-            NameValue("Current difficulty", state.Difficulty);
-            NameValue("Current VDF sub_slot_iters", state.SubSlotIters.ToString("N0"));
+            result.Add("estimated_network_space", state.Space.ToBytesString());
+            result.Add("current_difficulty", state.Difficulty.ToString());
+            result.Add("current_vdf_sub_slot_iters", state.SubSlotIters.ToString("N0"));
 
             var totalIters = state.Peak is not null ? state.Peak.TotalIters : 0;
-            NameValue("Total iterations since the start of the blockchain", totalIters.ToString("N0"));
+            result.Add("total_iterations_since_start", totalIters.ToString("N0"));
 
-            if (Verbose && state.Peak is not null)
-            {
-                var blocks = new List<BlockRecord>();
-                var block = await proxy.GetBlockRecord(state.Peak.HeaderHash, cts.Token);
-
-                while (block is not null && blocks.Count < 10 && block.Height > 0)
-                {
-                    blocks.Add(block);
-                    using var cts1 = new CancellationTokenSource(TimeoutMilliseconds);
-                    block = await proxy.GetBlockRecord(block.PrevHash, cts.Token);
-                }
-
-                var table = new Table
-                {
-                    Title = new TableTitle("[orange3]Recent Blocks[/]")
-                };
-
-                table.AddColumn("[orange3]Height[/]");
-                table.AddColumn("[orange3]Hash[/]");
-
-                foreach (var b in blocks)
-                {
-                    table.AddRow(b.Height.ToString("N0"), b.HeaderHash.Replace("0x", ""));
-                }
-
-                AnsiConsole.Write(table);
-            }
+            output.WriteOutput(result);
         });
     }
 }

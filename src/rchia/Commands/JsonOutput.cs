@@ -39,10 +39,14 @@ internal class JsonOutput : ICommandOutput
 
     public void MarkupLine(string msg)
     {
+        Debug.WriteLine(msg);
+
     }
 
     public void WriteLine(string msg)
     {
+        Debug.WriteLine(msg);
+
     }
 
     public void Message(string msg, bool important = false)
@@ -52,19 +56,22 @@ internal class JsonOutput : ICommandOutput
 
     public void Helpful(string msg, bool important = false)
     {
+        Debug.WriteLine(msg);
     }
 
     public void Warning(string msg)
     {
+        Debug.WriteLine(msg);
+
     }
 
     public void Message(Exception e)
     {
-        WriteOutput(new Dictionary<string, string>()
+        var error = new Dictionary<string, string>()
                     {
                         { "error", e.Message }
-                    }
-        );
+                    };
+        WriteOutput(error);
     }
 
     public bool Confirm(string warning, bool force)
