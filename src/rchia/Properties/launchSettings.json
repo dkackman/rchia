@@ -2,7 +2,7 @@
   "profiles": {
     "rchia": {
       "commandName": "Project",
-      "commandLineArgs": "plots show -ep chiapas -v --json"
+      "commandLineArgs": "endpoints add poop"
     }
   }
 }

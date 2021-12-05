@@ -1,5 +1,4 @@
 ﻿using System;
-
 using rchia.Commands;
 
 namespace rchia.Endpoints;
@@ -27,7 +26,7 @@ internal sealed class SetDefaultEndpointCommand : Command
             }
 
             library.Save();
-            output.MarkupLine($"Endpoint [wheat1]{Id}[/] is now the default");
+            output.WriteOutput("default_endpoint", Id, Verbose);
         });
     }
 }

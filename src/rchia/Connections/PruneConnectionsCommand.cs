@@ -16,24 +16,24 @@ namespace rchia.Connections
         [CommandTarget]
         public async Task<int> Run()
         {
-            if (Blocks < 1)
-            {
-                throw new InvalidOperationException("A number of blocks must be provided");
-            }
-
             return await DoWorkAsync("Pruning connections...", async output =>
             {
+                if (Blocks < 1)
+                {
+                    throw new InvalidOperationException("A number of blocks must be provided");
+                }
+
                 using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.FullNode);
                 var fullNode = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);
 
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 var state = await fullNode.GetBlockchainState(cts.Token);
-                if (Blocks > state.Sync.SyncProgressHeight)
+                if (state.Peak is null)
                 {
-                    throw new InvalidOperationException("Blocks offset is greater than synced height. Aborting.");
+                    throw new InvalidOperationException("Node has no peak. Aborting.");
                 }
 
-                var maxHeight = state.Sync.SyncProgressHeight - Blocks;
+                var maxHeight = state.Peak.Height - Blocks;
                 output.MarkupLine($"Pruning connections that with a peak less than [wheat1]{maxHeight}[/]");
 
                 var connections = await fullNode.GetConnections(cts.Token);

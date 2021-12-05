@@ -9,6 +9,19 @@ namespace rchia
 {
     internal static class Extensions
     {
+        public static string FromSnakeCase(this string s)
+        {
+            if (string.IsNullOrEmpty(s))
+            {
+                return string.Empty;
+            }
+
+            var builder = new StringBuilder(char.ToUpper(s[0]));
+            builder.Append(char.ToUpper(s[0])); 
+            builder.Append(s.Replace('_', ' ').Substring(1));
+            return builder.ToString();
+        }
+
         public static string ToJson(this object o)
         {
             return JsonConvert.SerializeObject(o, Formatting.Indented);

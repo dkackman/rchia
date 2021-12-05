@@ -37,7 +37,7 @@ internal sealed class BlockHeaderCommand : EndpointOptions
     [CommandTarget]
     public async Task<int> Run()
     {
-        return await DoWorkAsync("Retrieving block header connection...", async output =>
+        return await DoWorkAsync("Retrieving block header...", async output =>
         {
             using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.FullNode);
             var proxy = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);

@@ -14,18 +14,13 @@ internal sealed class AddressFromHashCommand : Command
     [CommandTarget]
     public int Run()
     {
-        if (string.IsNullOrEmpty(Hash))
-        {
-            throw new InvalidOperationException("A hash must be provided");
-        }
-
-        if (string.IsNullOrEmpty(Prefix))
-        {
-            throw new InvalidOperationException("A prefix must be provided");
-        }
-
         return DoWork("Calculating address...", output =>
         {
+            if (string.IsNullOrEmpty(Prefix))
+            {
+                throw new InvalidOperationException("A prefix must be provided");
+            }
+
             var bech = new Bech32M(Prefix);
             output.WriteOutput("address", bech.PuzzleHashToAddress(Hash), Verbose);
         });

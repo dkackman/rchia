@@ -24,4 +24,5 @@ public interface ICommandOutput
     void WriteOutput(IEnumerable<IDictionary<string, string>> output);
     void WriteOutput(IEnumerable<string> output);
     void WriteOutput(IDictionary<string, string> output);
+    void WriteOutput(IDictionary<string, IEnumerable<IDictionary<string, string>>> output);
 }

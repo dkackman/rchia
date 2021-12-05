@@ -1,5 +1,4 @@
 ﻿using System;
-
 using rchia.Commands;
 
 namespace rchia.Endpoints;
@@ -20,9 +19,7 @@ internal sealed class ShowEndpointCommand : Command
             {
                 throw new InvalidOperationException($"There is no saved endpoint with an id of {Id}.");
             }
-
-            var endpoint = library.Endpoints[Id];
-            output.WriteOutput(endpoint);
+            output.WriteOutput(library.Endpoints[Id]);
         });
     }
 }

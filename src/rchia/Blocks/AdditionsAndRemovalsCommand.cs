@@ -45,30 +45,44 @@ internal sealed class AdditionsAndRemovalsCommand : EndpointOptions
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var (Additions, Removals) = await proxy.GetAdditionsAndRemovals(headerHash, cts.Token);
 
-            var result = new Dictionary<string, IEnumerable<IDictionary<string, string>>>();
-            result.Add("additions", GetCoinRecords(output, Additions));
-            result.Add("removals", GetCoinRecords(output, Removals));
-
-            output.WriteOutput(result);
+            if (Json)
+            {
+                var result = new Dictionary<string, IEnumerable<CoinRecord>>
+                {
+                    { "additions", Additions },
+                    { "removals", Removals }
+                };
+                output.WriteOutput(result);
+            }
+            else
+            {
+                var result = new Dictionary<string, IEnumerable<IDictionary<string, string>>>
+                {
+                    { "additions", GetCoinRecords(Additions) },
+                    { "removals", GetCoinRecords(Removals) }
+                };
+                output.WriteOutput(result);
+            }
         });
     }
 
-    private IEnumerable<IDictionary<string, string>> GetCoinRecords(ICommandOutput output, IEnumerable<CoinRecord> records)
+    private static IEnumerable<IDictionary<string, string>> GetCoinRecords(IEnumerable<CoinRecord> records)
     {
         var table = new List<IDictionary<string, string>>();
 
         foreach (var record in records)
         {
-            var row = new Dictionary<string, string>();
-
-            row.Add("parent_coin_info", record.Coin.ParentCoinInfo.Replace("0x", ""));
-            row.Add("puzzle_hash", record.Coin.PuzzleHash.Replace("0x", ""));
-            row.Add($"amount", record.Coin.Amount.AsChia("N3"));
-            row.Add("confirmed_at", record.ConfirmedBlockIndex.ToString("N0"));
-            row.Add("spent_at", record.SpentBlockIndex.ToString("N0"));
-            row.Add("spen", record.Spent.ToString());
-            row.Add("coinbase", record.Coinbase.ToString());
-            row.Add("timestamp", record.DateTimestamp.ToLocalTime().ToString());
+            var row = new Dictionary<string, string>
+            {
+                { "parent_coin_info", record.Coin.ParentCoinInfo.Replace("0x", "") },
+                { "puzzle_hash", record.Coin.PuzzleHash.Replace("0x", "") },
+                { "amount", record.Coin.Amount.AsChia("N3") },
+                { "confirmed_at", record.ConfirmedBlockIndex.ToString("N0") },
+                { "spent_at", record.SpentBlockIndex.ToString("N0") },
+                { "spent", record.Spent.ToString() },
+                { "coinbase", record.Coinbase.ToString() },
+                { "timestamp", record.DateTimestamp.ToLocalTime().ToString() }
+            };
 
             table.Add(row);
         }

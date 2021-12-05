@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
-using Spectre.Console;
 
 namespace rchia.Blocks;
 
@@ -33,7 +32,24 @@ internal sealed class RecentBlocksCommand : EndpointOptions
                 }
             }
 
-            output.WriteOutput(blocks);
+            if (Json)
+            {
+                output.WriteOutput(blocks);
+            }
+            else
+            {
+                var table = new List<IDictionary<string, string>>();
+                foreach (var b in blocks)
+                {
+                    var row = new Dictionary<string, string>()
+                    {
+                        { "height", b.Height.ToString("N0") },
+                        { "hash", b.HeaderHash.Replace("0x", "") }
+                    };
+                    table.Add(row);
+                }
+                output.WriteOutput(table);
+            }
         });
     }
 }
