@@ -36,7 +36,7 @@ internal sealed class AdditionsAndRemovalsCommand : EndpointOptions
     [CommandTarget]
     public async Task<int> Run()
     {
-        return await DoWorkAsync("Retrieving block header connection...", async output =>
+        return await DoWorkAsync("Retrieving block header...", async output =>
         {
             using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.FullNode);
             var proxy = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);
@@ -56,7 +56,7 @@ internal sealed class AdditionsAndRemovalsCommand : EndpointOptions
             }
             else
             {
-                var result = new Dictionary<string, IEnumerable<IDictionary<string, string>>>
+                var result = new Dictionary<string, IEnumerable<IDictionary<string, object?>>>
                 {
                     { "additions", GetCoinRecords(Additions) },
                     { "removals", GetCoinRecords(Removals) }
@@ -66,22 +66,22 @@ internal sealed class AdditionsAndRemovalsCommand : EndpointOptions
         });
     }
 
-    private static IEnumerable<IDictionary<string, string>> GetCoinRecords(IEnumerable<CoinRecord> records)
+    private static IEnumerable<IDictionary<string, object?>> GetCoinRecords(IEnumerable<CoinRecord> records)
     {
-        var table = new List<IDictionary<string, string>>();
+        var table = new List<IDictionary<string, object?>>();
 
         foreach (var record in records)
         {
-            var row = new Dictionary<string, string>
+            var row = new Dictionary<string, object?>
             {
                 { "parent_coin_info", record.Coin.ParentCoinInfo.Replace("0x", "") },
                 { "puzzle_hash", record.Coin.PuzzleHash.Replace("0x", "") },
-                { "amount", record.Coin.Amount.AsChia("N3") },
-                { "confirmed_at", record.ConfirmedBlockIndex.ToString("N0") },
-                { "spent_at", record.SpentBlockIndex.ToString("N0") },
-                { "spent", record.Spent.ToString() },
-                { "coinbase", record.Coinbase.ToString() },
-                { "timestamp", record.DateTimestamp.ToLocalTime().ToString() }
+                { "amount", record.Coin.Amount.ToChia() },
+                { "confirmed_at", record.ConfirmedBlockIndex },
+                { "spent_at", record.SpentBlockIndex },
+                { "spent", record.Spent },
+                { "coinbase", record.Coinbase },
+                { "timestamp", record.DateTimestamp.ToLocalTime() }
             };
 
             table.Add(row);

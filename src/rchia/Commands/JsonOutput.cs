@@ -17,14 +17,14 @@ internal class JsonOutput : ICommandOutput
         return this;
     }
 
-    public void WriteOutput(IDictionary<string, IEnumerable<IDictionary<string, string>>> output)
+    public void WriteOutput(IDictionary<string, IEnumerable<IDictionary<string, object?>>> output)
     {
         AnsiConsole.WriteLine(output.ToJson());
     }
 
-    public void WriteOutput(string name, string value, bool verbose = false)
+    public void WriteOutput(string name, object? value, bool verbose = false)
     {
-        var output = new Dictionary<string, string>()
+        var output = new Dictionary<string, object?>()
         {
             { name, value }
         };
@@ -37,7 +37,7 @@ internal class JsonOutput : ICommandOutput
         AnsiConsole.WriteLine(output.ToJson());
     }
 
-    public void WriteOutput(IEnumerable<IDictionary<string, string>> output)
+    public void WriteOutput(IEnumerable<IDictionary<string, object?>> output)
     {
         AnsiConsole.WriteLine(output.SortAll().ToJson());
     }
@@ -47,7 +47,7 @@ internal class JsonOutput : ICommandOutput
         AnsiConsole.WriteLine(output.ToJson());
     }
 
-    public void WriteOutput(IDictionary<string, string> output)
+    public void WriteOutput(IDictionary<string, object?> output)
     {
         AnsiConsole.WriteLine(output.Sort().ToJson());
     }

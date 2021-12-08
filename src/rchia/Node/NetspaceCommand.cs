@@ -53,9 +53,9 @@ internal sealed class NetspaceCommand : EndpointOptions
             var newer_block_header = await proxy.GetBlockRecordByHeight(newer_block_height);
             var older_block_height = Math.Max(0, newer_block_height - DeltaBlockHeight);
             var older_block_header = await proxy.GetBlockRecordByHeight(older_block_height);
-            var network_space_bytes_estimate = await proxy.GetNetworkSpace(newer_block_header.HeaderHash, older_block_header.HeaderHash);
+            var network_space_estimate = await proxy.GetNetworkSpace(newer_block_header.HeaderHash, older_block_header.HeaderHash);
 
-            output.WriteOutput("network_space_bytes_estimate", network_space_bytes_estimate.ToBytesString(), Verbose);
+            output.WriteOutput("network_space_estimate", network_space_estimate.ToBytesString(), Verbose);
         });
     }
 }

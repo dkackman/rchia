@@ -21,7 +21,7 @@ internal class ConsoleOutput : ICommandOutput
         return this;
     }
 
-    public void WriteOutput(IDictionary<string, IEnumerable<IDictionary<string, string>>> output)
+    public void WriteOutput(IDictionary<string, IEnumerable<IDictionary<string, object?>>> output)
     {
         foreach (var table in output)
         {
@@ -29,7 +29,7 @@ internal class ConsoleOutput : ICommandOutput
         }
     }
 
-    public void WriteOutput(string name, string value, bool verbose)
+    public void WriteOutput(string name, object? value, bool verbose)
     {
         if (verbose)
         {
@@ -37,7 +37,7 @@ internal class ConsoleOutput : ICommandOutput
         }
         else
         {
-            WriteLine(value);
+            WriteLine($"{value}");
         }
     }
 
@@ -46,7 +46,7 @@ internal class ConsoleOutput : ICommandOutput
         WriteLine(output.ToJson());
     }
 
-    public void WriteOutput(IEnumerable<IDictionary<string, string>> output)
+    public void WriteOutput(IEnumerable<IDictionary<string, object?>> output)
     {
         WriteTable(output, string.Empty);
     }
@@ -59,7 +59,32 @@ internal class ConsoleOutput : ICommandOutput
         }
     }
 
-    private static void WriteTable(IEnumerable<IDictionary<string, string>> output, string title)
+    public void WriteOutput(IDictionary<string, object?> output)
+    {
+        foreach (var value in output)
+        {
+            MarkupLine($"[wheat1]{value.Key.FromSnakeCase()}:[/] {Format(value.Value)}");
+        }
+    }
+
+    private static object? Format(object? value)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+        if (value.GetType() == typeof(ulong))
+        {
+            return ((ulong)value).ToString("N0");
+        }
+        if (value.GetType() == typeof(uint))
+        {
+            return ((uint)value).ToString("N0");
+        }
+        return value;
+    }
+
+    private static void WriteTable(IEnumerable<IDictionary<string, object?>> output, string title)
     {
         var table = new Table
         {
@@ -78,19 +103,11 @@ internal class ConsoleOutput : ICommandOutput
             // now add the values from all the rows
             foreach (var row in output)
             {
-                table.AddRow(row.Values.ToArray());
+                table.AddRow(row.Values.Select(item => $"{Format(item)}").ToArray());
             }
         }
 
         AnsiConsole.Write(table);
-    }
-
-    public void WriteOutput(IDictionary<string, string> output)
-    {
-        foreach (var value in output)
-        {
-            MarkupLine($"[wheat1]{value.Key.FromSnakeCase()}:[/] {value.Value}");
-        }
     }
 
     public void MarkupLine(string msg)

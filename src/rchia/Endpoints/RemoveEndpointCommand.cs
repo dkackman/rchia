@@ -23,7 +23,7 @@ internal sealed class RemoveEndpointCommand : Command
             _ = library.Endpoints.Remove(Id);
             library.Save();
 
-            output.WriteOutput("removed", Id, Verbose);
+            output.WriteOutput("removed", Id, true);
         });
     }
 }

@@ -2,7 +2,7 @@
   "profiles": {
     "rchia": {
       "commandName": "Project",
-      "commandLineArgs": "wallets list -ep wsl"
+      "commandLineArgs": "farm challenges -ep wsl"
     }
   }
 }

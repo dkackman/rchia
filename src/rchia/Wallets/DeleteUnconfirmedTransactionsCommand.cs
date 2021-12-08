@@ -22,7 +22,7 @@ internal sealed class DeleteUnconfirmedTransactionsCommand : WalletCommand
             await wallet.DeleteUnconfirmedTransactions(cts.Token);
 
             output.MarkupLine($"Successfully deleted all unconfirmed transactions for wallet id:");
-            output.WriteOutput("wallet", Id.ToString(), Verbose);
+            output.WriteOutput("wallet", Id, Verbose);
         });
     }
 }

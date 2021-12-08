@@ -26,7 +26,7 @@ internal sealed class TestEndpointCommand : Command
             var endpoint = library.Endpoints[Id];
             await ClientFactory.Factory.TestConnection(endpoint.EndpointInfo, Timeout * 1000);
 
-            output.WriteOutput("connected_to", Id, Verbose);
+            output.WriteOutput("connected_to", Id, true);
         });
     }
 }

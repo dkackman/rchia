@@ -16,7 +16,7 @@ internal abstract class WalletCommand : EndpointOptions
 
     protected void PrintTransactionSentTo(ICommandOutput output, TransactionRecord tx)
     {
-        var result = new Dictionary<string, object>()
+        var result = new Dictionary<string, object?>()
         {
             { "transaction", tx.Name },
             { "sent_to", tx.SentTo.Select(peer => peer.Peer) }
@@ -25,7 +25,7 @@ internal abstract class WalletCommand : EndpointOptions
         output.Helpful($"Do '[grey]rchia wallet get-transaction -tx {tx.Name}[/]' to get status");
     }
 
-    protected void PrintTransaction(TransactionRecord tx, string prefix, IDictionary<string, string> row)
+    protected void PrintTransaction(TransactionRecord tx, string prefix, IDictionary<string, object?> row)
     {
         var name = Verbose || Json ? tx.Name : tx.Name.Substring(2, 10) + "...";
         var status = tx.Confirmed
@@ -34,10 +34,10 @@ internal abstract class WalletCommand : EndpointOptions
                         ? "In mempool"
                         : "Pending";
 
-        var amount = $"{tx.Amount.AsChia()} {prefix}";
+        var amount = tx.Amount.ToChia();
         var bech32 = new Bech32M(prefix);
         var to = Verbose || Json ? bech32.PuzzleHashToAddress(tx.ToPuzzleHash) : string.Concat(bech32.PuzzleHashToAddress(tx.ToPuzzleHash).AsSpan(prefix.Length, 10), "...");
-        var at = tx.CreatedAtDateTime.ToLocalTime().ToString();
+        var at = tx.CreatedAtDateTime.ToLocalTime();
 
         row.Add("name", name);
         row.Add("status", status);

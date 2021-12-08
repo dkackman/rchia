@@ -26,20 +26,20 @@ internal sealed class ListConnectionsCommand : EndpointOptions
             }
             else
             {
-                var table = new List<IDictionary<string, string>>();
+                var table = new List<IDictionary<string, object?>>();
 
                 foreach (var c in await proxy.GetConnections(cts.Token))
                 {
-                    var row = new Dictionary<string, string>
+                    var row = new Dictionary<string, object?>
                     {
-                        { "Type", c.Type.ToString() },
+                        { "Type", c.Type },
                         { "IP", c.PeerHost },
                         { "Ports", $"{c.PeerPort}/{c.PeerServerPort}" },
                         { "NodeID", Verbose ? c.NodeId : string.Concat(c.NodeId.AsSpan(2, 10), "...") },
                         { "Last Connect", $"{c.LastMessageDateTime.ToLocalTime():MMM dd HH:mm}" },
                         { "Up", (c.BytesRead ?? 0).ToBytesString("N1") },
                         { "Down", (c.BytesWritten ?? 0).ToBytesString("N1") },
-                        { "Height", c.PeakHeight.HasValue ? c.PeakHeight.Value.ToString() : "na" },
+                        { "Height", c.PeakHeight },
                         { "Hash", string.IsNullOrEmpty(c.PeakHash) ? "no info" : Verbose ? c.PeakHash : string.Concat(c.PeakHash.AsSpan(2, 10), "...") }
                     };
 

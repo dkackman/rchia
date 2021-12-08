@@ -6,108 +6,107 @@ using System.CommandLine.Invocation;
 using System.Linq;
 using System.Reflection;
 
-namespace rchia.Commands
+namespace rchia.Commands;
+
+public static class AttributeExtensions
 {
-    public static class AttributeExtensions
+    public static CommandLineBuilder UseAttributes(this CommandLineBuilder builder, Assembly assembly)
     {
-        public static CommandLineBuilder UseAttributes(this CommandLineBuilder builder, Assembly assembly)
+        var types = from type in assembly.GetTypes()
+                    let attr = type.GetCustomAttribute<CommandAttribute>()
+                    where attr is not null
+                    orderby attr.Name
+                    select (type, attr);
+
+        var root = builder.Command;
+        foreach (var (type, attr) in types)
         {
-            var types = from type in assembly.GetTypes()
-                        let attr = type.GetCustomAttribute<CommandAttribute>()
-                        where attr is not null
-                        orderby attr.Name
-                        select (type, attr);
-
-            var root = builder.Command;
-            foreach (var (type, attr) in types)
-            {
-                root.AddCommands(type, attr);
-            }
-
-            return builder;
+            root.AddCommands(type, attr);
         }
 
-        private static void AddCommands(this System.CommandLine.Command parent, Type type, CommandAttribute c)
+        return builder;
+    }
+
+    private static void AddCommands(this System.CommandLine.Command parent, Type type, CommandAttribute c)
+    {
+        var command = new System.CommandLine.Command(c.Name, c.Description);
+
+        // get all the options for the command
+        foreach (var (property, attr) in type.GetAttributedProperties<OptionAttribute>())
         {
-            var command = new System.CommandLine.Command(c.Name, c.Description);
-
-            // get all the options for the command
-            foreach (var (property, attr) in type.GetAttributedProperties<OptionAttribute>())
+            var aliases = new List<string>();
+            if (!string.IsNullOrEmpty(attr.ShortName))
             {
-                var aliases = new List<string>();
-                if (!string.IsNullOrEmpty(attr.ShortName))
-                {
-                    aliases.Add($"-{attr.ShortName}");
-                }
-
-                if (!string.IsNullOrEmpty(attr.LongName))
-                {
-                    aliases.Add($"--{attr.LongName}");
-                }
-
-                var option = new Option(aliases.ToArray(), attr.Description, property.PropertyType)
-                {
-                    ArgumentHelpName = attr.ArgumentHelpName ?? property.Name,
-                    IsRequired = attr.IsRequired,
-                    IsHidden = attr.IsHidden
-                };
-
-                if (attr.Default is not null)
-                {
-                    option.SetDefaultValue(attr.Default);
-                }
-
-                command.AddOption(option);
+                aliases.Add($"-{attr.ShortName}");
             }
 
-            // add required arguments
-            foreach (var (property, attr) in type.GetAttributedProperties<ArgumentAttribute>().OrderBy(tuple => tuple.Attribute.Index))
+            if (!string.IsNullOrEmpty(attr.LongName))
             {
-                var argument = new Argument(attr.Name)
-                {
-                    ArgumentType = property.PropertyType,
-                };
-
-                if (attr.Default is not null)
-                {
-                    argument.SetDefaultValue(attr.Default);
-                }
-
-                argument.Description = attr.Description;
-                command.AddArgument(argument);
+                aliases.Add($"--{attr.LongName}");
             }
 
-            // and recurse to add subcommands
-            foreach (var (property, subcommand) in type.GetAttributedProperties<CommandAttribute>())
+            var option = new Option(aliases.ToArray(), attr.Description, property.PropertyType)
             {
-                command.AddCommands(property.PropertyType, subcommand);
+                ArgumentHelpName = attr.ArgumentHelpName ?? property.Name,
+                IsRequired = attr.IsRequired,
+                IsHidden = attr.IsHidden
+            };
+
+            if (attr.Default is not null)
+            {
+                option.SetDefaultValue(attr.Default);
             }
 
-            var target = type.GetCommandTarget(); // ?? throw new InvalidOperationException($"No method decorated with [CommandTarget] was found on {type.FullName}");
-            if (target is not null)
-            {
-                command.Handler = CommandHandler.Create(target);
-            }
-
-            parent.AddCommand(command);
+            command.AddOption(option);
         }
 
-        public static MethodInfo? GetCommandTarget(this Type type)
+        // add required arguments
+        foreach (var (property, attr) in type.GetAttributedProperties<ArgumentAttribute>().OrderBy(tuple => tuple.Attribute.Index))
         {
-            var targets = from method in type.GetMethods(BindingFlags.Instance | BindingFlags.Public)
-                          let attr = method.GetCustomAttribute<CommandTargetAttribute>(true)
-                          where attr is not null
-                          select method;
+            var argument = new Argument(attr.Name)
+            {
+                ArgumentType = property.PropertyType,
+            };
 
-            return targets.FirstOrDefault();
+            if (attr.Default is not null)
+            {
+                argument.SetDefaultValue(attr.Default);
+            }
+
+            argument.Description = attr.Description;
+            command.AddArgument(argument);
         }
 
-        private static IEnumerable<(PropertyInfo Propety, T Attribute)> GetAttributedProperties<T>(this Type type) where T : Attribute
+        // and recurse to add subcommands
+        foreach (var (property, subcommand) in type.GetAttributedProperties<CommandAttribute>())
         {
-            return from property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                   let attr = property.GetCustomAttribute<T>()
-                   where attr is not null
-                   select (property, attr);
+            command.AddCommands(property.PropertyType, subcommand);
         }
+
+        var target = type.GetCommandTarget(); // ?? throw new InvalidOperationException($"No method decorated with [CommandTarget] was found on {type.FullName}");
+        if (target is not null)
+        {
+            command.Handler = CommandHandler.Create(target);
+        }
+
+        parent.AddCommand(command);
+    }
+
+    public static MethodInfo? GetCommandTarget(this Type type)
+    {
+        var targets = from method in type.GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                      let attr = method.GetCustomAttribute<CommandTargetAttribute>(true)
+                      where attr is not null
+                      select method;
+
+        return targets.FirstOrDefault();
+    }
+
+    private static IEnumerable<(PropertyInfo Propety, T Attribute)> GetAttributedProperties<T>(this Type type) where T : Attribute
+    {
+        return from property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+               let attr = property.GetCustomAttribute<T>()
+               where attr is not null
+               select (property, attr);
     }
 }

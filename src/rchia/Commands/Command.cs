@@ -20,14 +20,18 @@ public abstract class Command
 
         try
         {
-            if (!Json)
+            if (Json)
             {
-                await AnsiConsole.Status().StartAsync(msg, async ctx => await work(output.SetContext(ctx)));
-                output.Helpful("Done.");
+                await work(output);
             }
             else
             {
-                await work(output);
+                await AnsiConsole.Status()
+               .AutoRefresh(true)
+               .SpinnerStyle(Style.Parse("green bold"))
+               .StartAsync(msg, async ctx => await work(output.SetContext(ctx)));
+
+                output.Helpful("Done.");
             }
 
             return 0;
@@ -53,14 +57,18 @@ public abstract class Command
 
         try
         {
-            if (!Json)
+            if (Json)
             {
-                AnsiConsole.Status().Start(msg, ctx => work(output.SetContext(ctx)));
-                output.Helpful("Done.");
+                work(output);
             }
             else
             {
-                work(output);
+                AnsiConsole.Status()
+                    .AutoRefresh(true)
+                    .SpinnerStyle(Style.Parse("green bold"))
+                    .Start(msg, ctx => work(output.SetContext(ctx)));
+
+                output.Helpful("Done.");
             }
 
             return 0;

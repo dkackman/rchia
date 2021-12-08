@@ -5,22 +5,21 @@ using System.Reflection;
 using System.Threading.Tasks;
 using rchia.Commands;
 
-namespace rchia
-{
-    internal static class Program
-    {
-        static Program()
-        {
-            ClientFactory.Initialize("rchia");
-        }
+namespace rchia;
 
-        private async static Task<int> Main(string[] args)
-        {
-            return await new CommandLineBuilder()
-                .UseDefaults()
-                .UseAttributes(Assembly.GetExecutingAssembly())
-                .Build()
-                .InvokeAsync(args);
-        }
+internal static class Program
+{
+    static Program()
+    {
+        ClientFactory.Initialize("rchia");
+    }
+
+    private async static Task<int> Main(string[] args)
+    {
+        return await new CommandLineBuilder()
+            .UseDefaults()
+            .UseAttributes(Assembly.GetExecutingAssembly())
+            .Build()
+            .InvokeAsync(args);
     }
 }

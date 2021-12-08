@@ -7,95 +7,94 @@ using System.Collections.Generic;
 using chia.dotnet;
 using Newtonsoft.Json;
 
-namespace rchia
+namespace rchia;
+
+internal static class Extensions
 {
-    internal static class Extensions
+    public static IDictionary<K, V> Sort<K, V>(this IDictionary<K, V> dict) where K : notnull
     {
-        public static IDictionary<K, V> Sort<K, V>(this IDictionary<K, V> dict) where K : notnull
+        return dict.OrderBy(kvp => kvp.Key).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+    }
+
+    public static IEnumerable<IDictionary<string, object?>> SortAll(this IEnumerable<IDictionary<string, object?>> dict)
+    {
+        var list = new List<IDictionary<string, object?>>();
+        foreach (var item in dict)
         {
-            return dict.OrderBy(kvp => kvp.Key).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            list.Add(item.Sort());
         }
 
-        public static IEnumerable<IDictionary<string, string>> SortAll(this IEnumerable<IDictionary<string, string>> dict) 
-        {
-            var list = new List<IDictionary<string, string>>();
-            foreach (var item in dict)
-            {
-                list.Add(item.Sort());
-            }
+        return list;
+    }
 
-            return list;
+    public static string FromSnakeCase(this string s)
+    {
+        if (string.IsNullOrEmpty(s))
+        {
+            return string.Empty;
         }
 
-        public static string FromSnakeCase(this string s)
-        {
-            if (string.IsNullOrEmpty(s))
-            {
-                return string.Empty;
-            }
+        var builder = new StringBuilder(char.ToUpper(s[0]));
+        builder.Append(char.ToUpper(s[0]));
+        builder.Append(s.Replace('_', ' ').Substring(1));
+        return builder.ToString();
+    }
 
-            var builder = new StringBuilder(char.ToUpper(s[0]));
-            builder.Append(char.ToUpper(s[0])); 
-            builder.Append(s.Replace('_', ' ').Substring(1));
-            return builder.ToString();
+    public static string ToJson(this object o)
+    {
+        return JsonConvert.SerializeObject(o, Formatting.Indented);
+    }
+
+    public static string FormatTimeSpan(this TimeSpan t)
+    {
+        var builder = new StringBuilder();
+        if (t.Days > 0)
+        {
+            _ = builder.Append($"{t.Days} day{(t.Days > 1 ? "s" : "")} ");
         }
 
-        public static string ToJson(this object o)
+        if (t.Hours > 0)
         {
-            return JsonConvert.SerializeObject(o, Formatting.Indented);
+            _ = builder.Append($"{t.Hours} hour{(t.Hours > 1 ? "s" : "")} ");
         }
 
-        public static string FormatTimeSpan(this TimeSpan t)
+        if (t.Minutes > 0)
         {
-            var builder = new StringBuilder();
-            if (t.Days > 0)
-            {
-                _ = builder.Append($"{t.Days} day{(t.Days > 1 ? "s" : "")} ");
-            }
-
-            if (t.Hours > 0)
-            {
-                _ = builder.Append($"{t.Hours} hour{(t.Hours > 1 ? "s" : "")} ");
-            }
-
-            if (t.Minutes > 0)
-            {
-                _ = builder.Append($"{t.Minutes} minute{(t.Minutes > 1 ? "s" : "")} ");
-            }
-
-            return builder.ToString();
+            _ = builder.Append($"{t.Minutes} minute{(t.Minutes > 1 ? "s" : "")} ");
         }
 
-        public async static Task<string> ValidatePoolingOptions(this WalletProxy wallet, bool pooling, Uri? poolUri, int timeoutMilliseconds)
+        return builder.ToString();
+    }
+
+    public async static Task<string> ValidatePoolingOptions(this WalletProxy wallet, bool pooling, Uri? poolUri, int timeoutMilliseconds)
+    {
+        using var cts = new CancellationTokenSource(timeoutMilliseconds);
+
+        var (NetworkName, NetworkPrefix) = await wallet.GetNetworkInfo(cts.Token);
+
+        if (pooling && NetworkName == "mainnet" && poolUri is not null && poolUri.Scheme != "https")
         {
-            using var cts = new CancellationTokenSource(timeoutMilliseconds);
-
-            var (NetworkName, NetworkPrefix) = await wallet.GetNetworkInfo(cts.Token);
-
-            if (pooling && NetworkName == "mainnet" && poolUri is not null && poolUri.Scheme != "https")
-            {
-                throw new InvalidOperationException($"Pool URLs must be HTTPS on mainnet {poolUri}. Aborting.");
-            }
-
-            return $"This operation Will join the wallet with fingerprint [wheat1]{wallet.Fingerprint}[/] to [wheat1]{poolUri}[/].\nDo you want to proceed?";
+            throw new InvalidOperationException($"Pool URLs must be HTTPS on mainnet {poolUri}. Aborting.");
         }
 
-        public async static Task<PoolInfo> GetPoolInfo(this Uri uri, int timeoutMilliseconds)
+        return $"This operation Will join the wallet with fingerprint [wheat1]{wallet.Fingerprint}[/] to [wheat1]{poolUri}[/].\nDo you want to proceed?";
+    }
+
+    public async static Task<PoolInfo> GetPoolInfo(this Uri uri, int timeoutMilliseconds)
+    {
+        using var cts = new CancellationTokenSource(timeoutMilliseconds);
+        var info = await WalletProxy.GetPoolInfo(uri, cts.Token);
+
+        if (info.RelativeLockHeight > 1000)
         {
-            using var cts = new CancellationTokenSource(timeoutMilliseconds);
-            var info = await WalletProxy.GetPoolInfo(uri, cts.Token);
-
-            if (info.RelativeLockHeight > 1000)
-            {
-                throw new InvalidOperationException("Relative lock height too high for this pool, cannot join");
-            }
-
-            if (info.ProtocolVersion != PoolInfo.POOL_PROTOCOL_VERSION)
-            {
-                throw new InvalidOperationException($"Unsupported version: {info.ProtocolVersion}, should be {PoolInfo.POOL_PROTOCOL_VERSION}");
-            }
-
-            return info;
+            throw new InvalidOperationException("Relative lock height too high for this pool, cannot join");
         }
+
+        if (info.ProtocolVersion != PoolInfo.POOL_PROTOCOL_VERSION)
+        {
+            throw new InvalidOperationException($"Unsupported version: {info.ProtocolVersion}, should be {PoolInfo.POOL_PROTOCOL_VERSION}");
+        }
+
+        return info;
     }
 }

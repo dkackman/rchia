@@ -25,14 +25,21 @@ internal sealed class ShowPlotLogCommand : EndpointOptions
 
             if (string.IsNullOrEmpty(Id))
             {
-                var running = q.Where(p => p.PlotState == PlotState.RUNNING);
-                var count = running.Count();
-                output.MarkupLine($"There {(count == 1 ? "is" : "are")} [wheat1]{count}[/] running plot job{(count == 1 ? "" : "s")}");
-                foreach (var plot in running)
+                if (Json)
                 {
-                    output.MarkupLine($"Log for plot [wheat1]{plot.Id}[/]");
-                    output.WriteLine(plot.Log);
-                    output.WriteLine("");
+                    output.WriteOutput(q);
+                }
+                else
+                {
+                    var running = q.Where(p => p.PlotState == PlotState.RUNNING);
+                    var count = running.Count();
+                    output.MarkupLine($"There {(count == 1 ? "is" : "are")} [wheat1]{count}[/] running plot job{(count == 1 ? "" : "s")}");
+                    foreach (var plot in running)
+                    {
+                        output.MarkupLine($"Log for plot [wheat1]{plot.Id}[/]");
+                        output.WriteLine(plot.Log);
+                        output.WriteLine("");
+                    }
                 }
             }
             else
@@ -43,7 +50,7 @@ internal sealed class ShowPlotLogCommand : EndpointOptions
                     throw new InvalidOperationException($"No plot with an id of {Id} was found");
                 }
 
-                output.WriteOutput("log", plot.Log ?? plot.State.ToString(), Verbose);
+                output.WriteOutput("log", plot.Log ?? plot.State, Verbose);
             }
         });
     }

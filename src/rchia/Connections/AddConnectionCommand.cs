@@ -23,7 +23,7 @@ internal sealed class AddConnectionCommand : EndpointOptions
             var uri = Host.StartsWith("http") ? new Uri(Host) : new Uri("https://" + Host); // need to add a scheme so uri can be parsed
             await proxy.OpenConnection(uri.Host, uri.Port, cts.Token);
 
-            output.WriteOutput("added", uri.ToString(), Verbose);
+            output.WriteOutput("added", uri, Verbose);
         });
     }
 }

@@ -19,14 +19,14 @@ namespace rchia.Plots
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 var plotters = await proxy.GetPlotters(cts.Token);
 
-                var table = new List<IDictionary<string, string>>();
+                var table = new List<IDictionary<string, object?>>();
                 foreach (var plotter in plotters.Values)
                 {
-                    var row = new Dictionary<string, string>
+                    var row = new Dictionary<string, object?>
                     {
                         { "name", plotter.DisplayName },
-                        { "installed", plotter.Installed.ToString() },
-                        { "can_install", plotter.CanInstall.ToString() },
+                        { "installed", plotter.Installed },
+                        { "can_install", plotter.CanInstall },
                         { "version", plotter.Version ?? string.Empty }
                     };
 

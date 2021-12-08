@@ -38,12 +38,12 @@ internal sealed class RecentBlocksCommand : EndpointOptions
             }
             else
             {
-                var table = new List<IDictionary<string, string>>();
+                var table = new List<IDictionary<string, object?>>();
                 foreach (var b in blocks)
                 {
-                    var row = new Dictionary<string, string>()
+                    var row = new Dictionary<string, object?>()
                     {
-                        { "height", b.Height.ToString("N0") },
+                        { "height", b.Height },
                         { "hash", b.HeaderHash.Replace("0x", "") }
                     };
                     table.Add(row);

@@ -25,23 +25,23 @@ internal sealed class ChallengesCommand : EndpointOptions
             output.WriteOutput(signagePoints);
 
             var list = signagePoints.Reverse().ToList(); // convert to list to avoid multiple iteration
-            var count = Limit == 0 ? list.Count : Limit;
+            var limit = Limit == 0 ? list.Count : Limit;
 
-            var table = new List<IDictionary<string, string>>();
+            var table = new List<IDictionary<string, object?>>();
 
-            foreach (var sp in list.Take(count))
+            foreach (var sp in list.Take(limit))
             {
-                var row = new Dictionary<string, string>
+                var row = new Dictionary<string, object?>
                 {
                     { "hash", sp.SignagePoint.ChallengeHash.Replace("0x", string.Empty) },
-                    { "index", sp.SignagePoint.SignagePointIndex.ToString() }
+                    { "index", sp.SignagePoint.SignagePointIndex }
                 };
 
                 table.Add(row);
             }
 
             output.WriteOutput(table);
-            output.Message($"Showing {count} of {list.Count} challenge{(list.Count == 1 ? string.Empty : "s")}.");
+            output.Message($"Showing {table.Count()} of {signagePoints.Count()} challenge{(list.Count == 1 ? string.Empty : "s")}.");
         });
     }
 }

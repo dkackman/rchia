@@ -34,11 +34,11 @@ internal sealed class GetTransactionsCommand : WalletCommand
 
             if (transactions.Any())
             {
-                var result = new List<IDictionary<string, string>>();
+                var result = new List<IDictionary<string, object?>>();
 
                 foreach (var tx in transactions)
                 {
-                    var dict = new Dictionary<string, string>();
+                    var dict = new Dictionary<string, object?>();
                     PrintTransaction(tx, NetworkPrefix, dict);
                     result.Add(dict);
                 }
@@ -49,7 +49,7 @@ internal sealed class GetTransactionsCommand : WalletCommand
             }
             else
             {
-                output.Warning("There are no transactions to this address");
+                output.WriteOutput("warning", "There are no transactions to this address", false);
             }
         });
     }

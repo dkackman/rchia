@@ -18,7 +18,7 @@ internal sealed class StopNodeCommand : EndpointOptions
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             await proxy.StopNode(cts.Token);
 
-            output.WriteOutput("stopped", rpcClient.Endpoint.Uri.ToString(), true);
+            output.WriteOutput("stopped", rpcClient.Endpoint.Uri, true);
         });
     }
 }

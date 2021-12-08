@@ -17,10 +17,8 @@ internal sealed class RefreshPlotsCommand : EndpointOptions
 
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             await proxy.RefreshPlots(cts.Token);
-            if (Json)
-            {
-                output.WriteOutput("refreshed", true.ToString(), Verbose);
-            }
+
+            output.WriteOutput("refreshed", true, true);
         });
     }
 }

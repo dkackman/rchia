@@ -12,5 +12,5 @@ public class ConsoleStatus : IStatus
         _context = ctx ?? throw new ArgumentNullException(nameof(ctx));
     }
 
-    public string Status { get => _context.Status; set => _context.Status = value; }
+    public string Status { get => _context.Status; set { _context.Status = value; _context.Refresh(); } }
 }

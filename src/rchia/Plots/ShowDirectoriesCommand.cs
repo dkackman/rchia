@@ -19,7 +19,6 @@ internal sealed class ShowDirectoriesCommand : EndpointOptions
             output.WriteLine("Directories where plots are being searched for:");
             output.Helpful("Note that subdirectories must be added manually", true);
             output.MarkupLine("Add with '[grey]chia plots add <dir>[/]' and remove with '[grey]chia plots remove <dir>[/]'");
-            output.WriteLine("");
 
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var list = new List<string>();

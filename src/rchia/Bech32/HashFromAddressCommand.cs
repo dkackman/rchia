@@ -12,7 +12,7 @@ internal sealed class HashFromAddressCommand : Command
     {
         return DoWork("Calculating hash...", output =>
         {
-            output.WriteOutput("hash", Bech32M.AddressToPuzzleHash(Address).ToString(), Verbose);
+            output.WriteOutput("hash", Bech32M.AddressToPuzzleHash(Address), Verbose);
         });
     }
 }

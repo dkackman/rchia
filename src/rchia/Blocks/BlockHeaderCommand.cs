@@ -50,9 +50,9 @@ internal sealed class BlockHeaderCommand : EndpointOptions
             var (NetworkName, NetworkPrefix) = await proxy.GetNetworkInfo(cts.Token);
             var previous = await proxy.GetBlockRecord(block.PrevHash, cts.Token);
 
-            var result = new Dictionary<string, string>();
+            var result = new Dictionary<string, object?>();
 
-            result.Add("block_height", block.Height.ToString("N0"));
+            result.Add("block_height", block.Height);
             result.Add("header_hash", block.HeaderHash.Replace("0x", string.Empty));
 
             var timestamp = block.DateTimestamp.HasValue ? block.DateTimestamp.Value.ToLocalTime().ToString() : "Not a transaction block";
@@ -61,13 +61,13 @@ internal sealed class BlockHeaderCommand : EndpointOptions
             result.Add("previous_block", block.PrevHash.Replace("0x", string.Empty));
 
             var difficulty = previous is not null ? block.Weight - previous.Weight : block.Weight;
-            result.Add("difficulty", difficulty.ToString());
-            result.Add("subslot_iters", block.SubSlotIters.ToString("N0"));
-            result.Add("cost", full_block.TransactionsInfo?.Cost.ToString() ?? string.Empty);
+            result.Add("difficulty", difficulty.ToString("N0"));
+            result.Add("subslot_iters", block.SubSlotIters);
+            result.Add("cost", full_block.TransactionsInfo?.Cost);
             result.Add("total_vdf_iterations", block.TotalIters.ToString("N0"));
-            result.Add("is_transaction_block", full_block.RewardChainBlock.IsTransactionBlock.ToString());
-            result.Add("deficit", block.Deficit.ToString());
-            result.Add("k_size", full_block.RewardChainBlock.ProofOfSpace.Size.ToString());
+            result.Add("is_transaction_block", full_block.RewardChainBlock.IsTransactionBlock);
+            result.Add("deficit", block.Deficit);
+            result.Add("k_size", full_block.RewardChainBlock.ProofOfSpace.Size);
             result.Add("plot_public_key", full_block.RewardChainBlock.ProofOfSpace.PlotPublicKey);
 
             var poolPk = full_block.RewardChainBlock.ProofOfSpace.PublicPoolKey;

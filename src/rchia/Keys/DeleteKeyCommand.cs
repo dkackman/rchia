@@ -30,7 +30,7 @@ internal sealed class DeleteKeyCommand : WalletCommand
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 await proxy.DeleteKey(Fingerprint.Value, cts.Token);
 
-                output.WriteOutput("deleted", Fingerprint.Value.ToString(), Verbose);
+                output.WriteOutput("deleted", Fingerprint.Value, Verbose);
             }
         });
     }

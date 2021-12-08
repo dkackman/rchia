@@ -21,7 +21,7 @@ internal sealed class ListServicesCommand : EndpointOptions
             var fields = typeof(ServiceNames).GetFields(BindingFlags.Public | BindingFlags.Static);
             var serviceNames = new ServiceNames();
 
-            var result = new Dictionary<string, string>();
+            var result = new Dictionary<string, object?>();
             foreach (var name in fields.Where(f => f.Name != "Daemon"))
             {
                 var service = name.GetValue(serviceNames)?.ToString() ?? string.Empty;

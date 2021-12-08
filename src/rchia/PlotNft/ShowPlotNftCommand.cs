@@ -45,11 +45,11 @@ internal sealed class ShowPlotNftCommand : WalletCommand
             var height = await wallet.GetHeightInfo(cts.Token);
             var (GenesisInitialized, Synced, Syncing) = await wallet.GetSyncStatus(cts.Token);
 
-            var result = new Dictionary<string, string>()
+            var result = new Dictionary<string, object?>()
             {
-                { "wallet_height", height.ToString() },
+                { "wallet_height", height },
                 { "sync_status", $"{(Synced ? string.Empty : "not ")}synced"},
-                { "wallet", walletInfo.Id.ToString() }
+                { "wallet", walletInfo.Id }
             };
 
             var poolwallet = new PoolWallet(walletInfo.Id, wallet);
@@ -63,11 +63,11 @@ internal sealed class ShowPlotNftCommand : WalletCommand
             }
             else
             {
-                result.Add($"current_state", State.Current.State.ToString());
+                result.Add($"current_state", State.Current.State);
             }
 
             var bech32 = new Bech32M(NetworkPrefix);
-            result.Add($"current_state_from_block_height", State.SingletonBlockHeight.ToString());
+            result.Add($"current_state_from_block_height", State.SingletonBlockHeight);
             result.Add($"launcher_id", State.LauncherId);
             result.Add($"target_address", bech32.PuzzleHashToAddress(State.Current.TargetPuzzleHash));
 
@@ -77,7 +77,7 @@ internal sealed class ShowPlotNftCommand : WalletCommand
                             select plots;
 
             var plotCount = poolPlots.Count();
-            result.Add($"number_of_plots", plotCount.ToString());
+            result.Add($"number_of_plots", plotCount);
             result.Add($"owner_public_key", State.Current.OwnerPubkey);
             result.Add($"pool_contract_address", $"{bech32.PuzzleHashToAddress(State.P2SingletonPuzzleHash)}");
 
@@ -85,14 +85,14 @@ internal sealed class ShowPlotNftCommand : WalletCommand
 
             if (State.Target is not null)
             {
-                result.Add($"target_state", State.Target.State.ToString());
-                result.Add($"target_pool_url", State.Target.PoolUrl ?? string.Empty);
+                result.Add($"target_state", State.Target.State);
+                result.Add($"target_pool_url", State.Target.PoolUrl);
             }
 
             if (State.Current.State == PoolSingletonState.SELF_POOLING)
             {
                 var (ConfirmedWalletBalance, UnconfirmedWalletBalance, SpendableBalance, PendingChange, MaxSendAmount, UnspentCoinCount, PendingCoinRemovalCount) = await poolwallet.GetBalance(cts1.Token);
-                result.Add($"claimable_balance", $"{ConfirmedWalletBalance.AsChia("F5")} {NetworkPrefix}");
+                result.Add($"claimable_balance", $"{ConfirmedWalletBalance.ToChia()} {NetworkPrefix}");
             }
             else if (State.Current.State == PoolSingletonState.FARMING_TO_POOL)
             {
@@ -100,15 +100,15 @@ internal sealed class ShowPlotNftCommand : WalletCommand
                 var poolstate = poolStates.FirstOrDefault(ps => ps.PoolConfig.LauncherId == State.LauncherId);
                 if (poolstate is not null)
                 {
-                    result.Add($"current_difficulty", poolstate.CurrentDifficulty?.ToString() ?? string.Empty);
-                    result.Add($"points_balance", poolstate.CurrentPoints.ToString());
+                    result.Add($"current_difficulty", poolstate.CurrentDifficulty);
+                    result.Add($"points_balance", poolstate.CurrentPoints);
                     if (poolstate.PointsFound24h.Any())
                     {
                         var pointsAcknowledged = poolstate.PointsAcknowledged24h.Count;
                         var pct = pointsAcknowledged / (double)poolstate.PointsFound24h.Count;
                         result.Add($"percent_successful_points_24h", $"{pct:P2}%");
                     }
-                    result.Add($"relative_lock_height", $"{State.Current.RelativeLockHeight} blocks");
+                    result.Add($"relative_lock_height", State.Current.RelativeLockHeight);
                     try
                     {
                         result.Add("payout_instructions", bech32.PuzzleHashToAddress(poolstate.PoolConfig.PayoutInstructions));
@@ -128,7 +128,7 @@ internal sealed class ShowPlotNftCommand : WalletCommand
                 var expected = State.SingletonBlockHeight - State.Current.RelativeLockHeight;
                 if (State.Target is not null)
                 {
-                    result.Add("predicted_leave_after_block_height", expected.ToString());
+                    result.Add("predicted_leave_after_block_height", expected);
                 }
             }
 

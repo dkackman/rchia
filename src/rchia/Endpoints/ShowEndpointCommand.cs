@@ -19,6 +19,7 @@ internal sealed class ShowEndpointCommand : Command
             {
                 throw new InvalidOperationException($"There is no saved endpoint with an id of {Id}.");
             }
+
             output.WriteOutput(library.Endpoints[Id]);
         });
     }

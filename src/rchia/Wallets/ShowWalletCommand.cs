@@ -24,13 +24,13 @@ internal sealed class ShowWalletCommand : WalletCommand
             var height = await proxy.GetHeightInfo(cts.Token);
             var wallets = await proxy.GetWallets(cts.Token);
 
-            var wallet = new Dictionary<string, string>()
+            var wallet = new Dictionary<string, object?>()
             {
                 { "fingerprint", proxy.Fingerprint?.ToString() ?? string.Empty },
                 { "sync_status", Synced ? "Synced" : "Not synced" },
-                { "wallet_height", height.ToString() }
+                { "wallet_height", height }
             };
-            var table = new List<IDictionary<string, string>>();
+            var table = new List<IDictionary<string, object?>>();
 
             if (wallets.Any())
             {
@@ -41,20 +41,20 @@ internal sealed class ShowWalletCommand : WalletCommand
                     var newWallet = new chia.dotnet.Wallet(summary.Id, proxy);
                     var (ConfirmedWalletBalance, UnconfirmedWalletBalance, SpendableBalance, PendingChange, MaxSendAmount, UnspentCoinCount, PendingCoinRemovalCount) = await newWallet.GetBalance(cts.Token);
 
-                    var row = new Dictionary<string, string>();
-                    row.Add("Id", summary.Id.ToString());
+                    var row = new Dictionary<string, object?>();
+                    row.Add("Id", summary.Id);
                     row.Add("Name", summary.Name);
                     row.Add("Type", summary.Type.ToString());
-                    row.Add("Total", ConfirmedWalletBalance.AsChia());
-                    row.Add("Pending Total", UnconfirmedWalletBalance.AsChia());
-                    row.Add("Spendable", SpendableBalance.AsChia());
+                    row.Add("Total", ConfirmedWalletBalance.ToChia());
+                    row.Add("Pending Total", UnconfirmedWalletBalance.ToChia());
+                    row.Add("Spendable", SpendableBalance.ToChia());
 
                     if (Verbose || Json)
                     {
-                        row.Add("Pending Change", PendingChange.AsChia());
-                        row.Add("Max Spend Amount", MaxSendAmount.AsChia());
-                        row.Add("Unspent Coin Count", UnspentCoinCount.ToString());
-                        row.Add("Pending Coin Removal Count", PendingCoinRemovalCount.ToString());
+                        row.Add("Pending Change", PendingChange.ToChia());
+                        row.Add("Max Spend Amount", MaxSendAmount.ToChia());
+                        row.Add("Unspent Coin Count", UnspentCoinCount);
+                        row.Add("Pending Coin Removal Count", PendingCoinRemovalCount);
                     }
 
                     table.Add(row);

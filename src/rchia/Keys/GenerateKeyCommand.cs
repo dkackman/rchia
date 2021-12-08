@@ -19,7 +19,7 @@ internal sealed class GenerateKeyCommand : EndpointOptions
             var mnemonic = await proxy.GenerateMnemonic(cts.Token);
             var fingerprint = await proxy.AddKey(mnemonic, true, cts.Token);
 
-            output.WriteOutput("fingerprint", fingerprint.ToString(), Verbose);
+            output.WriteOutput("fingerprint", fingerprint, Verbose);
         });
     }
 }

@@ -26,7 +26,7 @@ internal sealed class SetDefaultEndpointCommand : Command
             }
 
             library.Save();
-            output.WriteOutput("default_endpoint", Id, Verbose);
+            output.WriteOutput("default_endpoint", Id, true);
         });
     }
 }

@@ -39,7 +39,7 @@ internal sealed class SummaryCommand : EndpointOptions
                 ? "Not running"
                 : "Farming";
 
-            var summary = new Dictionary<string, string>
+            var summary = new Dictionary<string, object?>
             {
                 { "farming_status", status }
             };
@@ -51,10 +51,10 @@ internal sealed class SummaryCommand : EndpointOptions
                 {
                     var (FarmedAmount, FarmerRewardAmount, FeeAmount, LastHeightFarmed, PoolRewardAmount) = await wallet.GetFarmedAmount(cts.Token);
 
-                    summary.Add("total_chia_farmed", FarmedAmount.AsChia("F1"));
-                    summary.Add("user_transaction_fees", FeeAmount.AsChia("F1"));
-                    summary.Add("block_rewards", (FarmerRewardAmount + PoolRewardAmount).AsChia("F1"));
-                    summary.Add("last_height_farmed", LastHeightFarmed.ToString("N0"));
+                    summary.Add("total_chia_farmed", FarmedAmount.ToChia());
+                    summary.Add("user_transaction_fees", FeeAmount.ToChia());
+                    summary.Add("block_rewards", (FarmerRewardAmount + PoolRewardAmount).ToChia());
+                    summary.Add("last_height_farmed", LastHeightFarmed);
                 }
                 catch
                 {
@@ -96,7 +96,7 @@ internal sealed class SummaryCommand : EndpointOptions
                 }
             }
 
-            summary.Add("total_plot_count", totalPlotCount.ToString());
+            summary.Add("total_plot_count", totalPlotCount);
             summary.Add("total_plot_size", totalplotSize.ToBytesString("N1"));
 
             if (blockchain_state is not null)
