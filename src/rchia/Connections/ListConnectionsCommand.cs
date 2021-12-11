@@ -1,53 +1,53 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
-using Spectre.Console;
 
-namespace rchia.Connections
+namespace rchia.Connections;
+
+internal sealed class ListConnectionsCommand : EndpointOptions
 {
-    internal sealed class ListConnectionsCommand : EndpointOptions
+    [CommandTarget]
+    public async Task<int> Run()
     {
-        [CommandTarget]
-        public async Task<int> Run()
+        return await DoWorkAsync("Retrieving connections...", async output =>
         {
-            return await DoWorkAsync("Retrieving connections...", async ctx =>
+            using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.FullNode);
+            var proxy = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);
+
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+            var connections = await proxy.GetConnections(cts.Token);
+
+            if (Json)
             {
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.FullNode);
-                var proxy = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);
+                output.WriteOutput(connections);
+            }
+            else
+            {
+                var table = new List<IDictionary<string, object?>>();
 
-                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-                var connections = await proxy.GetConnections(cts.Token);
-
-                var table = new Table
+                foreach (var c in await proxy.GetConnections(cts.Token))
                 {
-                    Title = new TableTitle("[orange3]Connections[/]")
-                };
+                    var row = new Dictionary<string, object?>
+                    {
+                        { "Type", c.Type },
+                        { "IP", c.PeerHost },
+                        { "Ports", $"{c.PeerPort}/{c.PeerServerPort}" },
+                        { "NodeID", Verbose ? c.NodeId : string.Concat(c.NodeId.AsSpan(2, 10), "...") },
+                        { "Last Connect", $"{c.LastMessageDateTime.ToLocalTime():MMM dd HH:mm}" },
+                        { "Up", (c.BytesRead ?? 0).ToBytesString("N1") },
+                        { "Down", (c.BytesWritten ?? 0).ToBytesString("N1") },
+                        { "Height", c.PeakHeight },
+                        { "Hash", string.IsNullOrEmpty(c.PeakHash) ? "no info" : Verbose ? c.PeakHash : string.Concat(c.PeakHash.AsSpan(2, 10), "...") }
+                    };
 
-                table.AddColumn("[orange3]Type[/]");
-                table.AddColumn("[orange3]IP[/]");
-                table.AddColumn("[orange3]Ports[/]");
-                table.AddColumn("[orange3]NodeID[/]");
-                table.AddColumn("[orange3]Last Connect[/]");
-                table.AddColumn("[orange3]Up[/]");
-                table.AddColumn("[orange3]Down[/]");
-                table.AddColumn("[orange3]Height[/]");
-                table.AddColumn("[orange3]Hash[/]");
-
-                foreach (var c in connections)
-                {
-                    var id = Verbose ? c.NodeId : c.NodeId.Substring(2, 10) + "...";
-                    var up = c.BytesRead ?? 0;
-                    var down = c.BytesWritten ?? 0;
-                    var ports = $"{c.PeerPort}/{c.PeerServerPort}";
-                    var height = c.PeakHeight.HasValue ? c.PeakHeight.Value.ToString() : "na";
-                    var hash = string.IsNullOrEmpty(c.PeakHash) ? "no info" : Verbose ? c.PeakHash : c.PeakHash.Substring(2, 10) + "...";
-
-                    table.AddRow(c.Type.ToString(), c.PeerHost, ports, id, $"{c.LastMessageDateTime.ToLocalTime():MMM dd HH:mm}", up.ToBytesString("N1"), down.ToBytesString("N1"), height, hash);
+                    table.Add(row);
                 }
 
-                AnsiConsole.Write(table);
-            });
-        }
+                output.WriteOutput(table);
+            }
+        });
     }
 }

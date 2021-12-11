@@ -3,21 +3,22 @@ using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 
-namespace rchia.Node
-{
-    internal sealed class StopNodeCommand : EndpointOptions
-    {
-        [CommandTarget]
-        public async Task<int> Run()
-        {
-            return await DoWorkAsync("Shutting down the node...", async ctx =>
-            {
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.FullNode);
-                var proxy = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);
+namespace rchia.Node;
 
-                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-                await proxy.StopNode(cts.Token);
-            });
-        }
+internal sealed class StopNodeCommand : EndpointOptions
+{
+    [CommandTarget]
+    public async Task<int> Run()
+    {
+        return await DoWorkAsync("Shutting down the node...", async output =>
+        {
+            using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.FullNode);
+            var proxy = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);
+
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+            await proxy.StopNode(cts.Token);
+
+            output.WriteOutput("stopped", rpcClient.Endpoint.Uri, true);
+        });
     }
 }

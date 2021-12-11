@@ -7,44 +7,43 @@ using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 
-namespace rchia.Keys
+namespace rchia.Keys;
+
+internal sealed class AddKeyCommand : EndpointOptions
 {
-    internal sealed class AddKeyCommand : EndpointOptions
+    [Argument(0, Name = "mnemonic", Description = "The 24 word mnemonic key phrase")]
+    public List<string> Mnemonic { get; init; } = new List<string>();
+
+    [Option("f", "filename", Description = "A filename containing the secret key mnemonic to add")]
+    public FileInfo? Filename { get; init; }
+
+    [CommandTarget]
+    public async Task<int> Run()
     {
-        [Argument(0, Name = "mnemonic", Description = "The 24 word mnemonic key phrase")]
-        public List<string> Mnemonic { get; init; } = new List<string>();
-
-        [Option("f", "filename", Description = "A filename containing the secret key mnemonic to add")]
-        public FileInfo? Filename { get; init; }
-
-        [CommandTarget]
-        public async Task<int> Run()
+        return await DoWorkAsync("Adding key...", async output =>
         {
-            return await DoWorkAsync("Adding key...", async ctx =>
+            var mnemonic = Mnemonic;
+
+            if (Filename is not null)
             {
-                var mnemonic = Mnemonic;
+                using var reader = Filename.OpenText();
+                var contents = reader.ReadToEnd();
+                contents = contents.Replace('\n', ' '); // this way we can have all words on one line or line per each 
+                mnemonic = contents.Split(' ').ToList();
+            }
 
-                if (Filename is not null)
-                {
-                    using var reader = Filename.OpenText();
-                    var contents = reader.ReadToEnd();
-                    contents = contents.Replace('\n', ' '); // this way we can have all words on one line or line per each 
-                    mnemonic = contents.Split(' ').ToList();
-                }
+            if (mnemonic.Count != 24)
+            {
+                throw new InvalidOperationException("Exactly 24 words are required in the mnenomic passphrase");
+            }
 
-                if (Mnemonic.Count != 24)
-                {
-                    throw new InvalidOperationException("Exactly 24 words are required in the mnenomic passphrase");
-                }
+            using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
+            var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
 
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
-                var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+            var fingerprint = await proxy.AddKey(mnemonic, true, cts.Token);
 
-                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-                var fingerprint = await proxy.AddKey(mnemonic, true, cts.Token);
-
-                MarkupLine($"Added private key with public key fingerprint [wheat1]{fingerprint}[/]");
-            });
-        }
+            output.WriteOutput("fingerprint", fingerprint, Verbose);
+        });
     }
 }

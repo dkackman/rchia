@@ -3,126 +3,97 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Spectre.Console;
 
-namespace rchia.Commands
+namespace rchia.Commands;
+
+public abstract class Command
 {
-    public abstract class Command
+    [Option("v", "verbose", Description = "Set output to verbose messages")]
+    public bool Verbose { get; init; }
+
+    [Option("", "json", Description = "Set this flag to output json", IsHidden = true)]
+    public bool Json { get; init; }
+
+    protected async Task<int> DoWorkAsync(string msg, Func<ICommandOutput, Task> work)
     {
-        [Option("v", "verbose", Description = "Set output to verbose messages")]
-        public bool Verbose { get; init; }
+        Debug.Assert(!string.IsNullOrEmpty(msg));
+        var output = CreateCommandOutput();
 
-        public void MarkupLine(string msg)
+        try
         {
-            AnsiConsole.MarkupLine(msg);
-        }
-
-        public void WriteLine(string msg)
-        {
-            AnsiConsole.WriteLine(msg);
-        }
-
-        public void Message(string msg, bool important = false)
-        {
-            if (important)
+            if (Json)
             {
-                MarkupLine($"[yellow]{msg}[/]");
-            }
-            else if (Verbose)
-            {
-                MarkupLine(msg);
-            }
-
-            Debug.WriteLine(msg);
-        }
-
-        public void NameValue(string name, object? value)
-        {
-            MarkupLine($"[wheat1]{name}:[/] {value}");
-        }
-
-        public void Helpful(string msg, bool important = false)
-        {
-            if (Verbose || important)
-            {
-                MarkupLine($"[{(important ? "lime" : "grey")}]{msg}[/]");
-            }
-        }
-
-        public void Warning(string msg)
-        {
-            MarkupLine($"[yellow]{msg}[/]");
-        }
-
-        public void Message(Exception e)
-        {
-            if (Verbose)
-            {
-                AnsiConsole.WriteException(e, ExceptionFormats.ShortenEverything | ExceptionFormats.ShowLinks);
+                await work(output);
             }
             else
             {
-                MarkupLine($"[red]{e.Message}[/]");
-            }
-        }
+                await AnsiConsole.Status()
+               .AutoRefresh(true)
+               .SpinnerStyle(Style.Parse("green bold"))
+               .StartAsync(msg, async ctx => await work(output.SetContext(ctx)));
 
-        public bool Confirm(string warning, bool force)
+                output.Helpful("Done.");
+            }
+
+            return 0;
+        }
+        catch (TaskCanceledException)
         {
-            if (!force)
-            {
-                if (!AnsiConsole.Confirm(warning, false))
-                {
-                    Message("Cancelled");
-                    return false;
-                }
+            output.MarkupLine($"[red]The operation timed out[/]");
+            output.Helpful("Check that the chia service is running and available. You can extend the timeout period by using the '-to' option.");
 
-                Message("Confirmed");
-            }
-
-            return true;
+            return -1;
         }
-
-        protected async Task<int> DoWorkAsync(string msg, Func<StatusContext, Task> work)
+        catch (Exception e)
         {
-            Debug.Assert(!string.IsNullOrEmpty(msg));
+            output.WriteError(e);
 
-            try
-            {
-                await AnsiConsole.Status().StartAsync(msg, async ctx => await work(ctx));
-
-                Helpful("Done.");
-
-                return 0;
-            }
-            catch (TaskCanceledException)
-            {
-                MarkupLine($"[red]The operation timed out[/]");
-                Helpful("Check that the chia service is running and available. You can extend the timeout period by using the '-to' option.");
-
-                return -1;
-            }
-            catch (Exception e)
-            {
-                Message(e);
-
-                return -1;
-            }
+            return -1;
         }
+    }
 
-        protected int DoWork(string msg, Action<StatusContext> work)
+    protected int DoWork(string msg, Action<ICommandOutput> work)
+    {
+        var output = CreateCommandOutput();
+
+        try
         {
-            try
+            if (Json)
             {
-                AnsiConsole.Status().Start(msg, ctx => work(ctx));
-
-                Helpful("Done.");
-
-                return 0;
+                work(output);
             }
-            catch (Exception e)
+            else
             {
-                Message(e);
+                AnsiConsole.Status()
+                    .AutoRefresh(true)
+                    .SpinnerStyle(Style.Parse("green bold"))
+                    .Start(msg, ctx => work(output.SetContext(ctx)));
 
-                return -1;
+                output.Helpful("Done.");
             }
+
+            return 0;
         }
+        catch (Exception e)
+        {
+            output.WriteError(e);
+
+            return -1;
+        }
+    }
+
+    private ICommandOutput CreateCommandOutput()
+    {
+        if (Json)
+        {
+            return new JsonOutput()
+            {
+                Verbose = Verbose
+            };
+        }
+
+        return new ConsoleOutput()
+        {
+            Verbose = Verbose
+        };
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using chia.dotnet;
 using rchia.Commands;
 
@@ -26,7 +27,7 @@ namespace rchia.Wallet
         [CommandTarget]
         public async Task<int> Run()
         {
-            return await DoWorkAsync("Sending Transaction...", async ctx =>
+            return await DoWorkAsync("Sending Transaction...", async output =>
             {
                 if (string.IsNullOrEmpty(Address))
                 {
@@ -45,20 +46,22 @@ namespace rchia.Wallet
 
                 if (Fee > Amount && !Force)
                 {
-                    Warning($"A transaction of amount {Amount} and fee {Fee} is unusual.");
+                    output.Warning($"A transaction of amount {Amount} and fee {Fee} is unusual.");
                     throw new InvalidOperationException("Pass in --force if you are sure you mean to do this.");
                 }
 
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Wallet);
-                var wallet = new chia.dotnet.Wallet(Id, await Login(rpcClient, ctx));
+                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
+                var wallet = new chia.dotnet.Wallet(Id, await Login(rpcClient, output));
 
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-                var (NetworkName, NetworkPrefix) = await wallet.WalletProxy.GetNetworkInfo(cts.Token);
+                var (_, NetworkPrefix) = await wallet.WalletProxy.GetNetworkInfo(cts.Token);
                 var tx = await wallet.SendTransaction(Address, Amount.ToMojo(), Fee.ToMojo(), cts.Token);
 
-                PrintTransaction(tx, NetworkPrefix, CreateTransactionTable());
+                var result = new Dictionary<string, object?>();
+                PrintTransaction(tx, NetworkPrefix, result);
+                output.WriteOutput(result);
 
-                Helpful($"Do '[grey]rchia wallet get-transaction -tx {tx.TransactionId}[/]' to get status");
+                output.Helpful($"Do '[grey]rchia wallet get-transaction -tx {tx.TransactionId}[/]' to get status");
             });
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using chia.dotnet;
 using rchia.Commands;
 
@@ -25,20 +26,20 @@ namespace rchia.Services
                 throw new InvalidOperationException($"Unrecognized service group {ServiceGroup}. It must be one of\n  {string.Join("|", ServiceGroups.Groups.Keys)}.");
             }
 
-            if (Daemon)
+            return await DoWorkAsync("Stopping services...", async output =>
             {
-                if (!Confirm("The daemon cannot be restared remotely. You will need shell access to the node in order to restart it.\nAre you sure you want to stop the daemon?", Force))
+                if (Daemon)
                 {
-                    throw new Exception("No services were stopped.");
+                    if (!output.Confirm("The daemon cannot be restared remotely. You will need shell access to the node in order to restart it.\nAre you sure you want to stop the daemon?", Force))
+                    {
+                        throw new Exception("No services were stopped.");
+                    }
                 }
-            }
 
-            return await DoWorkAsync("Stopping services...", async ctx =>
-            {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this);
-
+                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(output, this);
                 var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
 
+                var result = new List<string>();
                 foreach (var service in ServiceGroups.Groups[ServiceGroup])
                 {
                     using var cts = new CancellationTokenSource(TimeoutMilliseconds);
@@ -46,20 +47,25 @@ namespace rchia.Services
 
                     if (isRunnnig)
                     {
-                        MarkupLine($"Stopping [wheat1]{service}[/]...");
+                        output.MarkupLine($"Stopping [wheat1]{service}[/]...");
                         await proxy.StopService(service, cts.Token);
                     }
                     else
                     {
-                        MarkupLine($"[wheat1]{service}[/] is not running...");
+                        output.MarkupLine($"[wheat1]{service}[/] is not running...");
                     }
+
+                    result.Add(service);
                 }
 
                 if (Daemon)
                 {
                     using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                     await proxy.Exit(cts.Token);
+                    result.Add("daemon");
                 }
+
+                output.WriteOutput(result);
             });
         }
     }
