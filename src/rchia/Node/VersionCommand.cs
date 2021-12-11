@@ -3,23 +3,22 @@ using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 
-namespace rchia.Node
+namespace rchia.Node;
+
+internal sealed class VersionCommand : EndpointOptions
 {
-    internal sealed class VersionCommand : EndpointOptions
+    [CommandTarget]
+    public async Task<int> Run()
     {
-        [CommandTarget]
-        public async Task<int> Run()
+        return await DoWorkAsync("Retrieving chia version...", async output =>
         {
-            return await DoWorkAsync("Retrieving chia version...", async ctx =>
-            {
-                using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(ctx, this);
-                var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
+            using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(output, this);
+            var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
 
-                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-                var version = await proxy.GetVersion(cts.Token);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+            var version = await proxy.GetVersion(cts.Token);
 
-                MarkupLine($"[wheat1]{version}[/]");
-            });
-        }
+            output.WriteOutput("version", version, Verbose);
+        });
     }
 }

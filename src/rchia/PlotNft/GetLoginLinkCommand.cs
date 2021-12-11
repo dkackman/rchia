@@ -4,38 +4,35 @@ using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 
-namespace rchia.PlotNft
-{
-    internal sealed class GetLoginLinkCommand : EndpointOptions
-    {
-        [Option("l", "launcher-id", IsRequired = true, Description = "Launcher ID of the plotnft")]
-        public string LauncherId { get; init; } = string.Empty;
+namespace rchia.PlotNft;
 
-        [CommandTarget]
-        public async Task<int> Run()
+internal sealed class GetLoginLinkCommand : EndpointOptions
+{
+    [Option("l", "launcher-id", IsRequired = true, Description = "Launcher ID of the plotnft")]
+    public string LauncherId { get; init; } = string.Empty;
+
+    [CommandTarget]
+    public async Task<int> Run()
+    {
+        return await DoWorkAsync("Getting pool login link...", async output =>
         {
             if (string.IsNullOrEmpty(LauncherId))
             {
                 throw new InvalidOperationException("A valid launcher id is required. To get the launcher id, use 'plotnft show'.");
             }
 
-            return await DoWorkAsync("Getting pool login link...", async ctx =>
+            using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Farmer);
+            var farmer = new FarmerProxy(rpcClient, ClientFactory.Factory.OriginService);
+
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+            var link = await farmer.GetPoolLoginLink(LauncherId, cts.Token);
+
+            if (string.IsNullOrEmpty(link))
             {
-                using var rpcClient = await ClientFactory.Factory.CreateRpcClient(ctx, this, ServiceNames.Farmer);
-                var farmer = new FarmerProxy(rpcClient, ClientFactory.Factory.OriginService);
+                output.Warning("Was not able to get login link.");
+            }
 
-                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-                var link = await farmer.GetPoolLoginLink(LauncherId, cts.Token);
-
-                if (string.IsNullOrEmpty(link))
-                {
-                    Warning("Was not able to get login link.");
-                }
-                else
-                {
-                    MarkupLine($"[link={link}]{link}[/]");
-                }
-            });
-        }
+            output.WriteOutput("link", link, Verbose);
+        });
     }
 }

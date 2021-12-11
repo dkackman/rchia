@@ -1,31 +1,29 @@
 ﻿using System;
-
 using rchia.Commands;
 
-namespace rchia.Endpoints
+namespace rchia.Endpoints;
+
+internal sealed class RemoveEndpointCommand : Command
 {
-    internal sealed class RemoveEndpointCommand : Command
+    [Argument(0, Name = "id", Description = "The id of the endpoint to remove")]
+    public string Id { get; init; } = string.Empty;
+
+    [CommandTarget]
+    public int Run()
     {
-        [Argument(0, Name = "id", Description = "The id of the endpoint to remove")]
-        public string Id { get; init; } = string.Empty;
-
-        [CommandTarget]
-        public int Run()
+        return DoWork("Removing endpoint...", output =>
         {
-            return DoWork("Removing endpoint...", ctx =>
+            var library = EndpointLibrary.OpenLibrary();
+
+            if (!library.Endpoints.ContainsKey(Id))
             {
-                var library = EndpointLibrary.OpenLibrary();
+                throw new InvalidOperationException($"There is no saved endpoint with an id of {Id}.");
+            }
 
-                if (!library.Endpoints.ContainsKey(Id))
-                {
-                    throw new InvalidOperationException($"There is no saved endpoint with an id of {Id}.");
-                }
+            _ = library.Endpoints.Remove(Id);
+            library.Save();
 
-                _ = library.Endpoints.Remove(Id);
-                library.Save();
-
-                MarkupLine($"Endpoint [wheat1]{Id}[/] removed");
-            });
-        }
+            output.WriteOutput("removed", Id, true);
+        });
     }
 }
