@@ -6,7 +6,7 @@ namespace rchia;
 
 public interface ICommandOutput
 {
-    bool Verbose { get; set; }
+    bool Verbose { get; init; }
 
     ICommandOutput SetContext(StatusContext? context);
 

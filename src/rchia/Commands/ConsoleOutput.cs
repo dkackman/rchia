@@ -11,7 +11,7 @@ internal class ConsoleOutput : ICommandOutput
 {
     private StatusContext? _statusContext;
 
-    public bool Verbose { get; set; }
+    public bool Verbose { get; init; }
 
     public IStatus Status => new ConsoleStatus(_statusContext);
 

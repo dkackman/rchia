@@ -8,9 +8,9 @@ namespace rchia.Commands;
 
 internal class JsonOutput : ICommandOutput
 {
-    public bool Verbose { get; set; }
+    public bool Verbose { get; init; }
 
-    public IStatus Status => new NullStatus();
+    public IStatus Status => new ConsoleStatus();
 
     public ICommandOutput SetContext(StatusContext? context)
     {

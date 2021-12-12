@@ -16,28 +16,19 @@ internal static class Extensions
         return dict.OrderBy(kvp => kvp.Key).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
 
-    public static IEnumerable<IDictionary<string, object?>> SortAll(this IEnumerable<IDictionary<string, object?>> dict)
+    public static IEnumerable<IDictionary<K, V>> SortAll<K, V>(this IEnumerable<IDictionary<K, V>> dict) where K : notnull
     {
-        var list = new List<IDictionary<string, object?>>();
-        foreach (var item in dict)
-        {
-            list.Add(item.Sort());
-        }
-
-        return list;
+        return dict.Select(d => d.Sort());
     }
 
     public static string FromSnakeCase(this string s)
     {
-        if (string.IsNullOrEmpty(s))
-        {
-            return string.Empty;
-        }
-
-        var builder = new StringBuilder(char.ToUpper(s[0]));
-        builder.Append(char.ToUpper(s[0]));
-        builder.Append(s.Replace('_', ' ').Substring(1));
-        return builder.ToString();
+        return string.IsNullOrEmpty(s)
+            ? string.Empty
+            : new StringBuilder(char.ToUpper(s[0]))
+            .Append(char.ToUpper(s[0]))
+            .Append(s.Replace('_', ' ')[1..])
+            .ToString();
     }
 
     public static string ToJson(this object o)
@@ -69,7 +60,6 @@ internal static class Extensions
     public async static Task<string> ValidatePoolingOptions(this WalletProxy wallet, bool pooling, Uri? poolUri, int timeoutMilliseconds)
     {
         using var cts = new CancellationTokenSource(timeoutMilliseconds);
-
         var (NetworkName, NetworkPrefix) = await wallet.GetNetworkInfo(cts.Token);
 
         if (pooling && NetworkName == "mainnet" && poolUri is not null && poolUri.Scheme != "https")
@@ -77,7 +67,7 @@ internal static class Extensions
             throw new InvalidOperationException($"Pool URLs must be HTTPS on mainnet {poolUri}. Aborting.");
         }
 
-        return $"This operation Will join the wallet with fingerprint [wheat1]{wallet.Fingerprint}[/] to [wheat1]{poolUri}[/].\nDo you want to proceed?";
+        return $"This operation will join the wallet with fingerprint [wheat1]{wallet.Fingerprint}[/] to [wheat1]{poolUri}[/].\nDo you want to proceed?";
     }
 
     public async static Task<PoolInfo> GetPoolInfo(this Uri uri, int timeoutMilliseconds)
