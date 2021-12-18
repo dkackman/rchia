@@ -14,7 +14,7 @@ internal sealed class JoinPoolCommand : WalletCommand
     [Option("u", "pool-url", Description = "HTTPS host:port of the pool to join.")]
     public Uri PoolUrl { get; init; } = new Uri("http://localhost");
 
-    [Option("f", "force", Default = false, Description = "Do not prompt before joining")]
+    [Option("f", "force", Description = "Do not prompt before joining")]
     public bool Force { get; init; }
 
     [CommandTarget]

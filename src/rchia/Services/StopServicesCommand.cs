@@ -15,7 +15,7 @@ namespace rchia.Services
         [Option("d", "daemon", Description = "Stop the daemon service as well\nThe daemon cannot be restarted remotely")]
         public bool Daemon { get; init; }
 
-        [Option("f", "force", Default = false, Description = "If specified in conjunstion with '-d', shut down the daemon without prompting")]
+        [Option("f", "force", Description = "If specified in conjunstion with '-d', shut down the daemon without prompting")]
         public bool Force { get; init; }
 
         [CommandTarget]

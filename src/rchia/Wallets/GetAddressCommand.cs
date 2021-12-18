@@ -7,7 +7,7 @@ namespace rchia.Wallet;
 
 internal sealed class GetAddressCommand : WalletCommand
 {
-    [Option("n", "new", Default = false, Description = "Flag indicating whether to create a new address")]
+    [Option("n", "new", Description = "Flag indicating whether to create a new address")]
     public bool New { get; init; }
 
     [Option("i", "id", Default = 1, Description = "Id of the user wallet to use")]

@@ -8,7 +8,7 @@ namespace rchia.Keys;
 
 internal sealed class DeleteKeyCommand : WalletCommand
 {
-    [Option("f", "force", Default = false, Description = "Delete the key without prompting for confirmation")]
+    [Option("f", "force", Description = "Delete the key without prompting for confirmation")]
     public bool Force { get; init; }
 
     [CommandTarget]

@@ -122,6 +122,7 @@ dotnet_style_qualification_for_method = false:suggestion
 dotnet_style_qualification_for_property = false:suggestion
 dotnet_diagnostic.CA1507.severity=warning
 dotnet_diagnostic.CA1812.severity=suggestion
+insert_final_newline=true
 
 [*.{cs,vb}]
 dotnet_diagnostic.CA1708.severity=warning

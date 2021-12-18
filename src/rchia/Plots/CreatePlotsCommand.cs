@@ -11,7 +11,7 @@ internal sealed class CreatePlotsCommand : EndpointOptions
     [Option("k", "size", Default = KValues.K32, Description = "Plot szie")]
     public KValues Size { get; init; } = KValues.K32;
 
-    [Option("o", "override-k", Default = false, Description = "Force size smaller than 32")]
+    [Option("o", "override-k", Description = "Force size smaller than 32")]
     public bool OverrideK { get; init; }
 
     [Option("n", "num", Default = 1, Description = "Number of plots or challenges")]
@@ -47,10 +47,10 @@ internal sealed class CreatePlotsCommand : EndpointOptions
     [Option("2", "tmp2-dir", Description = "Second temporary directory for plotting files")]
     public string? Tmp2Dir { get; init; }
 
-    [Option("e", "nobitfield", Default = false, Description = "Disable bitfield")]
+    [Option("e", "nobitfield", Description = "Disable bitfield")]
     public bool NoBitField { get; init; }
 
-    [Option("x", "exclude-final-dir", Default = false, Description = "Skips adding [final-dir] to harvester for farming")]
+    [Option("x", "exclude-final-dir", Description = "Skips adding [final-dir] to harvester for farming")]
     public bool ExcludeFinalDir { get; init; }
 
     [CommandTarget]

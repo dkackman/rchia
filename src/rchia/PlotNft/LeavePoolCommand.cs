@@ -10,7 +10,7 @@ internal sealed class LeavePoolCommand : WalletCommand
     [Option("i", "id", Default = 1, Description = "Id of the user wallet to use")]
     public uint Id { get; init; } = 1;
 
-    [Option("f", "force", Default = false, Description = "Do not prompt before nft creation")]
+    [Option("f", "force", Description = "Do not prompt before nft creation")]
     public bool Force { get; init; }
 
     [CommandTarget]

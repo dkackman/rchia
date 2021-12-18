@@ -20,7 +20,7 @@ internal sealed class CreatePlotNftCommand : WalletCommand
     [Option("s", "state", IsRequired = true, Description = "Initial state of Plot NFT")]
     public InitialPoolingState State { get; init; }
 
-    [Option("f", "force", Default = false, Description = "Do not prompt before nft creation")]
+    [Option("f", "force", Description = "Do not prompt before nft creation")]
     public bool Force { get; init; }
 
     [CommandTarget]

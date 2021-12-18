@@ -7,7 +7,7 @@ namespace rchia.Keys;
 
 internal sealed class DeleteAllKeys : EndpointOptions
 {
-    [Option("f", "force", Default = false, Description = "Delete all keys without prompting for confirmation")]
+    [Option("f", "force", Description = "Delete all keys without prompting for confirmation")]
     public bool Force { get; init; }
 
     [CommandTarget]

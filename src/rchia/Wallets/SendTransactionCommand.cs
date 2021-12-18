@@ -21,7 +21,7 @@ namespace rchia.Wallet
         [Option("i", "id", Default = 1, Description = "Id of the user wallet to use")]
         public uint Id { get; init; } = 1;
 
-        [Option("f", "force", Default = false, Description = "If Fee > Amount, send the transaction anyway")]
+        [Option("f", "force", Description = "If Fee > Amount, send the transaction anyway")]
         public bool Force { get; init; }
 
         [CommandTarget]
