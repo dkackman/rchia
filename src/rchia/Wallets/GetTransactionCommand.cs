@@ -24,7 +24,7 @@ internal sealed class GetTransactionCommand : WalletCommand
             var (NetworkName, NetworkPrefix) = await proxy.GetNetworkInfo(cts.Token);
 
             var result = new Dictionary<string, object?>();
-            PrintTransaction(tx, NetworkPrefix, result);
+            FormatTransaction(tx, NetworkPrefix, result);
             output.WriteOutput(result);
         });
     }

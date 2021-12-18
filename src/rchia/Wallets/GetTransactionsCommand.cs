@@ -39,7 +39,7 @@ internal sealed class GetTransactionsCommand : WalletCommand
                 foreach (var tx in transactions)
                 {
                     var dict = new Dictionary<string, object?>();
-                    PrintTransaction(tx, NetworkPrefix, dict);
+                    FormatTransaction(tx, NetworkPrefix, dict);
                     result.Add(dict);
                 }
 

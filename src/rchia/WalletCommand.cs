@@ -25,7 +25,7 @@ internal abstract class WalletCommand : EndpointOptions
         output.Helpful($"Do '[grey]rchia wallet get-transaction -tx {tx.Name}[/]' to get status");
     }
 
-    protected void PrintTransaction(TransactionRecord tx, string prefix, IDictionary<string, object?> row)
+    protected void FormatTransaction(TransactionRecord tx, string prefix, IDictionary<string, object?> row)
     {
         var name = Verbose || Json ? tx.Name : tx.Name.Substring(2, 10) + "...";
         var status = tx.Confirmed
