@@ -59,7 +59,7 @@ The details of the endpoint can be specified in the following ways:
 ./rchia node status --endpoint node1
 ```
 
-### Currently Suported Verbs
+### Suported Verbs
 
 ```bash
 rchia
@@ -94,6 +94,47 @@ Commands:
                Requires a daemon endpoint.
   wallets      Manage your wallet.
                Requires a wallet or daemon endpoint.
+```
+
+### Json Output
+
+All command support returning JSON instead of formatted output with a `--json` flag:
+
+```bash
+./rchia wallets show -ep my_wallet --json
+{
+  "summary": {
+    "fingerprint": "2287630151",
+    "sync_status": "Synced",
+    "wallet_height": 101725
+  },
+  "wallets": [
+    {
+      "Id": 1,
+      "Name": "Chia Wallet",
+      "Type": "STANDARD_WALLET",
+      "Total": 0.792643692567,
+      "Pending Total": 0.792643692567,
+      "Spendable": 0.792643692567,
+      "Pending Change": 0.0,
+      "Max Spend Amount": 0.792643692567,
+      "Unspent Coin Count": 68,
+      "Pending Coin Removal Count": 0
+    },
+    {
+      "Id": 2,
+      "Name": "Pool wallet",
+      "Type": "POOLING_WALLET",
+      "Total": 0.0,
+      "Pending Total": 0.0,
+      "Spendable": 0.0,
+      "Pending Change": 0.0,
+      "Max Spend Amount": 0.0,
+      "Unspent Coin Count": 0,
+      "Pending Coin Removal Count": 0
+    }
+  ]
+}
 ```
 
 ### Example output
