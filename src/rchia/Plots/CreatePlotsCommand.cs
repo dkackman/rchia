@@ -29,7 +29,7 @@ internal sealed class CreatePlotsCommand : EndpointOptions
     [Option("a", "alt-fingerprint", Description = "Enter the alternative fingerprint of the key you want to use")]
     public uint? AltFingerprint { get; init; }
 
-    [Option("c", "pool-contract-address", Description = "Address of where the pool reward will be sent to.Only used if\nalt_fingerprint and pool public key are not set")]
+    [Option("c", "pool-contract-address", Description = "Address of where the pool reward will be sent to. Only used if\nalt_fingerprint and pool public key are not set")]
     public string? PoolContractAddress { get; init; }
 
     [Option("f", "farmer-public-key", Description = "Hex farmer public key")]
