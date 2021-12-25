@@ -13,9 +13,9 @@ internal sealed class ListEndpointsCommand : Command
             foreach (var endpoint in library.Endpoints.Values)
             {
                 var isDefault = endpoint.IsDefault ? "[wheat1](default)[/]" : string.Empty;
-                output.MarkupLine($" - {endpoint.Id} {isDefault}");
+                output.WriteMarkupLine($" - {endpoint.Id} {isDefault}");
             }
-            output.MarkupLine($"[wheat1]{library.Endpoints.Count}[/] saved endpoint{(library.Endpoints.Count == 1 ? string.Empty : "s")}");
+            output.WriteMarkupLine($"[wheat1]{library.Endpoints.Count}[/] saved endpoint{(library.Endpoints.Count == 1 ? string.Empty : "s")}");
 
             if (Json)
             {

@@ -52,7 +52,7 @@ internal class JsonOutput : ICommandOutput
         AnsiConsole.WriteLine(output.Sort().ToJson());
     }
 
-    public void MarkupLine(string msg)
+    public void WriteMarkupLine(string msg)
     {
         Debug.WriteLine(msg);
     }
@@ -62,17 +62,12 @@ internal class JsonOutput : ICommandOutput
         Debug.WriteLine(msg);
     }
 
-    public void Message(string msg, bool important = false)
+    public void WriteMessage(string msg, bool important = false)
     {
         Debug.WriteLine(msg);
     }
 
-    public void Helpful(string msg, bool important = false)
-    {
-        Debug.WriteLine(msg);
-    }
-
-    public void Warning(string msg)
+    public void WriteWarning(string msg)
     {
         Debug.WriteLine(msg);
     }

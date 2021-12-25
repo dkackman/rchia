@@ -34,7 +34,7 @@ internal sealed class PruneConnectionsCommand : EndpointOptions
             }
 
             var maxHeight = state.Peak.Height - Blocks;
-            output.MarkupLine($"Pruning connections that with a peak less than [wheat1]{maxHeight}[/]");
+            output.WriteMarkupLine($"Pruning connections that with a peak less than [wheat1]{maxHeight}[/]");
 
             var connections = await fullNode.GetConnections(cts.Token);
                 // only prune other full nodes, not famers, harvesters, and wallets etc
@@ -49,7 +49,7 @@ internal sealed class PruneConnectionsCommand : EndpointOptions
                 n++;
             }
             output.WriteOutput(list);
-            output.MarkupLine($"Pruned [wheat1]{n}[/] connection{(n == 1 ? string.Empty : "s")}");
+            output.WriteMarkupLine($"Pruned [wheat1]{n}[/] connection{(n == 1 ? string.Empty : "s")}");
         });
     }
 }

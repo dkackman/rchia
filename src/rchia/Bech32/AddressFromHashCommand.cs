@@ -16,11 +16,6 @@ internal sealed class AddressFromHashCommand : Command
     {
         return DoWork("Calculating address...", output =>
         {
-            if (string.IsNullOrEmpty(Prefix))
-            {
-                throw new InvalidOperationException("A prefix must be provided");
-            }
-
             var bech = new Bech32M(Prefix);
             output.WriteOutput("address", bech.PuzzleHashToAddress(Hash), Verbose);
         });

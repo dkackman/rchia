@@ -20,7 +20,7 @@ internal sealed class GenerateAndPrintKeyCommand : EndpointOptions
 
             output.WriteLine("Generated private key. Mnemonic (24 secret words):");
             output.WriteOutput(mnemonic);
-            output.MarkupLine($"Note that this key has not been added to the keychain. Run '[grey]rchia keys add {string.Join(' ', mnemonic)}[/]' to do so.");
+            output.WriteMarkupLine($"Note that this key has not been added to the keychain. Run '[grey]rchia keys add {string.Join(' ', mnemonic)}[/]' to do so.");
         });
     }
 }

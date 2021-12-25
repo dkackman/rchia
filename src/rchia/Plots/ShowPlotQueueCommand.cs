@@ -41,7 +41,7 @@ internal sealed class ShowPlotQueueCommand : EndpointOptions
             {
                 foreach (var group in plots)
                 {
-                    output.MarkupLine($"{group.Key} {group.Count()}");
+                    output.WriteMarkupLine($"{group.Key} {group.Count()}");
                     if (Verbose)
                     {
                         foreach (var item in group)

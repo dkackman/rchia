@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,25 +27,19 @@ internal sealed class ListConnectionsCommand : EndpointOptions
             }
             else
             {
-                var table = new List<IDictionary<string, object?>>();
-
-                foreach (var c in await proxy.GetConnections(cts.Token))
-                {
-                    var row = new Dictionary<string, object?>
-                    {
-                        { "Type", c.Type },
-                        { "IP", c.PeerHost },
-                        { "Ports", $"{c.PeerPort}/{c.PeerServerPort}" },
-                        { "NodeID", Verbose ? c.NodeId : string.Concat(c.NodeId.AsSpan(2, 10), "...") },
-                        { "Last Connect", $"{c.LastMessageDateTime.ToLocalTime():MMM dd HH:mm}" },
-                        { "Up", (c.BytesRead ?? 0).ToBytesString("N1") },
-                        { "Down", (c.BytesWritten ?? 0).ToBytesString("N1") },
-                        { "Height", c.PeakHeight },
-                        { "Hash", string.IsNullOrEmpty(c.PeakHash) ? "no info" : Verbose ? c.PeakHash : string.Concat(c.PeakHash.AsSpan(2, 10), "...") }
-                    };
-
-                    table.Add(row);
-                }
+                var table = from c in await proxy.GetConnections(cts.Token)
+                            select new Dictionary<string, object?>()
+                            {
+                                { "Type", c.Type },
+                                { "IP", c.PeerHost },
+                                { "Ports", $"{c.PeerPort}/{c.PeerServerPort}" },
+                                { "NodeID", Verbose ? c.NodeId : string.Concat(c.NodeId.AsSpan(2, 10), "...") },
+                                { "Last Connect", $"{c.LastMessageDateTime.ToLocalTime():MMM dd HH:mm}" },
+                                { "Up", (c.BytesRead ?? 0).ToBytesString("N1") },
+                                { "Down", (c.BytesWritten ?? 0).ToBytesString("N1") },
+                                { "Height", c.PeakHeight },
+                                { "Hash", string.IsNullOrEmpty(c.PeakHash) ? "no info" : Verbose ? c.PeakHash : string.Concat(c.PeakHash.AsSpan(2, 10), "...") }
+                            };
 
                 output.WriteOutput(table);
             }

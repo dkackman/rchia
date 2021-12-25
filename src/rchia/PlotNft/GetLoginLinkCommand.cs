@@ -29,7 +29,7 @@ internal sealed class GetLoginLinkCommand : EndpointOptions
 
             if (string.IsNullOrEmpty(link))
             {
-                output.Warning("Was not able to get login link.");
+                output.WriteWarning("Was not able to get login link.");
             }
 
             output.WriteOutput("link", link, Verbose);

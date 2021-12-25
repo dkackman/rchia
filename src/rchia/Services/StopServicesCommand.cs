@@ -47,12 +47,12 @@ namespace rchia.Services
 
                     if (isRunnnig)
                     {
-                        output.MarkupLine($"Stopping [wheat1]{service}[/]...");
+                        output.WriteMarkupLine($"Stopping [wheat1]{service}[/]...");
                         await proxy.StopService(service, cts.Token);
                     }
                     else
                     {
-                        output.MarkupLine($"[wheat1]{service}[/] is not running...");
+                        output.WriteMarkupLine($"[wheat1]{service}[/] is not running...");
                     }
 
                     result.Add(service);

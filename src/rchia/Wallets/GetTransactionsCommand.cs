@@ -45,7 +45,7 @@ internal sealed class GetTransactionsCommand : WalletCommand
 
                 output.WriteOutput(result);
                 var c = transactions.Count();
-                output.MarkupLine($"Showing [wheat1]{c}[/] transaction{(c == 1 ? string.Empty : "s")}");
+                output.WriteMarkupLine($"Showing [wheat1]{c}[/] transaction{(c == 1 ? string.Empty : "s")}");
             }
             else
             {

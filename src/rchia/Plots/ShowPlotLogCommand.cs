@@ -33,10 +33,10 @@ internal sealed class ShowPlotLogCommand : EndpointOptions
                 {
                     var running = q.Where(p => p.PlotState == PlotState.RUNNING);
                     var count = running.Count();
-                    output.MarkupLine($"There {(count == 1 ? "is" : "are")} [wheat1]{count}[/] running plot job{(count == 1 ? "" : "s")}");
+                    output.WriteMarkupLine($"There {(count == 1 ? "is" : "are")} [wheat1]{count}[/] running plot job{(count == 1 ? "" : "s")}");
                     foreach (var plot in running)
                     {
-                        output.MarkupLine($"Log for plot [wheat1]{plot.Id}[/]");
+                        output.WriteMarkupLine($"Log for plot [wheat1]{plot.Id}[/]");
                         output.WriteLine(plot.Log);
                         output.WriteLine("");
                     }

@@ -20,10 +20,8 @@ internal sealed class ShowKeysCommand : EndpointOptions
             var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
 
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-            var keys = await proxy.GetPublicKeys(cts.Token);
-
             var table = new List<IDictionary<string, object?>>();
-            foreach (var fingerprint in keys)
+            foreach (var fingerprint in await proxy.GetPublicKeys(cts.Token))
             {
                 using var cts1 = new CancellationTokenSource(TimeoutMilliseconds);
                 var (Fingerprint, Sk, Pk, FarmerPk, PoolPk, Seed) = await proxy.GetPrivateKey(fingerprint, cts1.Token);

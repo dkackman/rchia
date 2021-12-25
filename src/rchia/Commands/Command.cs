@@ -31,15 +31,15 @@ public abstract class Command
                .SpinnerStyle(Style.Parse("green bold"))
                .StartAsync(msg, async ctx => await work(output.SetContext(ctx)));
 
-                output.Helpful("Done.");
+                output.WriteMessage("Done.");
             }
 
             return 0;
         }
         catch (TaskCanceledException)
         {
-            output.MarkupLine($"[red]The operation timed out[/]");
-            output.Helpful("Check that the chia service is running and available. You can extend the timeout period by using the '-to' option.");
+            output.WriteMarkupLine($"[red]The operation timed out[/]");
+            output.WriteMessage("Check that the chia service is running and available. You can extend the timeout period by using the '-to' option.", true);
 
             return -1;
         }
@@ -57,6 +57,7 @@ public abstract class Command
 
         try
         {
+            // when outputing json there are no status or progress indicators
             if (Json)
             {
                 work(output);
@@ -68,7 +69,7 @@ public abstract class Command
                     .SpinnerStyle(Style.Parse("green bold"))
                     .Start(msg, ctx => work(output.SetContext(ctx)));
 
-                output.Helpful("Done.");
+                output.WriteMessage("Done.");
             }
 
             return 0;

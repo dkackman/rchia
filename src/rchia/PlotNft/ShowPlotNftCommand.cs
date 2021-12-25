@@ -59,7 +59,7 @@ internal sealed class ShowPlotNftCommand : WalletCommand
             if (State.Current.State == PoolSingletonState.LEAVING_POOL)
             {
                 var expected = State.SingletonBlockHeight - State.Current.RelativeLockHeight;
-                output.Warning($"Current state: INVALID_STATE. Please leave/join again after block height {expected}");
+                output.WriteWarning($"Current state: INVALID_STATE. Please leave/join again after block height {expected}");
             }
             else
             {

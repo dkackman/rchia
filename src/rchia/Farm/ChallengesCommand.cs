@@ -22,26 +22,19 @@ internal sealed class ChallengesCommand : EndpointOptions
 
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var signagePoints = await farmer.GetSignagePoints(cts.Token);
-            output.WriteOutput(signagePoints);
 
             var list = signagePoints.Reverse().ToList(); // convert to list to avoid multiple iteration
             var limit = Limit == 0 ? list.Count : Limit;
 
-            var table = new List<IDictionary<string, object?>>();
-
-            foreach (var sp in list.Take(limit))
-            {
-                var row = new Dictionary<string, object?>
-                {
-                    { "hash", sp.SignagePoint.ChallengeHash.Replace("0x", string.Empty) },
-                    { "index", sp.SignagePoint.SignagePointIndex }
-                };
-
-                table.Add(row);
-            }
+            var table = from sp in list.Take(limit)            
+                        select new Dictionary<string, object?>
+                        {
+                            { "index", sp.SignagePoint.SignagePointIndex },
+                            { "hash", sp.SignagePoint.ChallengeHash.Replace("0x", string.Empty) }
+                        };
 
             output.WriteOutput(table);
-            output.Message($"Showing {table.Count()} of {signagePoints.Count()} challenge{(list.Count == 1 ? string.Empty : "s")}.");
+            output.WriteMessage($"Showing {table.Count()} of {signagePoints.Count()} challenge{(list.Count == 1 ? string.Empty : "s")}.");
         });
     }
 }

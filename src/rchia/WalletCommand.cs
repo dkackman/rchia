@@ -22,7 +22,7 @@ internal abstract class WalletCommand : EndpointOptions
             { "sent_to", tx.SentTo.Select(peer => peer.Peer) }
         };
         output.WriteOutput(result);
-        output.Helpful($"Do '[grey]rchia wallet get-transaction -tx {tx.Name}[/]' to get status");
+        output.WriteMessage($"Do '[grey]rchia wallet get-transaction -tx {tx.Name}[/]' to get status");
     }
 
     protected void FormatTransaction(TransactionRecord tx, string prefix, IDictionary<string, object?> row)

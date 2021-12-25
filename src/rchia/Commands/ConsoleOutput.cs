@@ -33,7 +33,7 @@ internal class ConsoleOutput : ICommandOutput
     {
         if (verbose)
         {
-            MarkupLine($"[wheat1]{name.FromSnakeCase()}:[/] {value}");
+            WriteMarkupLine($"[wheat1]{name.FromSnakeCase()}:[/] {value}");
         }
         else
         {
@@ -63,7 +63,7 @@ internal class ConsoleOutput : ICommandOutput
     {
         foreach (var value in output)
         {
-            MarkupLine($"[wheat1]{value.Key.FromSnakeCase()}:[/] {Format(value.Value)}");
+            WriteMarkupLine($"[wheat1]{value.Key.FromSnakeCase()}:[/] {Format(value.Value)}");
         }
     }
 
@@ -110,7 +110,7 @@ internal class ConsoleOutput : ICommandOutput
         AnsiConsole.Write(table);
     }
 
-    public void MarkupLine(string msg)
+    public void WriteMarkupLine(string msg)
     {
         AnsiConsole.MarkupLine(msg);
     }
@@ -120,31 +120,23 @@ internal class ConsoleOutput : ICommandOutput
         AnsiConsole.WriteLine(msg);
     }
 
-    public void Message(string msg, bool important = false)
+    public void WriteMessage(string msg, bool important = false)
     {
         if (important)
         {
-            MarkupLine($"[yellow]{msg}[/]");
+            WriteMarkupLine($"[yellow]{msg}[/]");
         }
         else if (Verbose)
         {
-            MarkupLine(msg);
+            WriteMarkupLine(msg);
         }
 
         Debug.WriteLine(msg);
     }
 
-    public void Helpful(string msg, bool important = false)
+    public void WriteWarning(string msg)
     {
-        if (Verbose || important)
-        {
-            MarkupLine($"[{(important ? "lime" : "grey")}]{msg}[/]");
-        }
-    }
-
-    public void Warning(string msg)
-    {
-        MarkupLine($"[yellow]{msg}[/]");
+        WriteMarkupLine($"[yellow]{msg}[/]");
     }
 
     public void WriteError(Exception e)
@@ -155,7 +147,7 @@ internal class ConsoleOutput : ICommandOutput
         }
         else
         {
-            MarkupLine($"[red]{e.Message}[/]");
+            WriteMarkupLine($"[red]{e.Message}[/]");
         }
     }
 
@@ -165,11 +157,11 @@ internal class ConsoleOutput : ICommandOutput
         {
             if (!AnsiConsole.Confirm(warning, false))
             {
-                Message("Cancelled");
+                WriteMessage("Cancelled");
                 return false;
             }
 
-            Message("Confirmed");
+            WriteMessage("Confirmed");
         }
 
         return true;

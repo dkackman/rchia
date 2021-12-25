@@ -42,8 +42,8 @@ internal sealed class StatusCommand : EndpointOptions
             }
             else
             {
-                output.Warning("The node is searching for an initial chain");
-                output.MarkupLine("You may be able to expedite with '[grey]rchia show add host:port[/]' using a known node.");
+                output.WriteWarning("The node is searching for an initial chain");
+                output.WriteMarkupLine("You may be able to expedite with '[grey]rchia show add host:port[/]' using a known node.");
             }
 
             if (state.Peak is not null)

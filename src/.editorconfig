@@ -18,7 +18,7 @@ csharp_new_line_before_else = true
 #require members of object intializers to be on separate lines
 csharp_new_line_before_members_in_object_initializers = true
 #require braces to be on a new line for methods, object_collection_array_initializers, control_blocks, types, and lambdas (also known as "Allman" style)
-csharp_new_line_before_open_brace = methods, object_collection_array_initializers, control_blocks, types, lambdas
+csharp_new_line_before_open_brace =all
 #require elements of query expression clauses to be on separate lines
 csharp_new_line_between_query_expression_clauses = true
 

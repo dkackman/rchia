@@ -13,10 +13,10 @@ public interface ICommandOutput
     IStatus Status { get; }
 
     bool Confirm(string warning, bool force);
-    void Helpful(string msg, bool important = false);
-    void MarkupLine(string msg);
-    void Message(string msg, bool important = false);
-    void Warning(string msg);
+
+    void WriteMarkupLine(string msg);
+    void WriteMessage(string msg, bool important = false);
+    void WriteWarning(string msg);
     void WriteLine(string msg);
     void WriteError(Exception e);
 

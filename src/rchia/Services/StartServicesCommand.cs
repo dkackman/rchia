@@ -37,18 +37,18 @@ internal sealed class StartServicesCommand : EndpointOptions
 
                 if (isRunnnig && !Restart)
                 {
-                    output.MarkupLine($"[wheat1]{service}[/] is already running. Use -r to restart it...");
+                    output.WriteMarkupLine($"[wheat1]{service}[/] is already running. Use -r to restart it...");
                 }
                 else
                 {
                     if (isRunnnig && Restart)
                     {
-                        output.MarkupLine($"Stopping [wheat1]{service}[/]...");
+                        output.WriteMarkupLine($"Stopping [wheat1]{service}[/]...");
                         using var cts2 = new CancellationTokenSource(TimeoutMilliseconds);
                         await proxy.StopService(service, cts2.Token);
                     }
 
-                    output.MarkupLine($"Starting [wheat1]{service}[/]...");
+                    output.WriteMarkupLine($"Starting [wheat1]{service}[/]...");
                     using var cts3 = new CancellationTokenSource(TimeoutMilliseconds);
                     await proxy.StartService(service, cts3.Token);
                 }

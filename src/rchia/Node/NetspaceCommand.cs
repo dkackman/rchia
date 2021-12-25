@@ -32,7 +32,7 @@ internal sealed class NetspaceCommand : EndpointOptions
                 var blockchain_state = await proxy.GetBlockchainState(cts.Token);
                 if (blockchain_state.Peak is null)
                 {
-                    output.Warning("No blocks in blockchain");
+                    output.WriteWarning("No blocks in blockchain");
                     return;
                 }
 
@@ -43,7 +43,7 @@ internal sealed class NetspaceCommand : EndpointOptions
                 var newer_block = await proxy.GetBlockRecord(Start, cts.Token);
                 if (newer_block is null)
                 {
-                    output.Warning($"Block header hash {Start} not found.");
+                    output.WriteWarning($"Block header hash {Start} not found.");
                     return;
                 }
 

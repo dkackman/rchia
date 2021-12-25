@@ -49,7 +49,7 @@ internal sealed class AddEndpointCommand : Command
             library.Endpoints.Add(endpoint.Id, endpoint);
             library.Save();
 
-            output.MarkupLine($"Endpoint [wheat1]{endpoint.Id}[/] added");
+            output.WriteMarkupLine($"Endpoint [wheat1]{endpoint.Id}[/] added");
             output.WriteOutput(endpoint);
         });
     }

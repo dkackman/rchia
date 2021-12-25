@@ -1,5 +1,4 @@
-﻿using System;
-using Spectre.Console;
+﻿using Spectre.Console;
 
 namespace rchia.Commands;
 
@@ -16,15 +15,11 @@ public class ConsoleStatus : IStatus
         _context = ctx;
     }
 
-    public string Status {
-        get {
-            if (_context is not null)
-            {
-                return _context.Status;
-            }
-            return string.Empty;
-        }
-        set {
+    public string Status
+    {
+        get => _context?.Status ?? string.Empty;
+        set
+        {
             if (_context is not null)
             {
                 _context.Status = value;

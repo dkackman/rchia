@@ -68,7 +68,7 @@ internal sealed class CreatePlotsCommand : EndpointOptions
             output.WriteOutput(ids);
 
             output.WriteLine($"Plot{(ids.Count() == 1 ? string.Empty : "s")} queued:");
-            output.Helpful("Run '[grey]rchia plots queue -v[/]' or '[grey]rchia plots log[/]' to check status", true);
+            output.WriteMessage("Run '[grey]rchia plots queue -v[/]' or '[grey]rchia plots log[/]' to check status", true);
         });
     }
 

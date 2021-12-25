@@ -62,7 +62,7 @@ internal sealed class ShowWalletCommand : WalletCommand
             }
             else
             {
-                output.Warning($"There are no wallets for a this public key {proxy.Fingerprint}");
+                output.WriteWarning($"There are no wallets for a this public key {proxy.Fingerprint}");
             }
 
             if (Json)

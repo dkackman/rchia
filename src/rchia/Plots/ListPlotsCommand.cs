@@ -43,7 +43,7 @@ internal sealed class ListPlotsCommand : EndpointOptions
                 ListPlots(output, plots.Plots.Select(p => p.Filename), "plots");
                 if (!Verbose)
                 {
-                    output.Helpful("(use '[grey]-v/--verbose[/]' to see file names)", true);
+                    output.WriteMessage("(use '[grey]--verbose[/]' to see file names)", true);
                 }
             }
             else

@@ -72,27 +72,27 @@ internal sealed class SummaryCommand : EndpointOptions
 
             if (localHarvesters.Any())
             {
-                output.MarkupLine($"[wheat1]Local Harvester{(localHarvesters.Count() == 1 ? string.Empty : 's')}[/]");
+                output.WriteMarkupLine($"[wheat1]Local Harvester{(localHarvesters.Count() == 1 ? string.Empty : 's')}[/]");
                 foreach (var harvester in localHarvesters)
                 {
                     var size = harvester.Plots.Sum(p => (double)p.FileSize);
                     totalplotSize += (ulong)size;
                     totalPlotCount += harvester.Plots.Count;
 
-                    output.MarkupLine($"  [green]{harvester.Connection.Host}[/]: [wheat1]{harvester.Plots.Count}[/] plots of size [wheat1]{size.ToBytesString("N1")}[/]");
+                    output.WriteMarkupLine($"  [green]{harvester.Connection.Host}[/]: [wheat1]{harvester.Plots.Count}[/] plots of size [wheat1]{size.ToBytesString("N1")}[/]");
                 }
             }
 
             if (remoteHarvesters.Any())
             {
-                output.MarkupLine($"[wheat1]Remote Harvester{(remoteHarvesters.Count() == 1 ? string.Empty : 's')}[/]");
+                output.WriteMarkupLine($"[wheat1]Remote Harvester{(remoteHarvesters.Count() == 1 ? string.Empty : 's')}[/]");
                 foreach (var harvester in remoteHarvesters)
                 {
                     var size = harvester.Plots.Sum(p => (double)p.FileSize);
                     totalplotSize += (ulong)size;
                     totalPlotCount += harvester.Plots.Count;
 
-                    output.MarkupLine($"  [green]{harvester.Connection.Host}:[/] [wheat1]{harvester.Plots.Count}[/] plots of size [wheat1]{size.ToBytesString("N1")}[/]");
+                    output.WriteMarkupLine($"  [green]{harvester.Connection.Host}:[/] [wheat1]{harvester.Plots.Count}[/] plots of size [wheat1]{size.ToBytesString("N1")}[/]");
                 }
             }
 
@@ -121,7 +121,7 @@ internal sealed class SummaryCommand : EndpointOptions
                     var span = blocktime / proportion;
 
                     summary.Add("expected_time_to_win", span.FormatTimeSpan());
-                    output.Message($"Farming about {proportion:P6} percent of the network");
+                    output.WriteMessage($"Farming about {proportion:P6} percent of the network");
                 }
             }
 
@@ -140,15 +140,15 @@ internal sealed class SummaryCommand : EndpointOptions
 
             if (!wallet_running)
             {
-                output.Helpful("For details on farmed rewards and fees you should run '[grey]rchia start wallet[/]' and '[grey]rchia wallet show[/]'", true);
+                output.WriteMessage("For details on farmed rewards and fees you should run '[grey]rchia start wallet[/]' and '[grey]rchia wallet show[/]'", true);
             }
             else if (!wallet_ready)
             {
-                output.Helpful("For details on farmed rewards and fees you should run '[grey]rchia wallet show[/]'", true);
+                output.WriteMessage("For details on farmed rewards and fees you should run '[grey]rchia wallet show[/]'", true);
             }
             else
             {
-                output.Helpful("Note: log into your key using '[grey]rchia wallet show[/]' to see rewards for each key", true);
+                output.WriteMessage("Note: log into your key using '[grey]rchia wallet show[/]' to see rewards for each key", true);
             }
         });
     }

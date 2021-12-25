@@ -46,7 +46,7 @@ internal sealed class SendTransactionCommand : WalletCommand
 
             if (Fee > Amount && !Force)
             {
-                output.Warning($"A transaction of amount {Amount} and fee {Fee} is unusual.");
+                output.WriteWarning($"A transaction of amount {Amount} and fee {Fee} is unusual.");
                 throw new InvalidOperationException("Pass in --force if you are sure you mean to do this.");
             }
 
@@ -61,7 +61,7 @@ internal sealed class SendTransactionCommand : WalletCommand
             FormatTransaction(tx, NetworkPrefix, result);
             output.WriteOutput(result);
 
-            output.Helpful($"Do '[grey]rchia wallet get-transaction -tx {tx.TransactionId}[/]' to get status");
+            output.WriteMessage($"Do '[grey]rchia wallet get-transaction -tx {tx.TransactionId}[/]' to get status");
         });
     }
 }

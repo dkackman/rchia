@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
+using System.Linq;
 using chia.dotnet;
 using rchia.Commands;
 
@@ -17,16 +17,13 @@ internal sealed class ShowDirectoriesCommand : EndpointOptions
             var proxy = new HarvesterProxy(rpcClient, ClientFactory.Factory.OriginService);
 
             output.WriteLine("Directories where plots are being searched for:");
-            output.Helpful("Note that subdirectories must be added manually", true);
-            output.MarkupLine("Add with '[grey]chia plots add <dir>[/]' and remove with '[grey]chia plots remove <dir>[/]'");
+            output.WriteMessage("Note that subdirectories must be added manually", false);
+            output.WriteMarkupLine("Add with '[grey]chia plots add <dir>[/]' and remove with '[grey]chia plots remove <dir>[/]'");
 
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-            var list = new List<string>();
-            foreach (var path in await proxy.GetPlotDirectories(cts.Token))
-            {
-                list.Add(path);
-            }
-            output.WriteOutput(list);
+            var dirs = from path in await proxy.GetPlotDirectories(cts.Token)
+                       select path;
+            output.WriteOutput(dirs);
         });
     }
 }

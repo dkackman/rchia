@@ -104,7 +104,7 @@ internal class ClientFactory
 
         if (!options.DefaultEndpoint)
         {
-            output.Helpful("No endpoint options set. Using default endpoint.");
+            output.WriteMessage("No endpoint options set. Using default endpoint.");
         }
 
         var endpoint = library.GetDefault();
