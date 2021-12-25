@@ -21,7 +21,7 @@ Install [the .net6 sdk](https://dotnet.microsoft.com/download)
 
 ```bash
 dotnet build src
-cd src/rchia/bin/Debug/net5.0/
+cd src/rchia/bin/Debug/net6.0/
 ./rchia --help
 ```
 
