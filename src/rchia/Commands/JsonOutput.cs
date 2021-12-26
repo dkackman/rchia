@@ -49,7 +49,7 @@ internal class JsonOutput : ICommandOutput
 
     public void WriteOutput(IDictionary<string, object?> output)
     {
-        AnsiConsole.WriteLine(RemoveFormatting(output.Sort().ToJson()));
+        AnsiConsole.WriteLine(output.Sort().ToJson());
     }
     
     public void WriteMarkupLine(string msg)
@@ -85,15 +85,5 @@ internal class JsonOutput : ICommandOutput
         }
 
         return true;
-    }
-
-    private static string RemoveFormatting(string json)
-    {
-        return new StringBuilder(json)
-            .Replace("[/]", string.Empty)
-            .Replace("[red]", string.Empty)
-            .Replace("[green]", string.Empty)
-            .Replace("[grey]", string.Empty)
-            .ToString();
     }
 }

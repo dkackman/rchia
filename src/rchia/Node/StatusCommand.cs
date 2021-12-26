@@ -27,18 +27,19 @@ internal sealed class StatusCommand : EndpointOptions
             var result = new Dictionary<string, object?>();
             if (state.Sync.Synced)
             {
-                result.Add("blockchain_status", "[green]Full Node Synced[/]");
+                result.Add("blockchain_status", new Formatable("Full Node Synced", "green"));
                 result.Add("peak_hash", peakHash.Replace("0x", string.Empty));
             }
             else if (state.Peak is not null && state.Sync.SyncMode)
             {
-                result.Add("blockchain_status", $"Syncing [red]{state.Sync.SyncProgressHeight:N0} of {state.Sync.SyncTipHeight:N0}[/]");
+                result.Add("blockchain_status", new Formatable("Syncing", "orange3"));
+                result.Add("sync_height", $"{state.Sync.SyncProgressHeight:N0} of {state.Sync.SyncTipHeight:N0}");
                 result.Add("blocks_behind", state.Sync.SyncTipHeight - state.Sync.SyncProgressHeight);
                 result.Add("peak_hash", peakHash.Replace("0x", string.Empty));
             }
             else if (state.Peak is not null)
             {
-                result.Add("blockchain_status", "[red]Not Synced[/]");
+                result.Add("blockchain_status", new Formatable("Not Synced", "red"));
             }
             else
             {

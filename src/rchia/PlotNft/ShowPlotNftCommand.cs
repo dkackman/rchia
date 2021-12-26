@@ -81,8 +81,6 @@ internal sealed class ShowPlotNftCommand : WalletCommand
             result.Add($"owner_public_key", State.Current.OwnerPubkey);
             result.Add($"pool_contract_address", $"{bech32.PuzzleHashToAddress(State.P2SingletonPuzzleHash)}");
 
-           // MarkupLine($"Pool contract address (use ONLY for plotting - do not send money to this address) {bech32.PuzzleHashToAddress(State.P2SingletonPuzzleHash)}");
-
             if (State.Target is not null)
             {
                 result.Add($"target_state", State.Target.State);
@@ -112,14 +110,10 @@ internal sealed class ShowPlotNftCommand : WalletCommand
                     try
                     {
                         result.Add("payout_instructions", bech32.PuzzleHashToAddress(poolstate.PoolConfig.PayoutInstructions));
-
-                       // MarkupLine($"Payout instructions (pool will pay to this address) [green]{bech32.PuzzleHashToAddress(poolstate.PoolConfig.PayoutInstructions)}[/]");
                     }
                     catch
                     {
                         result.Add("payout_instructions", poolstate.PoolConfig.PayoutInstructions);
-
-                        //MarkupLine($"Payout instructions (pool will pay you with this) {poolstate.PoolConfig.PayoutInstructions}");
                     }
                 }
             }
