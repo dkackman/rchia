@@ -25,7 +25,7 @@ internal static class Extensions
     {
         return string.IsNullOrEmpty(s)
             ? string.Empty
-            : new StringBuilder(char.ToUpper(s[0]))
+            : new StringBuilder()
             .Append(char.ToUpper(s[0]))
             .Append(s.Replace('_', ' ')[1..])
             .ToString();
@@ -34,6 +34,17 @@ internal static class Extensions
     public static string ToJson(this object o)
     {
         return JsonConvert.SerializeObject(o, Formatting.Indented);
+    }
+
+    public static string ToJson(this IDictionary<string, object?> o)
+    {
+        // this is kinda hacky but will remove formatting hints from the json
+        return new StringBuilder(JsonConvert.SerializeObject(o, Formatting.Indented))
+            .Replace("[/]", string.Empty)
+            .Replace("[red]", string.Empty)
+            .Replace("[green]", string.Empty)
+            .Replace("[grey]", string.Empty)
+            .ToString();
     }
 
     public static string FormatTimeSpan(this TimeSpan t)

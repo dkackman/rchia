@@ -57,14 +57,14 @@ internal sealed class BlockHeaderCommand : EndpointOptions
 
             var timestamp = block.DateTimestamp.HasValue ? block.DateTimestamp.Value.ToLocalTime().ToString() : "Not a transaction block";
             result.Add("timestamp", timestamp);
-            result.Add("weight", block.Weight.ToString("N0"));
+            result.Add("weight", block.Weight);
             result.Add("previous_block", block.PrevHash.Replace("0x", string.Empty));
 
             var difficulty = previous is not null ? block.Weight - previous.Weight : block.Weight;
-            result.Add("difficulty", difficulty.ToString("N0"));
+            result.Add("difficulty", difficulty);
             result.Add("subslot_iters", block.SubSlotIters);
             result.Add("cost", full_block.TransactionsInfo?.Cost);
-            result.Add("total_vdf_iterations", block.TotalIters.ToString("N0"));
+            result.Add("total_vdf_iterations", block.TotalIters);
             result.Add("is_transaction_block", full_block.RewardChainBlock.IsTransactionBlock);
             result.Add("deficit", block.Deficit);
             result.Add("k_size", full_block.RewardChainBlock.ProofOfSpace.Size);

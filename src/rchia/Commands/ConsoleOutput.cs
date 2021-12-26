@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Diagnostics;
 using System.Collections.Generic;
-
+using System.Numerics;
 using Spectre.Console;
 
 namespace rchia.Commands;
@@ -80,6 +80,10 @@ internal class ConsoleOutput : ICommandOutput
         if (value.GetType() == typeof(uint))
         {
             return ((uint)value).ToString("N0");
+        }
+        if (value.GetType() == typeof(BigInteger))
+        {
+            return ((BigInteger)value).ToString("N0");
         }
         return value;
     }

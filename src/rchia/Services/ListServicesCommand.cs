@@ -28,7 +28,7 @@ internal sealed class ListServicesCommand : EndpointOptions
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
                 var isRunning = await proxy.IsServiceRunning(service, cts.Token);
-                result.Add(service, isRunning ? "running" : "not running");
+                result.Add(service, isRunning ? "[green]running[/]" : "[grey]not running[/]");
             }
 
             output.WriteOutput(result);
