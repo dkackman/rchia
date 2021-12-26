@@ -5,7 +5,7 @@ namespace rchia;
 
 public abstract class EndpointOptions : Command
 {
-    [Option("uri", "endpoint-uri", ArgumentHelpName = "PATH", Description = "The uri of the rpc endpoint, including the proper port and wss/https scheme prefix")]
+    [Option("uri", "endpoint-uri", ArgumentHelpName = "URI", Description = "The uri of the rpc endpoint, including the proper port and wss/https scheme prefix")]
     public string? EndpointUri { get; init; }
 
     [Option("cp", "cert-path", ArgumentHelpName = "PATH", Description = "The full path to the .crt file to use for authentication")]
