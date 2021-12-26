@@ -38,7 +38,7 @@ internal sealed class StatusCommand : EndpointOptions
             }
             else if (state.Peak is not null)
             {
-                result.Add("blockchain_status", $"Not Synced Peak height: {state.Peak.Height}");
+                result.Add("blockchain_status", "Not Synced");
             }
             else
             {
