@@ -25,15 +25,11 @@ internal sealed class ShowPlotQueueCommand : EndpointOptions
 
             if (Json)
             {
-                var result = new List<IDictionary<string, IEnumerable<string>>>();
-                foreach (var group in plots)
-                {
-                    var row = new Dictionary<string, IEnumerable<string>>()
-                    {
-                        { group.Key.ToString(), group.Select(item => item.Id) }
-                    };
-                    result.Add(row);
-                }
+                var result = from grp in plots
+                                select new Dictionary<string, IEnumerable<string>>()
+                                {
+                                    { grp.Key.ToString(), grp.Select(item => item.Id) }
+                                };
 
                 output.WriteOutput(result);
             }
