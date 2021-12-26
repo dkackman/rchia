@@ -137,29 +137,9 @@ All command support returning JSON instead of formatted output with a `--json` f
 }
 ```
 
-### Example output
+### Tabular output
 
 ![image](https://user-images.githubusercontent.com/5160233/134552904-50ea4822-d53a-4144-85be-86c9bcbd1625.png)
-
-## Usage for the Show Command
-```bash
-user@computer:~$ ./rchia node --help
-node
-  Commands for managing a node.
-  Requires a daemon endpoint.
-
-Usage:
-  rchia [options] node [command]
-
-Options:
-  -?, -h, --help  Show help and usage information
-
-Commands:
-  ping     Pings the daemon
-  version  Shows the version of the node
-  stop     Stops the node
-  status   Show the current status of the blockchain
-```
 ___
 
 _chia and its logo are the registered trademark or trademark of Chia Network, Inc. in the United States and worldwide._
