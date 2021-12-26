@@ -25,7 +25,7 @@ internal static class Extensions
     {
         return string.IsNullOrEmpty(s)
             ? string.Empty
-            : new StringBuilder()
+            : new StringBuilder(s.Length)
             .Append(char.ToUpper(s[0]))
             .Append(s.Replace('_', ' ')[1..])
             .ToString();
