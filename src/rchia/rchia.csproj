@@ -24,6 +24,14 @@
     <FileVersion>0.9.0.0</FileVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;NU5104</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>1701;1702;NU5104</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="chia-dotnet" Version="0.7.0" />
     <PackageReference Include="HexMate" Version="0.0.3" />
