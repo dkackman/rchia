@@ -2,7 +2,7 @@
 
 namespace rchia.Services;
 
-[Command("services", Description = "Shows the status, start and stop services running on the node.\nRequires a daemon endpoint.")]
+[Command("services", Description = "Shows the status of, start, and stop services running on the node.\nRequires a daemon endpoint.")]
 internal sealed class ServicesCommands
 {
     [Command("list", Description = "Show which services are running on the node")]

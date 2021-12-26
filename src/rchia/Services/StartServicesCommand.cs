@@ -18,13 +18,13 @@ internal sealed class StartServicesCommand : EndpointOptions
     [CommandTarget]
     public async Task<int> Run()
     {
-        if (ServiceGroup is null || !ServiceGroups.Groups.ContainsKey(ServiceGroup))
-        {
-            throw new InvalidOperationException($"Unrecognized service group {ServiceGroup}. It must be one of\n  {string.Join('|', ServiceGroups.Groups.Keys)}.");
-        }
-
         return await DoWorkAsync($"{(Restart ? "Res" : "S")}tarting services...", async output =>
         {
+            if (ServiceGroup is null || !ServiceGroups.Groups.ContainsKey(ServiceGroup))
+            {
+                throw new InvalidOperationException($"Unrecognized service group {ServiceGroup}. It must be one of\n  {string.Join('|', ServiceGroups.Groups.Keys)}.");
+            }
+
             using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(output, this);
 
             var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
