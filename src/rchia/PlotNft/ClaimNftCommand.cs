@@ -13,8 +13,8 @@ internal sealed class ClaimNftCommand : WalletCommand
     [Option("i", "id", Default = 1, Description = "Id of the user wallet to use")]
     public uint Id { get; init; } = 1;
 
-    [Option("e", "fee", Description = "Transaction fee, in MOJO")]
-    public ulong Fee { get; init; }
+    [Option("m", "fee", Default = 0, Description = "Set the fees for the transaction, in XCH")]
+    public decimal Fee { get; init; }
 
     [CommandTarget]
     public async Task<int> Run()
@@ -29,7 +29,7 @@ internal sealed class ClaimNftCommand : WalletCommand
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
                 await wallet.Validate(cts.Token);
 
-                var rewards = await wallet.AbsorbRewards(Fee, cts.Token);
+                var rewards = await wallet.AbsorbRewards(Fee.ToMojo(), cts.Token);
 
                 if (Json)
                 {
