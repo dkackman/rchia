@@ -36,17 +36,6 @@ internal static class Extensions
         return JsonConvert.SerializeObject(o, Formatting.Indented);
     }
 
-    public static string ToJson(this IDictionary<string, object?> o)
-    {
-        // this is kinda hacky but will remove formatting hints from the json
-        return new StringBuilder(JsonConvert.SerializeObject(o, Formatting.Indented))
-            .Replace("[/]", string.Empty)
-            .Replace("[red]", string.Empty)
-            .Replace("[green]", string.Empty)
-            .Replace("[grey]", string.Empty)
-            .ToString();
-    }
-
     public static string FormatTimeSpan(this TimeSpan t)
     {
         var builder = new StringBuilder();

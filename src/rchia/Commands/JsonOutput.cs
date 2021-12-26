@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Collections.Generic;
-
+using System.Text;
 using Spectre.Console;
 
 namespace rchia.Commands;
@@ -49,9 +49,9 @@ internal class JsonOutput : ICommandOutput
 
     public void WriteOutput(IDictionary<string, object?> output)
     {
-        AnsiConsole.WriteLine(output.Sort().ToJson());
+        AnsiConsole.WriteLine(RemoveFormatting(output.Sort().ToJson()));
     }
-
+    
     public void WriteMarkupLine(string msg)
     {
         Debug.WriteLine(msg);
@@ -85,5 +85,15 @@ internal class JsonOutput : ICommandOutput
         }
 
         return true;
+    }
+
+    private static string RemoveFormatting(string json)
+    {
+        return new StringBuilder(json)
+            .Replace("[/]", string.Empty)
+            .Replace("[red]", string.Empty)
+            .Replace("[green]", string.Empty)
+            .Replace("[grey]", string.Empty)
+            .ToString();
     }
 }
