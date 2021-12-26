@@ -1,4 +1,4 @@
-$version = "0.8.0"
+$version = "0.9.0"
 
 # clean build and publish outputs
 Remove-Item '.\rchia\bin' -Recurse
@@ -27,16 +27,16 @@ Compress-Archive -CompressionLevel Optimal -Path publish/singlefile/osx.11.0-x64
 Compress-Archive -CompressionLevel Optimal -Path publish/singlefile/linux-arm64/* -DestinationPath publish/rchia-$version-singlefile-linux-arm64.zip
 
 # files
-dotnet publish ./rchia/rchia.csproj --configuration Release --framework net6.0 --output publish/files/win-x64 --self-contained False --runtime win-x64 --verbosity Normal /property:PublishSingleFile=False /property:DebugType=None /property:DebugSymbols=False
-dotnet publish ./rchia/rchia.csproj --configuration Release --framework net6.0 --output publish/files/linux-x64 --self-contained False --runtime linux-x64 --verbosity Normal /property:PublishSingleFile=False /property:DebugType=None /property:DebugSymbols=False
-dotnet publish ./rchia/rchia.csproj --configuration Release --framework net6.0 --output publish/files/osx.11.0-x64 --self-contained False --runtime osx.11.0-x64 --verbosity Normal  /property:PublishSingleFile=False /property:DebugType=None /property:DebugSymbols=False
-dotnet publish ./rchia/rchia.csproj --configuration Release --framework net6.0 --output publish/files/linux-arm64 --self-contained False --runtime linux-arm64 --verbosity Normal /property:PublishSingleFile=False /property:DebugType=None /property:DebugSymbols=False
-dotnet publish ./rchia/rchia.csproj --configuration Release --framework net6.0 --output publish/files/any-cpu --self-contained False --runtime linux-arm64 --verbosity Normal /property:PublishSingleFile=False /property:DebugType=None /property:DebugSymbols=False
+# dotnet publish ./rchia/rchia.csproj --configuration Release --framework net6.0 --output publish/files/win-x64 --self-contained False --runtime win-x64 --verbosity Normal /property:PublishSingleFile=False /property:DebugType=None /property:DebugSymbols=False
+# dotnet publish ./rchia/rchia.csproj --configuration Release --framework net6.0 --output publish/files/linux-x64 --self-contained False --runtime linux-x64 --verbosity Normal /property:PublishSingleFile=False /property:DebugType=None /property:DebugSymbols=False
+# dotnet publish ./rchia/rchia.csproj --configuration Release --framework net6.0 --output publish/files/osx.11.0-x64 --self-contained False --runtime osx.11.0-x64 --verbosity Normal  /property:PublishSingleFile=False /property:DebugType=None /property:DebugSymbols=False
+# dotnet publish ./rchia/rchia.csproj --configuration Release --framework net6.0 --output publish/files/linux-arm64 --self-contained False --runtime linux-arm64 --verbosity Normal /property:PublishSingleFile=False /property:DebugType=None /property:DebugSymbols=False
+dotnet publish ./rchia/rchia.csproj --configuration Release --framework net6.0 --output publish/files/any-cpu --self-contained False --verbosity Normal /property:PublishSingleFile=False /property:DebugType=None /property:DebugSymbols=False
 
-Compress-Archive -CompressionLevel Optimal -Path publish/files/win-x64/* -DestinationPath publish/rchia-$version-files-win-x64.zip
-Compress-Archive -CompressionLevel Optimal -Path publish/files/linux-x64/* -DestinationPath publish/rchia-$version-files-linux-x64.zip
-Compress-Archive -CompressionLevel Optimal -Path publish/files/osx.11.0-x64/* -DestinationPath publish/rchia-$version-files-osx.11.0-x64.zip
-Compress-Archive -CompressionLevel Optimal -Path publish/files/linux-arm64/* -DestinationPath publish/rchia-$version-files-linux-arm64.zip
+# Compress-Archive -CompressionLevel Optimal -Path publish/files/win-x64/* -DestinationPath publish/rchia-$version-files-win-x64.zip
+# Compress-Archive -CompressionLevel Optimal -Path publish/files/linux-x64/* -DestinationPath publish/rchia-$version-files-linux-x64.zip
+# Compress-Archive -CompressionLevel Optimal -Path publish/files/osx.11.0-x64/* -DestinationPath publish/rchia-$version-files-osx.11.0-x64.zip
+# Compress-Archive -CompressionLevel Optimal -Path publish/files/linux-arm64/* -DestinationPath publish/rchia-$version-files-linux-arm64.zip
 Compress-Archive -CompressionLevel Optimal -Path publish/files/any-cpu/* -DestinationPath publish/rchia-$version-files-any-cpu.zip
 
 #nuget
