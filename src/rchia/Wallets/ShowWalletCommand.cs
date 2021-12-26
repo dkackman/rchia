@@ -26,8 +26,8 @@ internal sealed class ShowWalletCommand : WalletCommand
 
             var wallet = new Dictionary<string, object?>()
             {
-                { "fingerprint", proxy.Fingerprint?.ToString() ?? string.Empty },
-                { "sync_status", Synced ? "Synced" : "Not synced" },
+                { "fingerprint", proxy.Fingerprint },
+                { "sync_status", Synced ? new Formattable<string>("Synced", "green") : new Formattable<string>("Not synced", "red")},
                 { "wallet_height", height }
             };
             var table = new List<IDictionary<string, object?>>();

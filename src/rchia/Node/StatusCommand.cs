@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using chia.dotnet;
 using rchia.Commands;
 using Spectre.Console;
+using System.Numerics;
 
 namespace rchia.Node;
 
@@ -27,19 +28,19 @@ internal sealed class StatusCommand : EndpointOptions
             var result = new Dictionary<string, object?>();
             if (state.Sync.Synced)
             {
-                result.Add("blockchain_status", new Formatable("Full Node Synced", "green"));
+                result.Add("blockchain_status", new Formattable<string>("Full Node Synced", "green"));
                 result.Add("peak_hash", peakHash.Replace("0x", string.Empty));
             }
             else if (state.Peak is not null && state.Sync.SyncMode)
             {
-                result.Add("blockchain_status", new Formatable("Syncing", "orange3"));
+                result.Add("blockchain_status", new Formattable<string>("Syncing", "orange3"));
                 result.Add("sync_height", $"{state.Sync.SyncProgressHeight:N0} of {state.Sync.SyncTipHeight:N0}");
                 result.Add("blocks_behind", state.Sync.SyncTipHeight - state.Sync.SyncProgressHeight);
                 result.Add("peak_hash", peakHash.Replace("0x", string.Empty));
             }
             else if (state.Peak is not null)
             {
-                result.Add("blockchain_status", new Formatable("Not Synced", "red"));
+                result.Add("blockchain_status", new Formattable<string>("Not Synced", "red"));
             }
             else
             {
@@ -67,7 +68,7 @@ internal sealed class StatusCommand : EndpointOptions
                 result.Add("peak_height", state.Peak.Height);
             }
 
-            result.Add("estimated_network_space", state.Space.ToBytesString());
+            result.Add("estimated_network_space", new Formattable<BigInteger>(state.Space, space => space.ToBytesString()));
             result.Add("current_difficulty", state.Difficulty);
             result.Add("current_vdf_sub_slot_iters", state.SubSlotIters);
 
