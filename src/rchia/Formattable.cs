@@ -3,9 +3,9 @@ using System;
 
 namespace rchia;
 
-internal interface IFormattable
+internal interface IHasRawValue
 {
-    object? GetValue();
+    object? GetRawValue();
 }
 
 /// <summary>
@@ -13,7 +13,7 @@ internal interface IFormattable
 /// Just serializes as a string in json
 /// </summary>
 [JsonConverter(typeof(JsonToStringConverter))]
-internal sealed class Formattable<T> : IFormattable
+internal sealed class Formattable<T> : IHasRawValue
 {
     private readonly Func<T, string> _formatter;
 
@@ -30,7 +30,7 @@ internal sealed class Formattable<T> : IFormattable
 
     public T Value { get; init; }
 
-    public object? GetValue()
+    public object? GetRawValue()
     {
         return Value;
     }
@@ -55,13 +55,13 @@ internal sealed class JsonToStringConverter : JsonConverter
 
     public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
-        if (value is not IFormattable v)
+        if (value is not IHasRawValue v)
         {
             writer.WriteNull();
         }
         else
         {
-            writer.WriteValue(v.GetValue());
+            writer.WriteValue(v.GetRawValue());
         }
     }
 }
