@@ -97,15 +97,15 @@ internal sealed class SummaryCommand : EndpointOptions
             }
 
             summary.Add("total_plot_count", totalPlotCount);
-            summary.Add("total_plot_size", totalplotSize.ToBytesString("N1"));
+            summary.Add("total_plot_size", new Formattable<ulong>(totalplotSize, size => size.ToBytesString("N1")));
 
             if (blockchain_state is not null)
             {
-                summary.Add("estimated_network_space", blockchain_state.Space.ToBytesString());
+                summary.Add("estimated_network_space", new Formattable<BigInteger>(blockchain_state.Space, space => space.ToBytesString()));
             }
             else
             {
-                summary.Add("estimated_network_space", "Unknown");
+                summary.Add("estimated_network_space", new Formattable<string>("Unknown", "red"));
             }
 
             if (blockchain_state is not null && blockchain_state.Space != BigInteger.Zero)

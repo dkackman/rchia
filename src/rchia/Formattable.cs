@@ -12,7 +12,7 @@ internal interface IHasRawValue
 /// small helper to allow human readabke formatting of values for console output
 /// Just serializes as a string in json
 /// </summary>
-[JsonConverter(typeof(JsonToStringConverter))]
+[JsonConverter(typeof(RawValueConverter))]
 internal sealed class Formattable<T> : IHasRawValue
 {
     private readonly Func<T, string> _formatter;
@@ -41,7 +41,7 @@ internal sealed class Formattable<T> : IHasRawValue
     }
 }
 
-internal sealed class JsonToStringConverter : JsonConverter
+internal sealed class RawValueConverter : JsonConverter
 {
     public override bool CanConvert(Type objectType)
     {
