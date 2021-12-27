@@ -39,15 +39,18 @@ internal sealed class ShowWalletCommand : WalletCommand
                 foreach (var summary in wallets)
                 {
                     var newWallet = new chia.dotnet.Wallet(summary.Id, proxy);
-                    var (ConfirmedWalletBalance, UnconfirmedWalletBalance, SpendableBalance, PendingChange, MaxSendAmount, UnspentCoinCount, PendingCoinRemovalCount) = await newWallet.GetBalance(cts.Token);
+                    var (ConfirmedWalletBalance, UnconfirmedWalletBalance, SpendableBalance, PendingChange, MaxSendAmount, UnspentCoinCount, PendingCoinRemovalCount)
+                        = await newWallet.GetBalance(cts.Token);
 
-                    var row = new Dictionary<string, object?>();
-                    row.Add("Id", summary.Id);
-                    row.Add("Name", summary.Name);
-                    row.Add("Type", summary.Type.ToString());
-                    row.Add("Total", ConfirmedWalletBalance.ToChia());
-                    row.Add("Pending Total", UnconfirmedWalletBalance.ToChia());
-                    row.Add("Spendable", SpendableBalance.ToChia());
+                    var row = new Dictionary<string, object?>
+                    {
+                        { "Id", summary.Id },
+                        { "Name", summary.Name },
+                        { "Type", summary.Type.ToString() },
+                        { "Total", ConfirmedWalletBalance.ToChia() },
+                        { "Pending Total", UnconfirmedWalletBalance.ToChia() },
+                        { "Spendable", SpendableBalance.ToChia() }
+                    };
 
                     if (Verbose || Json)
                     {
