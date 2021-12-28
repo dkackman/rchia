@@ -30,7 +30,7 @@ internal sealed class ChallengesCommand : EndpointOptions
                         select new Dictionary<string, object?>
                         {
                             { "index", sp.SignagePoint.SignagePointIndex },
-                            { "hash", sp.SignagePoint.ChallengeHash.Replace("0x", string.Empty) }
+                            { "hash", new Formattable<string>(sp.SignagePoint.ChallengeHash, hash => hash.Replace("0x", string.Empty)) }
                         };
 
             output.WriteOutput(table);

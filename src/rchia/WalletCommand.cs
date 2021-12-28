@@ -29,10 +29,10 @@ internal abstract class WalletCommand : EndpointOptions
     {
         var name = Verbose || Json ? tx.Name : string.Concat(tx.Name.AsSpan(2, 10), "...");
         var status = tx.Confirmed
-                        ? "Confirmed"
+                        ? new Formattable<string>("Confirmed", "green")
                         : tx.IsInMempool
-                        ? "In mempool"
-                        : "Pending";
+                        ? new Formattable<string>("In mempool", "orange3")
+                        : new Formattable<string>("Pending", "grey");
 
         var amount = tx.Amount.ToChia();
         var bech32 = new Bech32M(prefix);

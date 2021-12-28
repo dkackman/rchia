@@ -53,12 +53,12 @@ internal sealed class BlockHeaderCommand : EndpointOptions
             var result = new Dictionary<string, object?>();
 
             result.Add("block_height", block.Height);
-            result.Add("header_hash", block.HeaderHash.Replace("0x", string.Empty));
+            result.Add("header_hash", new Formattable<string>(block.HeaderHash, hash => hash.Replace("0x", string.Empty)));
 
             var timestamp = block.DateTimestamp.HasValue ? block.DateTimestamp.Value.ToLocalTime().ToString() : "Not a transaction block";
             result.Add("timestamp", timestamp);
             result.Add("weight", block.Weight);
-            result.Add("previous_block", block.PrevHash.Replace("0x", string.Empty));
+            result.Add("previous_block", new Formattable<string>(block.PrevHash, hash => hash.Replace("0x", string.Empty)));
 
             var difficulty = previous is not null ? block.Weight - previous.Weight : block.Weight;
             result.Add("difficulty", difficulty);
@@ -74,7 +74,7 @@ internal sealed class BlockHeaderCommand : EndpointOptions
             result.Add("pool_public_key", string.IsNullOrEmpty(poolPk) ? "Pay to pool puzzle hash" : poolPk);
 
             var txFilterHash = full_block.FoliageTransactionBlock is not null ? full_block.FoliageTransactionBlock.FilterHash : "Not a transaction block";
-            result.Add("tx_filter_hash", txFilterHash.Replace("0x", string.Empty));
+            result.Add("tx_filter_hash", new Formattable<string>(txFilterHash, hash => hash.Replace("0x", string.Empty)));
 
             var bech32 = new Bech32M(NetworkPrefix);
             var farmerAddress = bech32.PuzzleHashToAddress(block.FarmerPuzzleHash.Replace("0x", string.Empty));
