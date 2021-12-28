@@ -90,14 +90,16 @@ internal class ConsoleOutput : ICommandOutput
 
     private static void WriteTable(IEnumerable<IDictionary<string, object?>> output, string title)
     {
-        var table = new Table
-        {
-            Title = new TableTitle($"[orange3]{title.FromSnakeCase()}[/]")
-        };
-
         var first = output.FirstOrDefault();
         if (first != null)
         {
+            var table = new Table();
+
+            if (!string.IsNullOrEmpty(title))
+            {
+                table.Title = new TableTitle($"[orange3]{title.FromSnakeCase()}[/]");
+            }
+
             // the first item holds the column names - it is assumed all items have the same keys
             foreach (var column in first.Keys)
             {
@@ -109,9 +111,9 @@ internal class ConsoleOutput : ICommandOutput
             {
                 table.AddRow(row.Values.Select(item => $"{Format(item)}").ToArray());
             }
-        }
 
-        AnsiConsole.Write(table);
+            AnsiConsole.Write(table);
+        }
     }
 
     public void WriteMarkupLine(string msg)
