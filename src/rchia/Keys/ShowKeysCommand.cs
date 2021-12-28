@@ -28,7 +28,7 @@ internal sealed class ShowKeysCommand : EndpointOptions
 
                 var row = new Dictionary<string, object?>
                 {
-                    { "fingerprint", fingerprint },
+                    { "fingerprint", new Formattable<uint>(fingerprint, fp => $"{fp}") },
                     { "master_public_key", Pk },
                     { "farmer_public_key", FarmerPk },
                     { "pool_public_key", PoolPk }

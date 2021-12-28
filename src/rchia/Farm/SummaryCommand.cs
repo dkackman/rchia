@@ -30,14 +30,14 @@ internal sealed class SummaryCommand : EndpointOptions
             var wallet_running = await daemon.IsServiceRunning(ServiceNames.Wallet, cts.Token);
 
             var status = blockchain_state is null
-                ? "Not available"
+                ? new Formattable<string>("Not available", "grey")
                 : blockchain_state.Sync.SyncMode
-                ? "Syncing"
+                ? new Formattable<string>("Syncing", "orange3")
                 : !blockchain_state.Sync.Synced
-                ? "Not running"
+                ? new Formattable<string>("Not running", "grey")
                 : !farmer_running
-                ? "Not running"
-                : "Farming";
+                ? new Formattable<string>("Not running", "grey")
+                : new Formattable<string>("Farming", "green");
 
             var summary = new Dictionary<string, object?>
             {

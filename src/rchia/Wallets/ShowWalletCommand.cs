@@ -26,7 +26,8 @@ internal sealed class ShowWalletCommand : WalletCommand
 
             var wallet = new Dictionary<string, object?>()
             {
-                { "fingerprint", proxy.Fingerprint },
+                // the successful call to Login above means we have a fingerprint for the wallet
+                { "fingerprint", new Formattable<uint>(proxy.Fingerprint!.Value, fp => $"{fp}") },
                 { "sync_status", Synced ? new Formattable<string>("Synced", "green") : new Formattable<string>("Not synced", "red")},
                 { "wallet_height", height }
             };
