@@ -65,9 +65,8 @@ internal sealed class CreatePlotsCommand : EndpointOptions
             _ = await proxy.RegisterPlotter(cts.Token);
             var ids = await proxy.StartPlotting(CreateConfig(), cts.Token);
 
-            output.WriteOutput(ids);
-
             output.WriteLine($"Plot{(ids.Count() == 1 ? string.Empty : "s")} queued:");
+            output.WriteOutput(ids);
             output.WriteMessage("Run '[grey]rchia plots queue -v[/]' or '[grey]rchia plots log[/]' to check status", true);
         });
     }
