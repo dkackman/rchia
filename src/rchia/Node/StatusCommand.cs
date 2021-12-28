@@ -23,9 +23,15 @@ internal sealed class StatusCommand : EndpointOptions
 
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var state = await proxy.GetBlockchainState(cts.Token);
+            var (NetworkName, NetworkPrefix) = await proxy.GetNetworkInfo(cts.Token);
+
             var peakHash = state.Peak is not null ? state.Peak.HeaderHash : string.Empty;
 
-            var result = new Dictionary<string, object?>();
+            var result = new Dictionary<string, object?>()
+            {
+                { "network", NetworkName }
+            };
+
             if (state.Sync.Synced)
             {
                 result.Add("blockchain_status", new Formattable<string>("Full Node Synced", "green"));
