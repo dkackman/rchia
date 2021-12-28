@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
@@ -37,8 +37,8 @@ internal sealed class PruneConnectionsCommand : EndpointOptions
             output.WriteMarkupLine($"Pruning connections that with a peak less than [wheat1]{maxHeight}[/]");
 
             var connections = await fullNode.GetConnections(cts.Token);
-                // only prune other full nodes, not famers, harvesters, and wallets etc
-                var n = 0;
+            // only prune other full nodes, not famers, harvesters, and wallets etc
+            var n = 0;
             var list = new List<string>();
             foreach (var connection in connections.Where(c => c.Type == NodeType.FULL_NODE && c.PeakHeight < maxHeight))
             {

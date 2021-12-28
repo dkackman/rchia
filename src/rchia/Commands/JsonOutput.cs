@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 using Spectre.Console;
 
 namespace rchia.Commands;
@@ -51,7 +50,7 @@ internal class JsonOutput : ICommandOutput
     {
         AnsiConsole.WriteLine(output.Sort().ToJson());
     }
-    
+
     public void WriteMarkupLine(string msg)
     {
         Debug.WriteLine(msg);

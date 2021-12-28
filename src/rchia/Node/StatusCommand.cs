@@ -1,10 +1,10 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Numerics;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using chia.dotnet;
 using rchia.Commands;
 using Spectre.Console;
-using System.Numerics;
 
 namespace rchia.Node;
 

@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
@@ -26,7 +26,7 @@ internal sealed class ChallengesCommand : EndpointOptions
             var list = signagePoints.Reverse().ToList(); // convert to list to avoid multiple iteration
             var limit = Limit == 0 ? list.Count : Limit;
 
-            var table = from sp in list.Take(limit)            
+            var table = from sp in list.Take(limit)
                         select new Dictionary<string, object?>
                         {
                             { "index", sp.SignagePoint.SignagePointIndex },

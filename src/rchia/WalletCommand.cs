@@ -1,11 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using chia.dotnet;
 using rchia.Bech32;
 using rchia.Commands;
-using System;
 
 namespace rchia;
 
@@ -27,7 +27,7 @@ internal abstract class WalletCommand : EndpointOptions
 
     protected void FormatTransaction(TransactionRecord tx, string prefix, IDictionary<string, object?> row)
     {
-        var name = Verbose || Json ? tx.Name : tx.Name.Substring(2, 10) + "...";
+        var name = Verbose || Json ? tx.Name : string.Concat(tx.Name.AsSpan(2, 10), "...");
         var status = tx.Confirmed
                         ? "Confirmed"
                         : tx.IsInMempool

@@ -1,7 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using chia.dotnet;
 using rchia.Commands;
 
@@ -26,7 +26,7 @@ internal sealed class ShowPlotQueueCommand : EndpointOptions
             if (Json)
             {
                 var result = from grp in plots
-                                select new Dictionary<string, IEnumerable<string>>()
+                             select new Dictionary<string, IEnumerable<string>>()
                                 {
                                     { grp.Key.ToString(), grp.Select(item => item.Id) }
                                 };
