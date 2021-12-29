@@ -24,14 +24,20 @@ internal sealed class ShowWalletCommand : WalletCommand
             var height = await proxy.GetHeightInfo(cts.Token);
             var wallets = await proxy.GetWallets(cts.Token);
 
+            var syncStatus = Synced ?
+                new Formattable<string>("Synced", "green") :
+                Syncing ?
+                new Formattable<string>("Syncing", "orange3") :
+                new Formattable<string>("Not synced", "red");
+
             var wallet = new Dictionary<string, object?>()
             {
                 // the successful call to Login above means we have a fingerprint for the wallet
                 { "fingerprint", new Formattable<uint>(proxy.Fingerprint!.Value, fp => $"{fp}") },
-                { "sync_status", Synced ? new Formattable<string>("Synced", "green") : new Formattable<string>("Not synced", "red")},
+                { "sync_status", syncStatus },
                 { "wallet_height", height }
             };
-            var table = new List<IDictionary<string, object?>>();
+            var balances = new List<IDictionary<string, object?>>();
 
             if (wallets.Any())
             {
@@ -61,7 +67,7 @@ internal sealed class ShowWalletCommand : WalletCommand
                         row.Add("Pending Coin Removal Count", PendingCoinRemovalCount);
                     }
 
-                    table.Add(row);
+                    balances.Add(row);
                 }
             }
             else
@@ -73,14 +79,14 @@ internal sealed class ShowWalletCommand : WalletCommand
             {
                 dynamic result = new ExpandoObject();
                 result.summary = wallet;
-                result.wallets = table;
+                result.wallets = balances;
 
                 output.WriteOutput(result);
             }
             else
             {
                 output.WriteOutput(wallet);
-                output.WriteOutput(table);
+                output.WriteOutput(balances);
             }
         });
     }
