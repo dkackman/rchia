@@ -18,7 +18,7 @@ internal sealed class WalletsCommands
     public GetTransactionCommand GetTransaction { get; init; } = new();
 
     [Command("list-transactions", Description = "List all transactions")]
-    public GetTransactionsCommand GetTransactions { get; init; } = new();
+    public ListTransactionsCommand ListTransactions { get; init; } = new();
 
     [Command("send", Description = "Send chia to another wallet")]
     public SendTransactionCommand Send { get; init; } = new();

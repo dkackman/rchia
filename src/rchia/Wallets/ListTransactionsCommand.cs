@@ -7,7 +7,7 @@ using rchia.Commands;
 
 namespace rchia.Wallet;
 
-internal sealed class GetTransactionsCommand : WalletCommand
+internal sealed class ListTransactionsCommand : WalletCommand
 {
     [Option("i", "id", Default = 1, Description = "Id of the user wallet to use")]
     public uint Id { get; init; } = 1;

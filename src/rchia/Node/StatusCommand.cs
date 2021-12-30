@@ -70,7 +70,7 @@ internal sealed class StatusCommand : EndpointOptions
                 }
 
                 var time = peak_time.HasValue ? peak_time.Value.ToLocalTime().ToString("U") : "unknown";
-                result.Add("time", time);
+                result.Add("peak_time", time);
                 result.Add("peak_height", state.Peak.Height);
             }
 

@@ -21,11 +21,18 @@ internal sealed class GetTransactionCommand : WalletCommand
 
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var tx = await proxy.GetTransaction(TxId, cts.Token);
-            var (NetworkName, NetworkPrefix) = await proxy.GetNetworkInfo(cts.Token);
 
-            var result = new Dictionary<string, object?>();
-            FormatTransaction(tx, NetworkPrefix, result);
-            output.WriteOutput(result);
+            if (Json)
+            {
+                output.WriteOutput(tx);
+            }
+            else
+            {
+                var (NetworkName, NetworkPrefix) = await proxy.GetNetworkInfo(cts.Token);
+                var result = new Dictionary<string, object?>();
+                FormatTransaction(tx, NetworkPrefix, result);
+                output.WriteOutput(result);
+            }
         });
     }
 }

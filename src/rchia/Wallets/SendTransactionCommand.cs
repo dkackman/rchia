@@ -34,9 +34,9 @@ internal sealed class SendTransactionCommand : WalletCommand
                 throw new InvalidOperationException("Address cannot be empty");
             }
 
-            if (Amount <= 0)
+            if (Amount < 0)
             {
-                throw new InvalidOperationException("Amount must be greater than 0");
+                throw new InvalidOperationException("Amount canno be negative");
             }
 
             if (Fee < 0)
