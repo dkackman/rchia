@@ -8,7 +8,7 @@ namespace rchia.PlotNft;
 
 internal sealed class GetLoginLinkCommand : EndpointOptions
 {
-    [Option("l", "launcher-id", IsRequired = true, Description = "Launcher ID of the plotnft")]
+    [Argument(0, Name = "launcherId", Description = "Launcher ID of the plotnft")]
     public string LauncherId { get; init; } = string.Empty;
 
     [CommandTarget]

@@ -8,7 +8,7 @@ namespace rchia.Wallet;
 
 internal sealed class GetTransactionCommand : WalletCommand
 {
-    [Option("tx", "txid", IsRequired = true, Description = "Transaction id to search for")]
+    [Argument(0, Name = "TxId", Description = "Transaction id to search for")]
     public string TxId { get; init; } = string.Empty;
 
     [CommandTarget]

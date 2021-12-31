@@ -13,6 +13,8 @@ public abstract class Command
     [Option("", "json", Description = "Set this flag to output json", IsHidden = true)]
     public bool Json { get; init; }
 
+    protected async virtual Task<bool> Validate(ICommandOutput output) { await Task.CompletedTask; return true; }
+
     protected async Task<int> DoWorkAsync(string msg, Func<ICommandOutput, Task> work)
     {
         Debug.Assert(!string.IsNullOrEmpty(msg));
@@ -20,20 +22,22 @@ public abstract class Command
 
         try
         {
-            if (Json)
+            if (await Validate(output))
             {
-                await work(output);
-            }
-            else
-            {
-                await AnsiConsole.Status()
-               .AutoRefresh(true)
-               .SpinnerStyle(Style.Parse("green bold"))
-               .StartAsync(msg, async ctx => await work(output.SetContext(ctx)));
+                if (Json)
+                {
+                    await work(output);
+                }
+                else
+                {
+                    await AnsiConsole.Status()
+                   .AutoRefresh(true)
+                   .SpinnerStyle(Style.Parse("green bold"))
+                   .StartAsync(msg, async ctx => await work(output.SetContext(ctx)));
 
-                output.WriteMessage("Done.");
+                    output.WriteMessage("Done.");
+                }
             }
-
             return 0;
         }
         catch (TaskCanceledException)

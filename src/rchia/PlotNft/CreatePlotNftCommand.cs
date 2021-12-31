@@ -23,6 +23,16 @@ internal sealed class CreatePlotNftCommand : WalletCommand
     [Option("f", "force", Description = "Do not prompt before nft creation")]
     public bool Force { get; init; }
 
+    protected async override Task<bool> Validate(ICommandOutput output)
+    {
+        using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
+        var proxy = await Login(rpcClient, output);
+
+        var msg = await proxy.ValidatePoolingOptions(State == InitialPoolingState.pool, PoolUrl, TimeoutMilliseconds);
+
+        return output.Confirm(msg, Force);
+    }
+
     [CommandTarget]
     public async Task<int> Run()
     {
@@ -31,32 +41,27 @@ internal sealed class CreatePlotNftCommand : WalletCommand
             using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
             var proxy = await Login(rpcClient, output);
 
-            var msg = await proxy.ValidatePoolingOptions(State == InitialPoolingState.pool, PoolUrl, TimeoutMilliseconds);
-
-            if (output.Confirm(msg, Force))
+            var poolInfo = PoolUrl is not null ? await PoolUrl.GetPoolInfo(TimeoutMilliseconds) : new PoolInfo();
+            var poolState = new PoolState()
             {
-                var poolInfo = PoolUrl is not null ? await PoolUrl.GetPoolInfo(TimeoutMilliseconds) : new PoolInfo();
-                var poolState = new PoolState()
-                {
-                    PoolUrl = PoolUrl?.ToString(),
-                    State = State == InitialPoolingState.pool ? PoolSingletonState.FARMING_TO_POOL : PoolSingletonState.SELF_POOLING,
-                    TargetPuzzleHash = poolInfo.TargetPuzzleHash!,
-                    RelativeLockHeight = poolInfo.RelativeLockHeight
-                };
+                PoolUrl = PoolUrl?.ToString(),
+                State = State == InitialPoolingState.pool ? PoolSingletonState.FARMING_TO_POOL : PoolSingletonState.SELF_POOLING,
+                TargetPuzzleHash = poolInfo.TargetPuzzleHash!,
+                RelativeLockHeight = poolInfo.RelativeLockHeight
+            };
 
-                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-                var result = await proxy.CreatePoolWallet(poolState, null, null, cts.Token);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+            var result = await proxy.CreatePoolWallet(poolState, null, null, cts.Token);
 
-                if (Json)
-                {
-                    output.WriteOutput(result);
-                }
-                else
-                {
-                    output.WriteOutput("launcher_id", result.launcherId, Verbose);
+            if (Json)
+            {
+                output.WriteOutput(result);
+            }
+            else
+            {
+                output.WriteOutput("launcher_id", result.launcherId, Verbose);
 
-                    PrintTransactionSentTo(output, result.transaction);
-                }
+                PrintTransactionSentTo(output, result.transaction);
             }
         });
     }

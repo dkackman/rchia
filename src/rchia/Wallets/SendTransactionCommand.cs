@@ -36,7 +36,7 @@ internal sealed class SendTransactionCommand : WalletCommand
 
             if (Amount < 0)
             {
-                throw new InvalidOperationException("Amount canno be negative");
+                throw new InvalidOperationException("Amount cannot be negative");
             }
 
             if (Fee < 0)

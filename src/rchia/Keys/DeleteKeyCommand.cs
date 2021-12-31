@@ -11,6 +11,13 @@ internal sealed class DeleteKeyCommand : WalletCommand
     [Option("f", "force", Description = "Delete the key without prompting for confirmation")]
     public bool Force { get; init; }
 
+    protected async override Task<bool> Validate(ICommandOutput output)
+    {
+        await Task.CompletedTask;
+
+        return output.Confirm($"Deleting a key CANNOT be undone.\nAre you sure you want to delete key {Fingerprint}?", Force);
+    }
+
     [CommandTarget]
     public async Task<int> Run()
     {
@@ -22,16 +29,12 @@ internal sealed class DeleteKeyCommand : WalletCommand
             }
 
             using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Farmer);
+            var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
 
-            if (output.Confirm($"Deleting a key CANNOT be undone.\nAre you sure you want to delete key {Fingerprint} from [red]{rpcClient.Endpoint.Uri}[/]?", Force))
-            {
-                var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+            await proxy.DeleteKey(Fingerprint.Value, cts.Token);
 
-                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-                await proxy.DeleteKey(Fingerprint.Value, cts.Token);
-
-                output.WriteOutput("deleted", new Formattable<uint>(Fingerprint.Value, fp => $"{fp}"), Verbose);
-            }
+            output.WriteOutput("deleted", new Formattable<uint>(Fingerprint.Value, fp => $"{fp}"), Verbose);
         });
     }
 }

@@ -18,6 +18,18 @@ namespace rchia.Services
         [Option("f", "force", Description = "If specified in conjunction with '-d', shut down the daemon without prompting")]
         public bool Force { get; init; }
 
+        protected async override Task<bool> Validate(ICommandOutput output)
+        {
+            await Task.CompletedTask;
+
+            if (Daemon && !output.Confirm("The daemon cannot be restared remotely. You will need shell access to the node in order to restart it.\nAre you sure you want to stop the daemon?", Force))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         [CommandTarget]
         public async Task<int> Run()
         {
@@ -26,14 +38,6 @@ namespace rchia.Services
                 if (ServiceGroup is null || !ServiceGroups.Groups.ContainsKey(ServiceGroup))
                 {
                     throw new InvalidOperationException($"Unrecognized service group {ServiceGroup}. It must be one of\n  {string.Join("|", ServiceGroups.Groups.Keys)}.");
-                }
-
-                if (Daemon)
-                {
-                    if (!output.Confirm("The daemon cannot be restared remotely. You will need shell access to the node in order to restart it.\nAre you sure you want to stop the daemon?", Force))
-                    {
-                        throw new Exception("No services were stopped.");
-                    }
                 }
 
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(output, this);

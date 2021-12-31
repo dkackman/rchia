@@ -7,7 +7,7 @@ namespace rchia.Plots;
 
 internal sealed class RemovePlotsCommand : EndpointOptions
 {
-    [Option("d", "final-dir", Default = ".", Description = "Final directory for plots (relative or absolute)")]
+    [Argument(0, Name = "finalDir", Default = ".", Description = "Final directory for plots (relative or absolute)")]
     public string FinalDir { get; init; } = ".";
 
     [CommandTarget]

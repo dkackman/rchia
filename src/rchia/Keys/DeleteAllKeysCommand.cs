@@ -10,6 +10,13 @@ internal sealed class DeleteAllKeys : EndpointOptions
     [Option("f", "force", Description = "Delete all keys without prompting for confirmation")]
     public bool Force { get; init; }
 
+    protected async override Task<bool> Validate(ICommandOutput output)
+    {
+        await Task.CompletedTask;
+
+        return output.Confirm($"Deleting all of your keys [wheat1]CANNOT[/] be undone.\nAre you sure you want to delete all keys?", Force);
+    }
+
     [CommandTarget]
     public async Task<int> Run()
     {
@@ -17,15 +24,12 @@ internal sealed class DeleteAllKeys : EndpointOptions
         {
             using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
 
-            if (output.Confirm($"Deleting all of your keys [wheat1]CANNOT[/] be undone.\nAre you sure you want to delete all keys from [red]{rpcClient.Endpoint.Uri}[/]?", Force))
-            {
-                var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
+            var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
 
-                using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-                await proxy.DeleteAllKeys(cts.Token);
+            using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+            await proxy.DeleteAllKeys(cts.Token);
 
-                output.WriteOutput("status", "Deleted all keys", Verbose);
-            }
+            output.WriteOutput("status", "Deleted all keys", Verbose);
         });
     }
 }

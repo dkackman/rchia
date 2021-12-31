@@ -8,7 +8,7 @@ namespace rchia.Connections;
 internal sealed class RemoveConnectionCommand : EndpointOptions
 {
     [Argument(0, Name = "ID", Description = "The full or first 8 characters of NodeID")]
-    public string ID { get; init; } = string.Empty;
+    public string Id { get; init; } = string.Empty;
 
     [CommandTarget]
     public async Task<int> Run()
@@ -19,9 +19,9 @@ internal sealed class RemoveConnectionCommand : EndpointOptions
             var proxy = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);
 
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-            await proxy.CloseConnection(ID, cts.Token);
+            await proxy.CloseConnection(Id, cts.Token);
 
-            output.WriteOutput("removed", ID, Verbose);
+            output.WriteOutput("removed", Id, Verbose);
         });
     }
 }
