@@ -18,7 +18,7 @@ namespace rchia.Services
         [Option("f", "force", Description = "If specified in conjunction with '-d', shut down the daemon without prompting")]
         public bool Force { get; init; }
 
-        protected async override Task<bool> Validate(ICommandOutput output)
+        protected async override Task<bool> Confirm(ICommandOutput output)
         {
             await Task.CompletedTask;
 

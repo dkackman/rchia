@@ -23,7 +23,7 @@ internal sealed class CreatePlotNftCommand : WalletCommand
     [Option("f", "force", Description = "Do not prompt before nft creation")]
     public bool Force { get; init; }
 
-    protected async override Task<bool> Validate(ICommandOutput output)
+    protected async override Task<bool> Confirm(ICommandOutput output)
     {
         using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
         var proxy = await Login(rpcClient, output);

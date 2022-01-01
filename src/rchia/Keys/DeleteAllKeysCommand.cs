@@ -10,7 +10,7 @@ internal sealed class DeleteAllKeys : EndpointOptions
     [Option("f", "force", Description = "Delete all keys without prompting for confirmation")]
     public bool Force { get; init; }
 
-    protected async override Task<bool> Validate(ICommandOutput output)
+    protected async override Task<bool> Confirm(ICommandOutput output)
     {
         await Task.CompletedTask;
 

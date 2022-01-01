@@ -13,7 +13,7 @@ public abstract class Command
     [Option("", "json", Description = "Set this flag to output json", IsHidden = true)]
     public bool Json { get; init; }
 
-    protected async virtual Task<bool> Validate(ICommandOutput output) { await Task.CompletedTask; return true; }
+    protected async virtual Task<bool> Confirm(ICommandOutput output) { await Task.CompletedTask; return true; }
 
     protected async Task<int> DoWorkAsync(string msg, Func<ICommandOutput, Task> work)
     {
@@ -22,7 +22,7 @@ public abstract class Command
 
         try
         {
-            if (await Validate(output))
+            if (await Confirm(output))
             {
                 if (Json)
                 {

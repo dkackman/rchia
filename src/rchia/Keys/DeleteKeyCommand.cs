@@ -11,7 +11,7 @@ internal sealed class DeleteKeyCommand : WalletCommand
     [Option("f", "force", Description = "Delete the key without prompting for confirmation")]
     public bool Force { get; init; }
 
-    protected async override Task<bool> Validate(ICommandOutput output)
+    protected async override Task<bool> Confirm(ICommandOutput output)
     {
         await Task.CompletedTask;
 

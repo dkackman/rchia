@@ -16,9 +16,10 @@ internal sealed class ClaimNftCommand : WalletCommand
     [Option("m", "fee", Default = 0, Description = "Set the fees for the transaction, in XCH")]
     public decimal Fee { get; init; }
 
-    protected async override Task<bool> Validate(ICommandOutput output)
+    protected async override Task<bool> Confirm(ICommandOutput output)
     {
         await Task.CompletedTask;
+
         return output.Confirm($"Are you sure you want to claim rewards for wallet ID {Id}?", Force);
     }
 
