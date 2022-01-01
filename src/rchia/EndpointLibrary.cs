@@ -31,7 +31,7 @@ public class EndpointLibrary
         return endpoint.Value ?? throw new InvalidOperationException("No default endpoint is set. Try './rchia endpoints set-default ID'");
     }
 
-    public IDictionary<string, Endpoint> Endpoints { get; private set; } = new Dictionary<string, Endpoint>();
+    public IDictionary<string, Endpoint> Endpoints { get; private set; } = new Dictionary<string, Endpoint>(StringComparer.OrdinalIgnoreCase);
 
     public void Open()
     {
@@ -41,9 +41,9 @@ public class EndpointLibrary
             {
                 using var reader = new StreamReader(_endpointsFilePath);
                 var json = reader.ReadToEnd();
-                var library = JsonConvert.DeserializeObject<IDictionary<string, Endpoint>>(json);
+                var library = JsonConvert.DeserializeObject<IDictionary<string, Endpoint>>(json) ?? new Dictionary<string, Endpoint>();
 
-                Endpoints = library ?? new Dictionary<string, Endpoint>();
+                Endpoints = new Dictionary<string, Endpoint>(library, StringComparer.OrdinalIgnoreCase);
             }
             catch (Exception e)
             {

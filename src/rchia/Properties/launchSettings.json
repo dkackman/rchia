@@ -3,6 +3,11 @@
     "rchia": {
       "commandName": "Project",
       "commandLineArgs": "services stop all -d"
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "environmentVariables": {},
+      "distributionName": ""
     }
   }
 }
