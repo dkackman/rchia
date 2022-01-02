@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 using chia.dotnet;
 using rchia.Commands;
 
@@ -38,16 +39,13 @@ internal sealed class RecentBlocksCommand : EndpointOptions
             }
             else
             {
-                var table = new List<IDictionary<string, object?>>();
-                foreach (var b in blocks)
-                {
-                    var row = new Dictionary<string, object?>()
-                    {
-                        { "height", b.Height },
-                        { "hash", b.HeaderHash.Replace("0x", "") }
-                    };
-                    table.Add(row);
-                }
+                var table = from b in blocks
+                            select new Dictionary<string, object?>()
+                            {
+                                { "height", b.Height },
+                                { "hash", b.HeaderHash.Replace("0x", "") }
+                            };
+
                 output.WriteOutput(table);
             }
         });
