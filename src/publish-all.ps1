@@ -1,8 +1,8 @@
-$version = "0.9.0"
+$version = "0.9.1"
 
 # clean build and publish outputs
-Remove-Item '.\rchia\bin' -Recurse
-Remove-Item '.\publish' -Recurse
+Remove-Item '.\rchia\bin' -Recurse -Force
+Remove-Item '.\publish' -Recurse -Force
 
 # stand alone
 dotnet publish ./rchia/rchia.csproj --configuration Release --framework net6.0 --output publish/standalone/win-x64 --self-contained True --runtime win-x64 --verbosity Normal /property:PublishTrimmed=True /property:PublishSingleFile=True /property:IncludeNativeLibrariesForSelfExtract=True /property:DebugType=None /property:DebugSymbols=False
