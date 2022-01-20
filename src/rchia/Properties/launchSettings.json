@@ -2,7 +2,7 @@
   "profiles": {
     "rchia": {
       "commandName": "Project",
-      "commandLineArgs": "services stop all -d"
+      "commandLineArgs": "node status -ep former"
     },
     "WSL": {
       "commandName": "WSL2",
