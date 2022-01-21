@@ -85,7 +85,7 @@ internal sealed class StatusCommand : EndpointOptions
 
             if (!Json && Verbose && About)
             {
-                AnsiConsole.Write(new FigletText("CHIA!")
+                AnsiConsole.Write(new FigletText("GO CHIA!")
                                     .Centered()
                                     .Color(Color.Green));
             }
