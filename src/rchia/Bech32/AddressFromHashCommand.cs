@@ -1,4 +1,5 @@
-﻿using rchia.Commands;
+﻿using chia.dotnet.bech32;
+using rchia.Commands;
 
 namespace rchia.Bech32;
 

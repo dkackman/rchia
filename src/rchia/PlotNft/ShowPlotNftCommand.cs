@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
-using rchia.Bech32;
+using chia.dotnet.bech32;
 using rchia.Commands;
 
 namespace rchia.PlotNft;

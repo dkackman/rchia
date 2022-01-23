@@ -33,7 +33,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="chia-dotnet" Version="0.7.0" />
+    <PackageReference Include="chia-dotnet" Version="0.8.0" />
     <PackageReference Include="HexMate" Version="0.0.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Spectre.Console" Version="0.43.0" />

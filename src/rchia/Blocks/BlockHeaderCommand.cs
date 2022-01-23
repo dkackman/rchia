@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
-using rchia.Bech32;
+using chia.dotnet.bech32;
 using rchia.Commands;
 
 namespace rchia.Blocks;
