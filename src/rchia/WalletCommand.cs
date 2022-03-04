@@ -54,11 +54,11 @@ internal abstract class WalletCommand : EndpointOptions
 
         if (Fingerprint.HasValue)
         {
-            _ = await walletProxy.LogIn(Fingerprint.Value, false, cts.Token);
+            _ = await walletProxy.LogIn(Fingerprint.Value, cts.Token);
         }
         else
         {
-            _ = await walletProxy.LogIn(false, cts.Token);
+            _ = await walletProxy.LogIn(cts.Token);
         }
 
         return walletProxy;

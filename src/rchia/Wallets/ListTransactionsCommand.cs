@@ -30,7 +30,7 @@ internal sealed class ListTransactionsCommand : WalletCommand
             var (NetworkName, NetworkPrefix) = await wallet.WalletProxy.GetNetworkInfo(cts.Token);
 
             var count = Count is null ? await wallet.GetTransactionCount(cts.Token) : Count.Value;
-            var transactions = await wallet.GetTransactions(Start, count - Start, cts.Token);
+            var transactions = await wallet.GetTransactions(Start, count - Start, cancellationToken: cts.Token);
 
             if (transactions.Any())
             {

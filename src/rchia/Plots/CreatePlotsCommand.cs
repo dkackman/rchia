@@ -8,8 +8,8 @@ namespace rchia.Plots;
 
 internal sealed class CreatePlotsCommand : EndpointOptions
 {
-    [Option("k", "size", Default = KValues.K32, Description = "Plot szie")]
-    public KValues Size { get; init; } = KValues.K32;
+    [Option("k", "size", Default = KSize.K32, Description = "Plot szie")]
+    public KSize Size { get; init; } = KSize.K32;
 
     [Option("o", "override-k", Description = "Force size smaller than 32")]
     public bool OverrideK { get; init; }

@@ -89,8 +89,8 @@ internal sealed class ShowPlotNftCommand : WalletCommand
 
             if (State.Current.State == PoolSingletonState.SELF_POOLING)
             {
-                var (ConfirmedWalletBalance, UnconfirmedWalletBalance, SpendableBalance, PendingChange, MaxSendAmount, UnspentCoinCount, PendingCoinRemovalCount) = await poolwallet.GetBalance(cts1.Token);
-                result.Add($"claimable_balance", $"{ConfirmedWalletBalance.ToChia()} {NetworkPrefix}");
+                var balance = await poolwallet.GetBalance(cts1.Token);
+                result.Add($"claimable_balance", $"{balance.ConfirmedWalletBalance.ToChia()} {NetworkPrefix}");
             }
             else if (State.Current.State == PoolSingletonState.FARMING_TO_POOL)
             {

@@ -46,25 +46,24 @@ internal sealed class ShowWalletCommand : WalletCommand
                 foreach (var summary in wallets)
                 {
                     var newWallet = new chia.dotnet.Wallet(summary.Id, proxy);
-                    var (ConfirmedWalletBalance, UnconfirmedWalletBalance, SpendableBalance, PendingChange, MaxSendAmount, UnspentCoinCount, PendingCoinRemovalCount)
-                        = await newWallet.GetBalance(cts.Token);
+                    var balance = await newWallet.GetBalance(cts.Token);
 
                     var row = new Dictionary<string, object?>
                     {
                         { "Id", summary.Id },
                         { "Name", summary.Name },
                         { "Type", summary.Type.ToString() },
-                        { "Total", ConfirmedWalletBalance.ToChia() },
-                        { "Pending Total", UnconfirmedWalletBalance.ToChia() },
-                        { "Spendable", SpendableBalance.ToChia() }
+                        { "Total", balance.ConfirmedWalletBalance.ToChia() },
+                        { "Pending Total", balance.UnconfirmedWalletBalance.ToChia() },
+                        { "Spendable", balance.SpendableBalance.ToChia() }
                     };
 
                     if (Verbose || Json)
                     {
-                        row.Add("Pending Change", PendingChange.ToChia());
-                        row.Add("Max Spend Amount", MaxSendAmount.ToChia());
-                        row.Add("Unspent Coin Count", UnspentCoinCount);
-                        row.Add("Pending Coin Removal Count", PendingCoinRemovalCount);
+                        row.Add("Pending Change", balance.PendingChange.ToChia());
+                        row.Add("Max Spend Amount", balance.MaxSendAmount.ToChia());
+                        row.Add("Unspent Coin Count", balance.UnspentCoinCount);
+                        row.Add("Pending Coin Removal Count", balance.PendingCoinRemovalCount);
                     }
 
                     balances.Add(row);

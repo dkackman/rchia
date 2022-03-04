@@ -17,7 +17,7 @@ internal sealed class GenerateKeyCommand : EndpointOptions
 
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var mnemonic = await proxy.GenerateMnemonic(cts.Token);
-            var fingerprint = await proxy.AddKey(mnemonic, true, cts.Token);
+            var fingerprint = await proxy.AddKey(mnemonic, cts.Token);
 
             output.WriteOutput("fingerprint", new Formattable<uint>(fingerprint, fp => $"{fp}"), Verbose);
         });

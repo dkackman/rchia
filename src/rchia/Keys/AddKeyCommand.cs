@@ -41,7 +41,7 @@ internal sealed class AddKeyCommand : EndpointOptions
             var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
 
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-            var fingerprint = await proxy.AddKey(mnemonic, true, cts.Token);
+            var fingerprint = await proxy.AddKey(mnemonic, cts.Token);
 
             output.WriteOutput("fingerprint", new Formattable<uint>(fingerprint, fp => $"{fp}"), Verbose);
         });

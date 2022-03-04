@@ -24,20 +24,20 @@ internal sealed class ShowKeysCommand : EndpointOptions
             foreach (var fingerprint in await proxy.GetPublicKeys(cts.Token))
             {
                 using var cts1 = new CancellationTokenSource(TimeoutMilliseconds);
-                var (Fingerprint, Sk, Pk, FarmerPk, PoolPk, Seed) = await proxy.GetPrivateKey(fingerprint, cts1.Token);
+                var pk = await proxy.GetPrivateKey(fingerprint, cts1.Token);
 
                 var row = new Dictionary<string, object?>
                 {
                     { "fingerprint", new Formattable<uint>(fingerprint, fp => $"{fp}") },
-                    { "master_public_key", Pk },
-                    { "farmer_public_key", FarmerPk },
-                    { "pool_public_key", PoolPk }
+                    { "master_public_key", pk.Pk },
+                    { "farmer_public_key", pk.FarmerPk },
+                    { "pool_public_key", pk.PoolPk }
                 };
 
                 if (ShowMnemonicSeed)
                 {
-                    row.Add("master_private_key", Sk);
-                    row.Add("mnemonic_seed", Seed);
+                    row.Add("master_private_key", pk.Sk);
+                    row.Add("mnemonic_seed", pk.Seed);
                 }
 
                 table.Add(row);
