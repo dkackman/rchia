@@ -55,7 +55,7 @@ internal sealed class SendTransactionCommand : WalletCommand
 
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var (_, NetworkPrefix) = await wallet.WalletProxy.GetNetworkInfo(cts.Token);
-            var tx = await wallet.SendTransaction(Address, Amount.ToMojo(), Fee.ToMojo(), cts.Token);
+            var tx = await wallet.SendTransaction(Address, Amount.ToMojo(), Fee.ToMojo(), cancellationToken: cts.Token);
 
             var result = new Dictionary<string, object?>();
             FormatTransaction(tx, NetworkPrefix, result);

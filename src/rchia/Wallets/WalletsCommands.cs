@@ -3,7 +3,7 @@
 namespace rchia.Wallet;
 
 [Command("wallets", Description = "Manage your wallet.\nRequires a wallet or daemon endpoint.")]
-internal sealed class WalletsCommands
+internal sealed class CatsCommands
 {
     [Command("show", Description = "Show wallet information")]
     public ShowWalletCommand Show { get; init; } = new();
