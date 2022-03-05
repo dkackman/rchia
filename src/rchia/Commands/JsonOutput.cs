@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using Spectre.Console;
 
 namespace rchia.Commands;
@@ -14,6 +16,12 @@ internal class JsonOutput : ICommandOutput
     public ICommandOutput SetContext(StatusContext? context)
     {
         return this;
+    }
+
+    public async Task<ConsoleKeyInfo?> ReadKey(CancellationToken cancellationToken)
+    {
+        await Task.CompletedTask;
+        return null;
     }
 
     public void WriteOutput(IDictionary<string, IEnumerable<IDictionary<string, object?>>> output)

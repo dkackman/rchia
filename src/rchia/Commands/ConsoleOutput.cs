@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Linq;
 using System.Numerics;
 using Spectre.Console;
@@ -124,6 +126,11 @@ internal class ConsoleOutput : ICommandOutput
     public void WriteLine(string msg)
     {
         AnsiConsole.WriteLine(msg);
+    }
+
+    public async Task<ConsoleKeyInfo?> ReadKey(CancellationToken cancellationToken)
+    {
+        return await AnsiConsole.Console.Input.ReadKeyAsync(true, cancellationToken);
     }
 
     public void WriteMessage(string msg, bool important = false)

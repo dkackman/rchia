@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Spectre.Console;
 
 namespace rchia;
@@ -13,6 +15,8 @@ public interface ICommandOutput
     IStatus Status { get; }
 
     bool Confirm(string warning, bool force);
+
+    Task<ConsoleKeyInfo?> ReadKey(CancellationToken cancellationToken);
 
     void WriteMarkupLine(string msg);
     void WriteMessage(string msg, bool important = false);

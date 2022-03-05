@@ -19,4 +19,7 @@ internal sealed class NodeCommands
 
     [Command("status", Description = "Show the current status of the node's view of the blockchain")]
     public StatusCommand Status { get; init; } = new();
+
+    [Command("listen", Description = "Listens for broadcast messages from the node.")]
+    public ListenCommand Listen { get; init; } = new();
 }
