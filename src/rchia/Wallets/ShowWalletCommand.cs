@@ -33,9 +33,11 @@ internal sealed class ShowWalletCommand : WalletCommand
             var wallet = new Dictionary<string, object?>()
             {
                 // the successful call to Login above means we have a fingerprint for the wallet
+                { "network", NetworkName },
+                { "prefix", NetworkPrefix },
                 { "fingerprint", new Formattable<uint>(proxy.Fingerprint!.Value, fp => $"{fp}") },
                 { "sync_status", syncStatus },
-                { "wallet_height", height }
+                { "wallet_height", height },
             };
             var balances = new List<IDictionary<string, object?>>();
 
