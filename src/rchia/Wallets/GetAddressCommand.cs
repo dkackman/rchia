@@ -20,8 +20,8 @@ internal sealed class GetAddressCommand : WalletCommand
         {
             using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
             var wallet = new chia.dotnet.Wallet(Id, await Login(rpcClient, output));
-
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
+
             var address = await wallet.GetNextAddress(New, cts.Token);
 
             output.WriteOutput("address", address, Verbose);

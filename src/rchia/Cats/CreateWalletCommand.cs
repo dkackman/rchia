@@ -6,7 +6,7 @@ using chia.dotnet;
 
 namespace rchia.Cats;
 
-internal sealed class CreateCatWalletCommand : WalletCommand
+internal sealed class CreateWalletCommand : WalletCommand
 {
     [Option("a", "amount", IsRequired = true, Description = "The amount to deposit in the wallet, in XCH")]
     public decimal Amount { get; init; }

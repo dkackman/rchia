@@ -12,22 +12,21 @@ public static class AttributeExtensions
 {
     public static CommandLineBuilder UseAttributes(this CommandLineBuilder builder, Assembly assembly)
     {
-        var types = from type in assembly.GetTypes()
-                    let attr = type.GetCustomAttribute<CommandAttribute>()
-                    where attr is not null
-                    orderby attr.Name
-                    select (type, attr);
+        var commands = from type in assembly.GetTypes()
+                       let attr = type.GetCustomAttribute<CommandAttribute>()
+                       where attr is not null
+                       orderby attr.Name
+                       select CreateCommand(type, attr);
 
-        var root = builder.Command;
-        foreach (var (type, attr) in types)
+        foreach (var c in commands)
         {
-            root.AddCommands(type, attr);
+            builder.Command.AddCommand(c);
         }
 
         return builder;
     }
 
-    private static void AddCommands(this System.CommandLine.Command parent, Type type, CommandAttribute c)
+    private static System.CommandLine.Command CreateCommand(Type type, CommandAttribute c)
     {
         var command = new System.CommandLine.Command(c.Name, c.Description);
 
@@ -78,9 +77,9 @@ public static class AttributeExtensions
         }
 
         // and recurse to add subcommands
-        foreach (var (property, subcommand) in type.GetAttributedProperties<CommandAttribute>())
+        foreach (var (property, subcommand) in type.GetAttributedProperties<CommandAttribute>().OrderBy(tuple => tuple.Attribute.Name))
         {
-            command.AddCommands(property.PropertyType, subcommand);
+            command.AddCommand(CreateCommand(property.PropertyType, subcommand));
         }
 
         var target = type.GetCommandTarget(); // ?? throw new InvalidOperationException($"No method decorated with [CommandTarget] was found on {type.FullName}");
@@ -89,7 +88,7 @@ public static class AttributeExtensions
             command.Handler = CommandHandler.Create(target);
         }
 
-        parent.AddCommand(command);
+        return command;
     }
 
     public static MethodInfo? GetCommandTarget(this Type type)

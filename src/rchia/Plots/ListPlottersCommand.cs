@@ -12,7 +12,7 @@ namespace rchia.Plots
         [CommandTarget]
         public async Task<int> Run()
         {
-            return await DoWorkAsync("Adding plot directory...", async output =>
+            return await DoWorkAsync("Retrieving plotter info...", async output =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(output, this);
                 var proxy = new PlotterProxy(rpcClient, ClientFactory.Factory.OriginService);
