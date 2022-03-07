@@ -9,7 +9,7 @@ namespace rchia.PlotNft;
 internal sealed class JoinPoolCommand : WalletCommand
 {
     [Option("i", "id", Default = 1, Description = "Id of the user wallet to use")]
-    public uint Id { get; init; } = 1;
+    public int Id { get; init; } = 1;
 
     [Option("u", "pool-url", Description = "HTTPS host:port of the pool to join.")]
     public Uri PoolUrl { get; init; } = new Uri("http://localhost");
@@ -35,7 +35,7 @@ internal sealed class JoinPoolCommand : WalletCommand
             var proxy = await Login(rpcClient, output);
 
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-            var wallet = new PoolWallet(Id, proxy);
+            var wallet = new PoolWallet((uint)Id, proxy);
             await wallet.Validate(cts.Token);
 
             var poolInfo = await PoolUrl.GetPoolInfo(TimeoutMilliseconds);

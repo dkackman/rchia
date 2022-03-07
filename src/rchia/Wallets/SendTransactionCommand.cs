@@ -19,7 +19,7 @@ internal sealed class SendTransactionCommand : WalletCommand
     public string Address { get; init; } = string.Empty;
 
     [Option("i", "id", Default = 1, Description = "Id of the user wallet to use")]
-    public uint Id { get; init; } = 1;
+    public int Id { get; init; } = 1;
 
     [Option("f", "force", Description = "If Fee > Amount, send the transaction anyway")]
     public bool Force { get; init; }
@@ -51,7 +51,7 @@ internal sealed class SendTransactionCommand : WalletCommand
             }
 
             using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
-            var wallet = new chia.dotnet.Wallet(Id, await Login(rpcClient, output));
+            var wallet = new chia.dotnet.Wallet((uint)Id, await Login(rpcClient, output));
 
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var (_, NetworkPrefix) = await wallet.WalletProxy.GetNetworkInfo(cts.Token);

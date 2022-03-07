@@ -11,7 +11,7 @@ internal sealed class ClaimNftCommand : WalletCommand
     public bool Force { get; init; }
 
     [Option("i", "id", Default = 1, Description = "Id of the user wallet to use")]
-    public uint Id { get; init; } = 1;
+    public int Id { get; init; } = 1;
 
     [Option("m", "fee", Default = 0, Description = "Set the fees for the transaction, in XCH")]
     public decimal Fee { get; init; }
@@ -29,7 +29,7 @@ internal sealed class ClaimNftCommand : WalletCommand
         return await DoWorkAsync("Claiming pool rewards...", async output =>
         {
             using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
-            var wallet = new PoolWallet(Id, await Login(rpcClient, output));
+            var wallet = new PoolWallet((uint)Id, await Login(rpcClient, output));
 
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             await wallet.Validate(cts.Token);

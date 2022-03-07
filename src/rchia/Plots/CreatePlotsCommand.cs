@@ -27,7 +27,7 @@ internal sealed class CreatePlotsCommand : EndpointOptions
     public int Buckets { get; init; } = 128;
 
     [Option("a", "alt-fingerprint", Description = "Enter the alternative fingerprint of the key you want to use")]
-    public uint? AltFingerprint { get; init; }
+    public int? AltFingerprint { get; init; }
 
     [Option("c", "pool-contract-address", Description = "Address of where the pool reward will be sent to. Only used if\nalt_fingerprint and pool public key are not set")]
     public string? PoolContractAddress { get; init; }
@@ -81,7 +81,7 @@ internal sealed class CreatePlotsCommand : EndpointOptions
             Buffer = Buffer,
             NumThreads = NumThreads,
             Buckets = Buckets,
-            AltFingerprint = AltFingerprint,
+            AltFingerprint = (uint?)AltFingerprint,
             PoolContractAddress = PoolContractAddress,
             FarmerPublicKey = FarmerPublicKey,
             PoolPublicKey = PoolPublicKey,

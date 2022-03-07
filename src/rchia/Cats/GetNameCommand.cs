@@ -8,7 +8,7 @@ namespace rchia.Cats;
 internal sealed class GetNameCommand : WalletCommand
 {
     [Option("i", "id", Default = 1, Description = "Id of the CAT wallet to use")]
-    public uint Id { get; init; } = 1;
+    public int Id { get; init; } = 1;
 
     [CommandTarget]
     public async Task<int> Run()
@@ -16,7 +16,7 @@ internal sealed class GetNameCommand : WalletCommand
         return await DoWorkAsync("Retrieving CAT wallet name...", async output =>
         {
             using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
-            var wallet = new CATWallet(Id, await Login(rpcClient, output));
+            var wallet = new CATWallet((uint)Id, await Login(rpcClient, output));
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
             var name = await wallet.GetName(cts.Token);

@@ -10,13 +10,13 @@ namespace rchia.Wallet;
 internal sealed class ListTransactionsCommand : WalletCommand
 {
     [Option("i", "id", Default = 1, Description = "Id of the user wallet to use")]
-    public uint Id { get; init; } = 1;
+    public int Id { get; init; } = 1;
 
     [Option("s", "start", Default = 0, Description = "The start index of transactions to show")]
-    public uint Start { get; init; }
+    public int Start { get; init; }
 
     [Option("c", "count", Description = "The max number of transactions to show. If not specified, all transactions will be shown")]
-    public uint? Count { get; init; }
+    public int? Count { get; init; }
 
     [CommandTarget]
     public async Task<int> Run()
@@ -24,13 +24,13 @@ internal sealed class ListTransactionsCommand : WalletCommand
         return await DoWorkAsync("Retrieving transactions...", async output =>
         {
             using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
-            var wallet = new chia.dotnet.Wallet(Id, await Login(rpcClient, output));
+            var wallet = new chia.dotnet.Wallet((uint)Id, await Login(rpcClient, output));
 
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var (NetworkName, NetworkPrefix) = await wallet.WalletProxy.GetNetworkInfo(cts.Token);
 
-            var count = Count is null ? await wallet.GetTransactionCount(cts.Token) : Count.Value;
-            var transactions = await wallet.GetTransactions(Start, count - Start, cancellationToken: cts.Token);
+            var count = Count is null ? await wallet.GetTransactionCount(cts.Token) : (uint)Count.Value;
+            var transactions = await wallet.GetTransactions((uint)Start, count - (uint)Start, cancellationToken: cts.Token);
 
             if (transactions.Any())
             {

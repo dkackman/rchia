@@ -12,7 +12,7 @@ internal sealed class NetspaceCommand : EndpointOptions
     [Option("d", "delta-block-height", Default = 4608, ArgumentHelpName = "DELTA", Description = "Compare a block X blocks older to estimate total network space. Defaults to 4608 blocks" +
                                                                                      "(~1 day) and Peak block as the starting block. Use --start HEADER_HASH to specify" +
                                                                                      "starting block. Use 192 blocks to estimate over the last hour.")]
-    public uint DeltaBlockHeight { get; init; } = 4608;
+    public int DeltaBlockHeight { get; init; } = 4608;
 
     [Option("s", "start", ArgumentHelpName = "HEADER_HASH", Description = "Newest block used to calculate estimated total network space.Defaults to Peak block.")]
     public string? Start { get; init; }
@@ -52,7 +52,7 @@ internal sealed class NetspaceCommand : EndpointOptions
 
             var newer_block_header = await proxy.GetBlockRecordByHeight(newer_block_height);
             var older_block_height = Math.Max(0, newer_block_height - DeltaBlockHeight);
-            var older_block_header = await proxy.GetBlockRecordByHeight(older_block_height);
+            var older_block_header = await proxy.GetBlockRecordByHeight((uint)older_block_height);
             var network_space_estimate = await proxy.GetNetworkSpace(newer_block_header.HeaderHash, older_block_header.HeaderHash);
 
             output.WriteOutput("network_space_estimate", new Formattable<BigInteger>(network_space_estimate, space => space.ToBytesString()), Verbose);

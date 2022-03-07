@@ -12,7 +12,7 @@ namespace rchia;
 internal abstract class WalletCommand : EndpointOptions
 {
     [Option("fp", "fingerprint", Description = "Set the fingerprint to specify which wallet to use - the first fingerprint will be used if not set")]
-    public uint? Fingerprint { get; init; }
+    public int? Fingerprint { get; init; }
 
     protected void PrintTransactionSentTo(ICommandOutput output, TransactionRecord tx)
     {
@@ -54,7 +54,7 @@ internal abstract class WalletCommand : EndpointOptions
 
         if (Fingerprint.HasValue)
         {
-            _ = await walletProxy.LogIn(Fingerprint.Value, cts.Token);
+            _ = await walletProxy.LogIn((uint)Fingerprint.Value, cts.Token);
         }
         else
         {

@@ -32,9 +32,9 @@ internal sealed class DeleteKeyCommand : WalletCommand
             var proxy = new WalletProxy(rpcClient, ClientFactory.Factory.OriginService);
 
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-            await proxy.DeleteKey(Fingerprint.Value, cts.Token);
+            await proxy.DeleteKey((uint)Fingerprint.Value, cts.Token);
 
-            output.WriteOutput("deleted", new Formattable<uint>(Fingerprint.Value, fp => $"{fp}"), Verbose);
+            output.WriteOutput("deleted", new Formattable<uint>((uint)Fingerprint.Value, fp => $"{fp}"), Verbose);
         });
     }
 }

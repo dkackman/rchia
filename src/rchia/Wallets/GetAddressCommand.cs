@@ -11,7 +11,7 @@ internal sealed class GetAddressCommand : WalletCommand
     public bool New { get; init; }
 
     [Option("i", "id", Default = 1, Description = "Id of the user wallet to use")]
-    public uint Id { get; init; } = 1;
+    public int Id { get; init; } = 1;
 
     [CommandTarget]
     public async Task<int> Run()
@@ -19,7 +19,7 @@ internal sealed class GetAddressCommand : WalletCommand
         return await DoWorkAsync("Retrieving wallet address...", async output =>
         {
             using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
-            var wallet = new chia.dotnet.Wallet(Id, await Login(rpcClient, output));
+            var wallet = new chia.dotnet.Wallet((uint)Id, await Login(rpcClient, output));
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
             var address = await wallet.GetNextAddress(New, cts.Token);

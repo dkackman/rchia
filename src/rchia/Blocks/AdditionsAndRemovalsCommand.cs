@@ -13,14 +13,14 @@ internal sealed class AdditionsAndRemovalsCommand : EndpointOptions
     public string? Hash { get; init; }
 
     [Option("h", "height", ArgumentHelpName = "HEIGHT", Description = "Look up by height")]
-    public uint? Height { get; init; }
+    public int? Height { get; init; }
 
     private async Task<string> GetHash(FullNodeProxy proxy)
     {
         if (Height.HasValue)
         {
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
-            var block = await proxy.GetBlockRecordByHeight(Height.Value, cts.Token);
+            var block = await proxy.GetBlockRecordByHeight((uint)Height.Value, cts.Token);
 
             return block.HeaderHash;
         }

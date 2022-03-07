@@ -12,7 +12,7 @@ namespace rchia.PlotNft;
 internal sealed class ShowPlotNftCommand : WalletCommand
 {
     [Option("i", "id", Default = 1, Description = "Id of the user wallet to use")]
-    public uint Id { get; init; } = 1;
+    public int Id { get; init; } = 1;
 
     [CommandTarget]
     public async Task<int> Run()
