@@ -22,6 +22,11 @@ internal sealed class NetspaceCommand : EndpointOptions
     {
         return await DoWorkAsync("Retrieving network info...", async output =>
         {
+            if (DeltaBlockHeight < 0)
+            {
+                throw new ArgumentException($"{nameof(DeltaBlockHeight)} cannot be negative.", nameof(DeltaBlockHeight));
+            }
+
             using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.FullNode);
             var proxy = new FullNodeProxy(rpcClient, ClientFactory.Factory.OriginService);
 
@@ -51,8 +56,8 @@ internal sealed class NetspaceCommand : EndpointOptions
             }
 
             var newer_block_header = await proxy.GetBlockRecordByHeight(newer_block_height);
-            var older_block_height = Math.Max(0, newer_block_height - DeltaBlockHeight);
-            var older_block_header = await proxy.GetBlockRecordByHeight((uint)older_block_height);
+            var older_block_height = Math.Max(0, newer_block_height - (uint)DeltaBlockHeight);
+            var older_block_header = await proxy.GetBlockRecordByHeight(older_block_height);
             var network_space_estimate = await proxy.GetNetworkSpace(newer_block_header.HeaderHash, older_block_header.HeaderHash);
 
             output.WriteOutput("network_space_estimate", new Formattable<BigInteger>(network_space_estimate, space => space.ToBytesString()), Verbose);

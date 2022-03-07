@@ -19,6 +19,11 @@ internal sealed class AdditionsAndRemovalsCommand : EndpointOptions
     {
         if (Height.HasValue)
         {
+            if (Height.Value < 0)
+            {
+                throw new ArgumentException($"{nameof(Height)} cannot be negative.", nameof(Height));
+            }
+
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
             var block = await proxy.GetBlockRecordByHeight((uint)Height.Value, cts.Token);
 

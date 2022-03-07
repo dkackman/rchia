@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,6 +24,19 @@ internal sealed class ListTransactionsCommand : WalletCommand
     {
         return await DoWorkAsync("Retrieving transactions...", async output =>
         {
+            if (Id < 0)
+            {
+                throw new ArgumentException($"{nameof(Id)} cannot be negative.", nameof(Id));
+            }
+            if (Start < 0)
+            {
+                throw new ArgumentException($"{nameof(Start)} cannot be negative.", nameof(Start));
+            }
+            if (Count.HasValue && Count.Value < 0)
+            {
+                throw new ArgumentException($"{nameof(Count)} cannot be negative.", nameof(Count));
+            }
+
             using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
             var wallet = new chia.dotnet.Wallet((uint)Id, await Login(rpcClient, output));
 

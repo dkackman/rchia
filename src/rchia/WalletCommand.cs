@@ -54,6 +54,11 @@ internal abstract class WalletCommand : EndpointOptions
 
         if (Fingerprint.HasValue)
         {
+            if (Fingerprint.Value < 0)
+            {
+                throw new ArgumentException($"{nameof(Fingerprint)} cannot be negative.", nameof(Fingerprint));
+            }
+
             _ = await walletProxy.LogIn((uint)Fingerprint.Value, cts.Token);
         }
         else

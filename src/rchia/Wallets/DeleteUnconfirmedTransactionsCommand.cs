@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
@@ -15,6 +16,11 @@ internal sealed class DeleteUnconfirmedTransactionsCommand : WalletCommand
     {
         return await DoWorkAsync("Deleting unconfirmed transactions...", async output =>
         {
+            if (Id < 0)
+            {
+                throw new ArgumentException($"{nameof(Id)} cannot be negative.", nameof(Id));
+            }
+
             using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
             var wallet = new chia.dotnet.Wallet((uint)Id, await Login(rpcClient, output));
 

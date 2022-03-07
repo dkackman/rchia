@@ -23,7 +23,7 @@ internal sealed class DeleteKeyCommand : WalletCommand
     {
         return await DoWorkAsync("Deleting key...", async output =>
         {
-            if (Fingerprint is null || Fingerprint == 0)
+            if (Fingerprint is null || Fingerprint < 0)
             {
                 throw new InvalidOperationException($"{Fingerprint} is not a valid wallet fingerprint");
             }

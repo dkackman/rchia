@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
@@ -28,6 +29,11 @@ internal sealed class ClaimNftCommand : WalletCommand
     {
         return await DoWorkAsync("Claiming pool rewards...", async output =>
         {
+            if (Id < 0)
+            {
+                throw new ArgumentException($"{nameof(Id)} cannot be negative.", nameof(Id));
+            }
+
             using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
             var wallet = new PoolWallet((uint)Id, await Login(rpcClient, output));
 

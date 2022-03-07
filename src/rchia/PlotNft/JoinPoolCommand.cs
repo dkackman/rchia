@@ -31,6 +31,11 @@ internal sealed class JoinPoolCommand : WalletCommand
     {
         return await DoWorkAsync("Joining pool...", async output =>
         {
+            if (Id < 0)
+            {
+                throw new ArgumentException($"{nameof(Id)} cannot be negative.", nameof(Id));
+            }
+
             using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
             var proxy = await Login(rpcClient, output);
 

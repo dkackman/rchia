@@ -31,17 +31,22 @@ internal sealed class SendTransactionCommand : WalletCommand
         {
             if (string.IsNullOrEmpty(Address))
             {
-                throw new InvalidOperationException("Address cannot be empty");
+                throw new ArgumentException($"{nameof(Address)} cannot be empty", nameof(Address));
+            }
+
+            if (Id < 0)
+            {
+                throw new ArgumentException($"{nameof(Id)} cannot be negative", nameof(Id));
             }
 
             if (Amount < 0)
             {
-                throw new InvalidOperationException("Amount cannot be negative");
+                throw new ArgumentException($"{nameof(Amount)} cannot be negative", nameof(Amount));
             }
 
             if (Fee < 0)
             {
-                throw new InvalidOperationException("Fee cannot be negative");
+                throw new ArgumentException($"{nameof(Fee)} cannot be negative", nameof(Fee));
             }
 
             if (Fee > Amount && !Force)
