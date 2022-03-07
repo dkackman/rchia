@@ -49,7 +49,7 @@ internal sealed class ListTransactionsCommand : WalletCommand
             }
             else
             {
-                output.WriteOutput("warning", "There are no transactions to this address", false);
+                output.WriteOutput("warning", "There are no transactions to this address", Verbose);
             }
         });
     }

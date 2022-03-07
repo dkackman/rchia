@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using rchia.Commands;
@@ -40,7 +40,16 @@ internal sealed class GetOffersCommand : WalletCommand
                                                        fileContents: Summaries,
                                                        cancellationToken: cts.Token);
 
-            output.WriteOutput(offers);
+            if (offers.Any())
+            {
+                output.WriteOutput(offers);
+                var c = offers.Count();
+                output.WriteMarkupLine($"Showing [wheat1]{c}[/] offer{(c == 1 ? string.Empty : "s")}");
+            }
+            else
+            {
+                output.WriteOutput("warning", "There are no offers to this address", Verbose);
+            }
         });
     }
 }

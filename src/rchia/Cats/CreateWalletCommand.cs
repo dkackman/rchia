@@ -26,7 +26,7 @@ internal sealed class CreateWalletCommand : WalletCommand
             var proxy = await Login(rpcClient, output);
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
-            var wallet = Name is not null
+            var wallet = !string.IsNullOrEmpty(Name)
                 ? await proxy.CreateCATWallet(Name, Amount.ToMojo(), Fee.ToMojo(), cts.Token)
                 : await proxy.CreateCATWallet(Amount.ToMojo(), Fee.ToMojo(), cts.Token);
 
