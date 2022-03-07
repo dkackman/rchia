@@ -60,7 +60,7 @@ public static class AttributeExtensions
         }
 
         // add required arguments
-        foreach (var (property, attr) in type.GetAttributedProperties<ArgumentAttribute>().OrderBy(tuple => tuple.Attribute.Index))
+        foreach (var (property, attr) in type.GetAttributedProperties<ArgumentAttribute>().OrderBy(tuple => tuple.Attribute.Name))
         {
             var argument = new Argument(attr.Name)
             {
