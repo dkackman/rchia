@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Builder;
-using System.CommandLine.Invocation;
 using System.Linq;
 using System.Reflection;
+using System.CommandLine.NamingConventionBinder;
 
 namespace rchia.Commands;
 
@@ -64,7 +64,7 @@ public static class AttributeExtensions
         {
             var argument = new Argument(attr.Name)
             {
-                ArgumentType = property.PropertyType,
+                ValueType = property.PropertyType,
             };
 
             if (attr.Default is not null)
