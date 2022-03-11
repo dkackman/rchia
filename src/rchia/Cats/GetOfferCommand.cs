@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using rchia.Commands;
 using chia.dotnet;
@@ -17,7 +16,7 @@ internal sealed class GetOfferCommand : WalletCommand
     [CommandTarget]
     public async Task<int> Run()
     {
-        return await DoWorkAsync("Retrieving offers...", async output =>
+        return await DoWorkAsync("Retrieving offer...", async output =>
         {
             using var rpcClient = await ClientFactory.Factory.CreateRpcClient(output, this, ServiceNames.Wallet);
             var proxy = await Login(rpcClient, output);
