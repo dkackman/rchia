@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using rchia.Commands;
 using chia.dotnet;
@@ -20,9 +21,23 @@ internal sealed class CheckOfferCommand : WalletCommand
             var tradeManager = new TradeManager(proxy);
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
-            var valid = await tradeManager.CheckOfferValidity(Offer,  cts.Token);
+            var valid = await tradeManager.CheckOfferValidity(GetOffer(), cts.Token);
 
             output.WriteOutput("offer_is_valid", valid, Verbose);
         });
+    }
+
+    private string GetOffer()
+    {
+        try
+        {
+            using var stream = File.OpenRead(Offer);
+            using var reader = new StreamReader(stream);
+            return reader.ReadToEnd();
+        }
+        catch (IOException)
+        {
+            return Offer;
+        }
     }
 }
