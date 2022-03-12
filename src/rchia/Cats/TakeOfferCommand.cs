@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using rchia.Commands;
 using chia.dotnet;
@@ -14,9 +13,6 @@ internal sealed class TakeOfferCommand : WalletCommand
     [Option("m", "fee", Default = 0, Description = "Set the fees for the transaction, in XCH")]
     public decimal Fee { get; init; }
 
-    [Option("e", "examine-only", Description = "Print the summary of the offer file but do not take it.")]
-    public bool ExamineOnly { get; init; }
-
     [CommandTarget]
     public async Task<int> Run()
     {
@@ -27,22 +23,9 @@ internal sealed class TakeOfferCommand : WalletCommand
             var tradeManager = new TradeManager(proxy);
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
-            if (ExamineOnly)
-            {
-                if (!await tradeManager.CheckOfferValidity(Offer, cts.Token))
-                {
-                    throw new InvalidOperationException("The offer is not valid");
-                }
+            var trade = await tradeManager.TakeOffer(Offer, Fee.ToMojo(), cts.Token);
 
-                var summary = await tradeManager.GetOfferSummary(Offer, cts.Token);
-                output.WriteOutput(summary);
-            }
-            else
-            {
-                var trade = await tradeManager.TakeOffer(Offer, Fee.ToMojo(), cts.Token);
-
-                output.WriteOutput(trade);
-            }
+            output.WriteOutput(trade);
         });
     }
 }

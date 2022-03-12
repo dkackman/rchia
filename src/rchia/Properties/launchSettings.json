@@ -2,7 +2,7 @@
   "profiles": {
     "rchia": {
       "commandName": "Project",
-      "commandLineArgs": "cats get-offers"
+      "commandLineArgs": "cats check c:\\users\\dkack\\desktop\\1CH21_x_1XCH.offer -ep former"
     },
     "WSL": {
       "commandName": "WSL2",

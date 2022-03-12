@@ -21,22 +21,37 @@ internal sealed class CheckOfferCommand : WalletCommand
             var tradeManager = new TradeManager(proxy);
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
-            var valid = await tradeManager.CheckOfferValidity(GetOffer(), cts.Token);
-
-            output.WriteOutput("offer_is_valid", valid, Verbose);
+            var theOffer = GetOffer(output);
+            if (await tradeManager.CheckOfferValidity(theOffer, cts.Token))
+            {
+                var summary = await tradeManager.GetOfferSummary(theOffer, cts.Token);
+                output.WriteOutput(summary);
+            }
+            else
+            {
+                output.WriteOutput("offer_is_valid", false, Verbose);
+            }
         });
     }
 
-    private string GetOffer()
+    private string GetOffer(ICommandOutput output)
     {
         try
         {
             using var stream = File.OpenRead(Offer);
             using var reader = new StreamReader(stream);
+            if (Verbose)
+            {
+                output.WriteMarkupLine($"Loading offer from {Offer}.");
+            }
             return reader.ReadToEnd();
         }
         catch (IOException)
         {
+            if (Verbose)
+            {
+                output.WriteMarkupLine($"{Offer} does not appear to be a file. Treating as hex.");
+            }
             return Offer;
         }
     }
