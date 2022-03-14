@@ -16,4 +16,7 @@ internal sealed class BlocksCommands
 
     [Command("remove", Description = "Remove a Node by the full or first 8 characters of NodeID")]
     public RemoveConnectionCommand Remove { get; init; } = new();
+
+    [Command("count", Description = "Show aggregate counts of peer counts")]
+    public CountConnectionsCommand Count { get; init; } = new();
 }
