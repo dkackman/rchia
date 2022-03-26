@@ -24,12 +24,12 @@ internal class ConsoleOutput : ICommandOutput
         return this;
     }
 
-    public string PromptSecret(string message)
+    public string PromptForSecret(string message)
     {
         return AnsiConsole.Prompt(
             new TextPrompt<string>(message)
                 .PromptStyle("red")
-                .Validate(s => string.IsNullOrEmpty(s.Trim()) ? ValidationResult.Error("Secret cannot be empty") : ValidationResult.Success())
+                //.Validate(s => string.IsNullOrEmpty(s.Trim()) ? ValidationResult.Error("Secret cannot be empty") : ValidationResult.Success())
                 .Secret());
     }
 

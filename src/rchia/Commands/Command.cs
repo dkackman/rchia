@@ -15,24 +15,25 @@ public abstract class Command
 
     protected async virtual Task<bool> Confirm(ICommandOutput output) { await Task.CompletedTask; return true; }
 
-    protected async Task<int> DoWorkAsync(string msg, Func<ICommandOutput, string> secret, Func<ICommandOutput, string, Task> work)
+    protected async Task<int> DoWorkAsync<T>(string msg, Func<ICommandOutput, T> prompt, Func<T, ICommandOutput, Task> work)
     {
         Debug.Assert(!string.IsNullOrEmpty(msg));
         var output = CreateCommandOutput();
         try
         {
             if (await Confirm(output))
-            {
+            {                
+                var inputs = prompt(output);
                 if (Json)
                 {
-                    await work(output, secret(output));
+                    await work(inputs, output);
                 }
                 else
                 {
                     await AnsiConsole.Status()
-                   .AutoRefresh(true)
-                   .SpinnerStyle(Style.Parse("green bold"))
-                   .StartAsync(msg, async ctx => await work(output.SetContext(ctx), secret(output)));
+                       .AutoRefresh(true)
+                       .SpinnerStyle(Style.Parse("green bold"))
+                       .StartAsync(msg, async ctx => await work(inputs, output.SetContext(ctx)));
 
                     output.WriteMessage("Done.");
                 }
@@ -70,9 +71,9 @@ public abstract class Command
                 else
                 {
                     await AnsiConsole.Status()
-                   .AutoRefresh(true)
-                   .SpinnerStyle(Style.Parse("green bold"))
-                   .StartAsync(msg, async ctx => await work(output.SetContext(ctx)));
+                       .AutoRefresh(true)
+                       .SpinnerStyle(Style.Parse("green bold"))
+                       .StartAsync(msg, async ctx => await work(output.SetContext(ctx)));
 
                     output.WriteMessage("Done.");
                 }

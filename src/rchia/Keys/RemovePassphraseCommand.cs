@@ -6,23 +6,23 @@ using rchia.Commands;
 
 namespace rchia.Keys
 {
-    internal sealed class UnlockCommand : EndpointOptions
+    internal sealed class RemovePassphraseCommand : EndpointOptions
     {
-        [Option("p", "passphrase-file", Description = "Optional file containing the passphrase. If not set the user will be prompted.")]
+        [Option("p", "passphrase-file", Description = "Optional file containing the current passphrase. If not set the user will be prompted.")]
         public string? PassphraseFile { get; init; }
 
         [CommandTarget]
         public async Task<int> Run()
         {
-            return await DoWorkAsync("Unlocking the keyring...", 
-                output => GetPassphrase(output), 
+            return await DoWorkAsync("Removing the keyring passphrase...",
+                output => GetPassphrase(output),
                 async (passphrase, output) =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(output, this);
                 var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
-                await proxy.UnlockKeyring(passphrase, cts.Token);
+                await proxy.RemoveKeyringPassphrase(passphrase, cts.Token);
 
                 output.WriteOutput("status", "success", Verbose);
             });

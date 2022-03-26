@@ -84,7 +84,7 @@ internal class JsonOutput : ICommandOutput
         WriteOutput("error", e.Message);
     }
 
-    public string PromptSecret(string message)
+    public string PromptForSecret(string message)
     {
         Debug.WriteLine("PromptSecret called in non-interactive mode. Try the file options.");
 

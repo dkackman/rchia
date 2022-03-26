@@ -23,7 +23,9 @@ namespace rchia.Keys
         [CommandTarget]
         public async Task<int> Run()
         {
-            return await DoWorkAsync("Migrating the keyring...", output => GetPassphrase(output), async (output, passphrase) =>
+            return await DoWorkAsync("Migrating the keyring...", 
+                output => GetPassphrase(output), 
+                async (passphrase, output) =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(output, this);
                 var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
@@ -42,15 +44,13 @@ namespace rchia.Keys
                 return File.ReadAllText(PassphraseFile).Trim();
             }
 
-            var one = output.PromptSecret("Enter the new keyring [green]passphrase[/]?");
-            var two = output.PromptSecret("Re-enter the new keyring [green]passphrase[/]?");
-
-            if (one != two)
+            var newPassphrase = output.PromptForSecret("Enter the new keyring [green]passphrase[/]?");
+            if (newPassphrase != output.PromptForSecret("Re-enter the new keyring [green]passphrase[/]?"))
             {
                 throw new InvalidDataException("Entered passphrases must match!");
             }
 
-            return one;
+            return newPassphrase;
         }
     }
 }

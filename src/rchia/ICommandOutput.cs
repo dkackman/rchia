@@ -14,7 +14,7 @@ public interface ICommandOutput
 
     IStatus Status { get; }
 
-    string PromptSecret(string message);
+    string PromptForSecret(string message);
 
     bool Confirm(string warning, bool force);
 
