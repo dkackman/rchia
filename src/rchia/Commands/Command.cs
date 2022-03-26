@@ -15,6 +15,45 @@ public abstract class Command
 
     protected async virtual Task<bool> Confirm(ICommandOutput output) { await Task.CompletedTask; return true; }
 
+    protected async Task<int> DoWorkAsync(string msg, Func<ICommandOutput, string> secret, Func<ICommandOutput, string, Task> work)
+    {
+        Debug.Assert(!string.IsNullOrEmpty(msg));
+        var output = CreateCommandOutput();
+        try
+        {
+            if (await Confirm(output))
+            {
+                if (Json)
+                {
+                    await work(output, secret(output));
+                }
+                else
+                {
+                    await AnsiConsole.Status()
+                   .AutoRefresh(true)
+                   .SpinnerStyle(Style.Parse("green bold"))
+                   .StartAsync(msg, async ctx => await work(output.SetContext(ctx), secret(output)));
+
+                    output.WriteMessage("Done.");
+                }
+            }
+            return 0;
+        }
+        catch (TaskCanceledException)
+        {
+            output.WriteMarkupLine($"[red]The operation timed out[/]");
+            output.WriteMessage("Check that the chia service is running and available. You can extend the timeout period by using the '-to' option.", true);
+
+            return -1;
+        }
+        catch (Exception e)
+        {
+            output.WriteError(e);
+
+            return -1;
+        }
+    }
+
     protected async Task<int> DoWorkAsync(string msg, Func<ICommandOutput, Task> work)
     {
         Debug.Assert(!string.IsNullOrEmpty(msg));
@@ -61,7 +100,7 @@ public abstract class Command
 
         try
         {
-            // when outputing json there are no status or progress indicators
+            // when outputing json there are no status, confirmations or progress indicators
             if (Json)
             {
                 work(output);

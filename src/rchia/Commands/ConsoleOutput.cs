@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using Spectre.Console;
 
 namespace rchia.Commands;
@@ -21,6 +22,15 @@ internal class ConsoleOutput : ICommandOutput
     {
         _statusContext = context;
         return this;
+    }
+
+    public string PromptSecret(string message)
+    {
+        return AnsiConsole.Prompt(
+            new TextPrompt<string>(message)
+                .PromptStyle("red")
+                .Validate(s => string.IsNullOrEmpty(s.Trim()) ? ValidationResult.Error("Secret cannot be empty") : ValidationResult.Success())
+                .Secret());
     }
 
     public void WriteOutput(IDictionary<string, IEnumerable<IDictionary<string, object?>>> output)
@@ -45,7 +55,14 @@ internal class ConsoleOutput : ICommandOutput
 
     public void WriteOutput(object output)
     {
-        WriteLine(output.ToJson());
+        var props = from p in output.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                    where p.CanRead
+                    select p;
+
+        foreach (var prop in props)
+        {
+            WriteOutput(prop.Name, prop.GetValue(output));
+        }
     }
 
     public void WriteOutput(IEnumerable<IDictionary<string, object?>> output)
@@ -67,6 +84,11 @@ internal class ConsoleOutput : ICommandOutput
         {
             WriteMarkupLine($"[wheat1]{value.Key.FromSnakeCase()}:[/] {Format(value.Value)}");
         }
+    }
+
+    private void WriteOutput(string name, object? value)
+    {
+        WriteMarkupLine($"[wheat1]{name.FromProperCase()}:[/] {Format(value)}");
     }
 
     private static object? Format(object? value)

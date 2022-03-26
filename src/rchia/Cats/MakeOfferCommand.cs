@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using rchia.Commands;
 using chia.dotnet;
@@ -32,7 +33,7 @@ internal sealed class MakeOfferCommand : WalletCommand
             var tradeManager = new TradeManager(proxy);
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
-            var offer = await tradeManager.CreateOfferForIds(null, Fee.ToMojo(), ExamineOnly, cts.Token);
+            var offer = await tradeManager.CreateOffer(new Dictionary<uint, long>(), Fee.ToMojo(), ExamineOnly, cts.Token);
 
             output.WriteOutput(offer);
         });

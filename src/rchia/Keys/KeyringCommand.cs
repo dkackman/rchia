@@ -1,27 +1,24 @@
-﻿using System.Diagnostics;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using chia.dotnet;
 using rchia.Commands;
 
-namespace rchia.Node
+namespace rchia.Keys
 {
-    internal sealed class PingCommand : EndpointOptions
+    internal sealed class KeyringCommand : EndpointOptions
     {
         [CommandTarget]
         public async Task<int> Run()
         {
-            return await DoWorkAsync("Pinging the daemon...", async output =>
+            return await DoWorkAsync("Retrieving keyring info...", async output =>
             {
                 using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(output, this);
                 var proxy = new DaemonProxy(rpcClient, ClientFactory.Factory.OriginService);
                 using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
-                var stopWatch = Stopwatch.StartNew();
-                await proxy.Ping(cts.Token);
-                stopWatch.Stop();
+                var keyring = await proxy.GetKeyringStatus(cts.Token);
 
-                output.WriteOutput("response_time", $"{stopWatch.ElapsedMilliseconds / 1000.0:N2}", true);
+                output.WriteOutput(keyring);
             });
         }
     }

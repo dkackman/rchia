@@ -22,4 +22,16 @@ internal sealed class KeysCommands
 
     [Command("delete-all", Description = "Delete all private keys in keychain")]
     public DeleteAllKeys DeleteAll { get; init; } = new();
+
+    [Command("keyring", Description = "Shows the status of the node's keyring.")]
+    public KeyringCommand Keyring { get; init; } = new();
+
+    [Command("unlock", Description = "Unlocks the node's keyring.")]
+    public UnlockCommand Unlock { get; init; } = new();
+
+    [Command("migrate", Description = "Migrate the node to keyring.")]
+    public MigrateCommand Migrate { get; init; } = new();
+
+    [Command("set-passphrase", Description = "Set the keyring passphrase.")]
+    public SetPassphraseCommand Set { get; init; } = new();
 }

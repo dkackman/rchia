@@ -30,6 +30,27 @@ internal static class Extensions
             .Append(s.Replace('_', ' ')[1..])
             .ToString();
     }
+    public static string FromProperCase(this string s)
+    {
+        var builder = new StringBuilder();
+        if (s.Length > 0)
+        {
+            builder.Append(s[0]);
+        }
+        foreach (var c in s.Skip(1))
+        {
+            if (char.IsUpper(c))
+            {
+                builder.Append(" ");
+                builder.Append(char.ToLower(c));
+            }
+            else
+            {
+                builder.Append(c);
+            }
+        }
+        return builder.ToString();
+    }
 
     public static string ToJson(this object o)
     {

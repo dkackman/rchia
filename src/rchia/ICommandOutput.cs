@@ -14,6 +14,8 @@ public interface ICommandOutput
 
     IStatus Status { get; }
 
+    string PromptSecret(string message);
+
     bool Confirm(string warning, bool force);
 
     Task<ConsoleKeyInfo?> ReadKey(CancellationToken cancellationToken);

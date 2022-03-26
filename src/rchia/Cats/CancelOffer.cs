@@ -7,7 +7,7 @@ namespace rchia.Cats;
 
 internal sealed class CancelOffer : WalletCommand
 {
-    [Option("i", "id", IsRequired = true, Description = "The ID of the offer that you wish to examine")]
+    [Option("i", "id", IsRequired = true, Description = "The trade ID of the offer that you wish to examine")]
     public string Id { get; init; } = string.Empty;
 
     [Option("s", "secure", Description = "Cancel using a transaction")]
@@ -15,6 +15,16 @@ internal sealed class CancelOffer : WalletCommand
 
     [Option("m", "fee", Default = 0, Description = "Set the fees for the cancellation transaction, in XCH")]
     public decimal Fee { get; init; }
+
+    [Option("f", "force", Description = "Cancel the offer without prompting for confirmation")]
+    public bool Force { get; init; }
+
+    protected async override Task<bool> Confirm(ICommandOutput output)
+    {
+        await Task.CompletedTask;
+
+        return output.Confirm($"Are you sure you want to cancel offer {Id}?", Force);
+    }
 
     [CommandTarget]
     public async Task<int> Run()
@@ -26,14 +36,7 @@ internal sealed class CancelOffer : WalletCommand
             var tradeManager = new TradeManager(proxy);
             using var cts = new CancellationTokenSource(TimeoutMilliseconds);
 
-            if (Secure)
-            {
-                await tradeManager.CancelOffer(Id, Fee.ToMojo(), cts.Token);
-            }
-            else
-            {
-                await tradeManager.CancelOffer(Id, cts.Token);
-            }
+            await tradeManager.CancelOffer(Id, Secure, Fee.ToMojo(), cts.Token);
 
             output.WriteOutput("status", "success", Verbose);
         });
