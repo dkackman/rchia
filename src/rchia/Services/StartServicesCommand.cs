@@ -9,7 +9,7 @@ namespace rchia.Services;
 
 internal sealed class StartServicesCommand : EndpointOptions
 {
-    [Argument(0, Name = "service-group", Description = "[all|node|harvester|farmer|farmer-no-wallet|farmer-only|timelord|\ntimelord-only|timelord-launcher-only|wallet|wallet-only|introducer|simulator]")]
+    [Argument(0, Name = "service-group", Description = ServiceGroups.Names)]
     public string? ServiceGroup { get; init; }
 
     [Option("r", "restart", Description = "Restart the specified service(s)")]

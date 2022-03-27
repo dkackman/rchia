@@ -38,13 +38,11 @@ internal sealed class CheckOfferCommand : WalletCommand
     {
         try
         {
-            using var stream = File.OpenRead(Offer);
-            using var reader = new StreamReader(stream);
             if (Verbose)
             {
                 output.WriteMarkupLine($"Loading offer from {Offer}.");
             }
-            return reader.ReadToEnd();
+            return File.ReadAllText(Offer);
         }
         catch (IOException)
         {

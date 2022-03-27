@@ -20,9 +20,12 @@ internal static class ServiceGroups
             { "wallet", "chia_wallet chia_full_node".Split(' ')},
             { "wallet-only", "chia_wallet".Split(' ')},
             { "introducer", "chia_introducer".Split(' ')},
-            { "simulator", "chia_full_node_simulator".Split(' ')}
+            { "simulator", "chia_full_node_simulator".Split(' ')},
+            { "crawler", "chia_crawler".Split(' ') },
         };
     }
+
+    public const string Names = "[all|node|harvester|farmer|farmer-no-wallet|farmer-only|timelord|\ntimelord-only|timelord-launcher-only|wallet|wallet-only|introducer|simulator|crawler]";
 
     public static IReadOnlyDictionary<string, IEnumerable<string>> Groups { get; private set; }
 }
