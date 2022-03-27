@@ -44,8 +44,8 @@ namespace rchia.Keys
                 return File.ReadAllText(PassphraseFile).Trim();
             }
 
-            var newPassphrase = output.PromptForSecret("Enter the new keyring [green]passphrase[/]?");
-            if (newPassphrase != output.PromptForSecret("Re-enter the new keyring [green]passphrase[/]?"))
+            var newPassphrase = output.PromptForSecret("Enter the new keyring [green]passphrase[/].");
+            if (newPassphrase != output.PromptForSecret("Re-enter the new keyring [green]passphrase[/]."))
             {
                 throw new InvalidDataException("Entered passphrases must match!");
             }

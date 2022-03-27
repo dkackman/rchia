@@ -35,7 +35,7 @@ namespace rchia.Keys
                 return File.ReadAllText(PassphraseFile).Trim();
             }
 
-            return output.PromptForSecret("Enter the keyring [green]passphrase[/]?");
+            return output.PromptForSecret("Enter the keyring [green]passphrase[/].");
         }
     }
 }

@@ -26,8 +26,8 @@ namespace rchia.Keys
         [CommandTarget]
         public async Task<int> Run()
         {
-            return await DoWorkAsync("Setting the keyring passphrase...", 
-                output => GetPassphrase(output), 
+            return await DoWorkAsync("Setting the keyring passphrase...",
+                output => GetPassphrase(output),
                 async (inputs, output) =>
           {
               using var rpcClient = await ClientFactory.Factory.CreateWebSocketClient(output, this);
@@ -43,12 +43,14 @@ namespace rchia.Keys
         private (string currentPassphase, string newPassphrase) GetPassphrase(ICommandOutput output)
         {
             var currentPassphase = CurrentPassphraseEmpty ? string.Empty
-                : !string.IsNullOrEmpty(PassphraseFile)
-                ? File.ReadAllText(PassphraseFile).Trim()
-                : output.PromptForSecret("Enter the current keyring [green]passphrase[/]?");
+                : string.IsNullOrEmpty(PassphraseFile) ? output.PromptForSecret("Enter the current keyring [green]passphrase[/].")
+                : File.ReadAllText(PassphraseFile).Trim();
 
-            var newPassphrase = output.PromptForSecret("Enter the new keyring [green]passphrase[/]?");
-            if (newPassphrase != output.PromptForSecret("Re-enter the new keyring [green]passphrase[/]?"))
+            var newPassphrase = string.IsNullOrEmpty(NewPassphraseFile) ? output.PromptForSecret("Enter the new keyring [green]passphrase[/].")
+                : File.ReadAllText(NewPassphraseFile).Trim();
+
+            // if we are prompting the user for the password have them re-enter it
+            if (string.IsNullOrEmpty(NewPassphraseFile) && newPassphrase != output.PromptForSecret("Re-enter the new keyring [green]passphrase[/]."))
             {
                 throw new InvalidDataException("Entered passphrases must match!");
             }
